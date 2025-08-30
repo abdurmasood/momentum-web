@@ -88,8 +88,10 @@ export const CSS_VARIABLES = {
     BLUE_BRIGHT: '--shader-blue-bright',
   },
   SELECTION: {
-    BG: '--selection-bg',
-    TEXT: '--selection-text',
+    LIGHT_BG: '--selection-light-bg',
+    LIGHT_TEXT: '--selection-light-text',
+    DARK_BG: '--selection-dark-bg',
+    DARK_TEXT: '--selection-dark-text',
   },
 } as const
 

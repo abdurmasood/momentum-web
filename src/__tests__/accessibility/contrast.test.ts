@@ -167,9 +167,9 @@ describe('Color Contrast Accessibility', () => {
     })
 
     it('should provide good contrast ratios for amber selection colors', () => {
-      // Verify specific amber colors meet accessibility standards
-      expect(getContrastRatio('#0c1220', '#FFA726')).toBeGreaterThanOrEqual(WCAG_AA_NORMAL) // Light mode
-      expect(getContrastRatio('#000000', '#FFB74D')).toBeGreaterThanOrEqual(WCAG_AA_NORMAL) // Dark mode
+      // Verify specific amber colors meet accessibility standards using theme constants
+      expect(getContrastRatio(DEFAULT_SELECTION_COLORS.lightText, DEFAULT_SELECTION_COLORS.lightBg)).toBeGreaterThanOrEqual(WCAG_AA_NORMAL) // Light mode
+      expect(getContrastRatio(DEFAULT_SELECTION_COLORS.darkText, DEFAULT_SELECTION_COLORS.darkBg)).toBeGreaterThanOrEqual(WCAG_AA_NORMAL) // Dark mode
     })
   })
 })

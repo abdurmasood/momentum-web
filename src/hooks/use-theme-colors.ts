@@ -81,10 +81,10 @@ export function useThemeColors(): ThemeColors {
 
       // Read selection colors with error handling
       const selectionColors = {
-        lightBg: getCSSVariable(CSS_VARIABLES.SELECTION.BG, DEFAULT_SELECTION_COLORS.lightBg) as string,
-        lightText: getCSSVariable(CSS_VARIABLES.SELECTION.TEXT, DEFAULT_SELECTION_COLORS.lightText) as string,
-        darkBg: getCSSVariable(CSS_VARIABLES.SELECTION.BG, DEFAULT_SELECTION_COLORS.darkBg) as string,
-        darkText: getCSSVariable(CSS_VARIABLES.SELECTION.TEXT, DEFAULT_SELECTION_COLORS.darkText) as string,
+        lightBg: getCSSVariable(CSS_VARIABLES.SELECTION.LIGHT_BG, DEFAULT_SELECTION_COLORS.lightBg) as string,
+        lightText: getCSSVariable(CSS_VARIABLES.SELECTION.LIGHT_TEXT, DEFAULT_SELECTION_COLORS.lightText) as string,
+        darkBg: getCSSVariable(CSS_VARIABLES.SELECTION.DARK_BG, DEFAULT_SELECTION_COLORS.darkBg) as string,
+        darkText: getCSSVariable(CSS_VARIABLES.SELECTION.DARK_TEXT, DEFAULT_SELECTION_COLORS.darkText) as string,
       }
 
       return {

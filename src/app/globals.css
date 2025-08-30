@@ -60,6 +60,8 @@
   /* Text Selection Colors */
   --selection-bg: #FFA726; /* Warm amber for light mode */
   --selection-text: #0c1220; /* Navy darker for contrast */
+  --selection-light-bg: #FFA726; /* Warm amber for light mode */
+  --selection-light-text: #0c1220; /* Navy darker for contrast */
 }
 
 .dark {
@@ -118,6 +120,8 @@
   /* Text Selection Colors - Dark Mode */
   --selection-bg: #FFB74D; /* Lighter amber for dark mode */
   --selection-text: #000000; /* Pure black for optimal readability */
+  --selection-dark-bg: #FFB74D; /* Lighter amber for dark mode */
+  --selection-dark-text: #000000; /* Pure black for optimal readability */
 }
 
 @theme inline {
