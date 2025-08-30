@@ -13,7 +13,7 @@ export default function ShaderBackground({ children }: ShaderBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
+    <div ref={containerRef} className="min-h-screen bg-slate-950 relative overflow-hidden">
       {/* SVG Filters */}
       <svg className="absolute inset-0 w-0 h-0">
         <defs>
@@ -22,10 +22,10 @@ export default function ShaderBackground({ children }: ShaderBackgroundProps) {
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.3" />
             <feColorMatrix
               type="matrix"
-              values="1 0 0 0 0.02
-                      0 1 0 0 0.02
-                      0 0 1 0 0.05
-                      0 0 0 0.9 0"
+              values="1 0 0 0 0.05
+                      0 1 0 0 0.08
+                      0 0 1 0 0.2
+                      0 0 0 0.75 0"
               result="tint"
             />
           </filter>
@@ -45,12 +45,12 @@ export default function ShaderBackground({ children }: ShaderBackgroundProps) {
       {/* Background Shaders */}
       <MeshGradient
         className="absolute inset-0 w-full h-full"
-        colors={["#000000", "#8b5cf6", "#ffffff", "#1e1b4b", "#4c1d95"]}
+        colors={["#0f172a", "#1e293b", "#334155", "#0c1220", "#1e3a8a"]}
         speed={0.3}
       />
       <MeshGradient
         className="absolute inset-0 w-full h-full opacity-60"
-        colors={["#000000", "#ffffff", "#8b5cf6", "#000000"]}
+        colors={["#0f172a", "#1e40af", "#3b82f6", "#1e293b"]}
         speed={0.2}
       />
 
