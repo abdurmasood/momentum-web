@@ -9,6 +9,7 @@ import {
 import {
   DEFAULT_FILTER_VALUES,
   DEFAULT_GRADIENT_COLORS,
+  DEFAULT_SELECTION_COLORS,
   CSS_VARIABLES,
   type ThemeColors,
 } from '@/constants/theme'
@@ -75,6 +76,7 @@ export function useThemeColorsWithObserver(
         DEFAULT_GRADIENT_COLORS.navyMedium,
       ],
     },
+    selectionColors: DEFAULT_SELECTION_COLORS,
   }), [])
 
   /**
@@ -137,6 +139,14 @@ export function useThemeColorsWithObserver(
         blueBright: getCSSVariable(CSS_VARIABLES.SHADER.BLUE_BRIGHT, DEFAULT_GRADIENT_COLORS.blueBright) as string,
       }
 
+      // Read selection colors with validation
+      const selectionColors = {
+        lightBg: getCSSVariable(CSS_VARIABLES.SELECTION.LIGHT_BG, DEFAULT_SELECTION_COLORS.lightBg) as string,
+        lightText: getCSSVariable(CSS_VARIABLES.SELECTION.LIGHT_TEXT, DEFAULT_SELECTION_COLORS.lightText) as string,
+        darkBg: getCSSVariable(CSS_VARIABLES.SELECTION.DARK_BG, DEFAULT_SELECTION_COLORS.darkBg) as string,
+        darkText: getCSSVariable(CSS_VARIABLES.SELECTION.DARK_TEXT, DEFAULT_SELECTION_COLORS.darkText) as string,
+      }
+
       const result = {
         filterValues,
         gradientColors: {
@@ -154,6 +164,7 @@ export function useThemeColorsWithObserver(
             gradientColors.navyMedium,
           ],
         },
+        selectionColors,
       }
 
       // Performance tracking

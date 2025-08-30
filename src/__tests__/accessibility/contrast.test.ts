@@ -4,6 +4,8 @@
  * Tests WCAG AA compliance for text colors used in the focus theme
  */
 
+import { DEFAULT_SELECTION_COLORS } from '@/constants/theme'
+
 // Helper function to convert hex to RGB
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -132,5 +134,37 @@ describe('Color Contrast Accessibility', () => {
         expect(ratio).toBeGreaterThanOrEqual(WCAG_AA_NORMAL)
       })
     })
+  })
+
+  describe('Text selection color contrast', () => {
+    it('should meet WCAG AA standards for light mode selection', () => {
+      const ratio = getContrastRatio(DEFAULT_SELECTION_COLORS.lightText, DEFAULT_SELECTION_COLORS.lightBg)
+      expect(ratio).toBeGreaterThanOrEqual(WCAG_AA_NORMAL)
+    })
+
+    it('should meet WCAG AA standards for dark mode selection', () => {
+      const ratio = getContrastRatio(DEFAULT_SELECTION_COLORS.darkText, DEFAULT_SELECTION_COLORS.darkBg)
+      expect(ratio).toBeGreaterThanOrEqual(WCAG_AA_NORMAL)
+    })
+
+    it('should meet WCAG AAA standards for light mode selection (enhanced)', () => {
+      const ratio = getContrastRatio(DEFAULT_SELECTION_COLORS.lightText, DEFAULT_SELECTION_COLORS.lightBg)
+      expect(ratio).toBeGreaterThanOrEqual(WCAG_AAA_NORMAL)
+    })
+
+    it('should meet WCAG AAA standards for dark mode selection (enhanced)', () => {
+      const ratio = getContrastRatio(DEFAULT_SELECTION_COLORS.darkText, DEFAULT_SELECTION_COLORS.darkBg)
+      expect(ratio).toBeGreaterThanOrEqual(WCAG_AAA_NORMAL)
+    })
+
+    it('should have sufficient contrast for selection on primary backgrounds', () => {
+      // Test selection colors against main background colors
+      const lightSelectionOnDark = getContrastRatio(DEFAULT_SELECTION_COLORS.lightBg, BACKGROUND_COLORS.primary)
+      const darkSelectionOnDark = getContrastRatio(DEFAULT_SELECTION_COLORS.darkBg, BACKGROUND_COLORS.primary)
+      
+      expect(lightSelectionOnDark).toBeGreaterThanOrEqual(3.0) // Minimum for UI elements
+      expect(darkSelectionOnDark).toBeGreaterThanOrEqual(3.0) // Minimum for UI elements
+    })
+
   })
 })

@@ -56,6 +56,10 @@
   --shader-blue-deep: #1e3a8a;
   --shader-blue-medium: #1e40af;
   --shader-blue-bright: #3b82f6;
+  
+  /* Text Selection Colors */
+  --selection-light-bg: #FFA726; /* Warm amber for light mode */
+  --selection-light-text: #0c1220; /* Navy darker for contrast */
 }
 
 .dark {
@@ -110,6 +114,10 @@
   --shader-blue-deep: #1e3a8a;
   --shader-blue-medium: #1e40af;
   --shader-blue-bright: #3b82f6;
+  
+  /* Text Selection Colors - Dark Mode */
+  --selection-dark-bg: #FFB74D; /* Lighter amber for dark mode */
+  --selection-dark-text: #000000; /* Pure black for optimal readability */
 }
 
 @theme inline {
@@ -163,6 +171,30 @@
     @apply bg-background text-foreground;
     /* Set Figtree as the default font family for the entire website */
     font-family: var(--font-figtree);
+  }
+  
+  /* Text Selection Styling */
+  /* Define common selection properties to reduce repetition */
+  :root {
+    --selection-bg-current: var(--selection-light-bg);
+    --selection-text-current: var(--selection-light-text);
+  }
+  
+  ::selection {
+    background-color: var(--selection-bg-current);
+    color: var(--selection-text-current);
+    -webkit-text-fill-color: var(--selection-text-current);
+  }
+  
+  ::-moz-selection {
+    background-color: var(--selection-bg-current);
+    color: var(--selection-text-current);
+  }
+
+  /* Dark mode selection styling */
+  .dark {
+    --selection-bg-current: var(--selection-dark-bg);
+    --selection-text-current: var(--selection-dark-text);
   }
 }
 
