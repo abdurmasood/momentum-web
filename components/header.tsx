@@ -21,19 +21,19 @@ export default function Header() {
       <nav className="flex items-center space-x-2">
         <a
           href="#"
-          className="text-slate-300 hover:text-slate-100 text-xs font-light px-3 py-2 rounded-full hover:bg-slate-800/50 transition-all duration-200"
+          className="text-slate-300 hover:text-blue-200 text-xs font-light px-3 py-2 rounded-full hover:bg-blue-950/30 transition-all duration-200"
         >
           Features
         </a>
         <a
           href="#"
-          className="text-slate-300 hover:text-slate-100 text-xs font-light px-3 py-2 rounded-full hover:bg-slate-800/50 transition-all duration-200"
+          className="text-slate-300 hover:text-blue-200 text-xs font-light px-3 py-2 rounded-full hover:bg-blue-950/30 transition-all duration-200"
         >
           Pricing
         </a>
         <a
           href="#"
-          className="text-slate-300 hover:text-slate-100 text-xs font-light px-3 py-2 rounded-full hover:bg-slate-800/50 transition-all duration-200"
+          className="text-slate-300 hover:text-blue-200 text-xs font-light px-3 py-2 rounded-full hover:bg-blue-950/30 transition-all duration-200"
         >
           Docs
         </a>
