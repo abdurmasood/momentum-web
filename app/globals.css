@@ -41,6 +41,21 @@
   --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
   /* Added Figtree as the primary font variable */
   --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
+  
+  /* SVG Filter Color Variables for Focus Theme */
+  --filter-glass-r: 0.05;
+  --filter-glass-g: 0.08;
+  --filter-glass-b: 0.2;
+  --filter-glass-opacity: 0.75;
+  
+  /* Shader Gradient Colors for Focus Theme */
+  --shader-navy-deep: #0f172a;
+  --shader-navy-medium: #1e293b;
+  --shader-gray-medium: #334155;
+  --shader-navy-darker: #0c1220;
+  --shader-blue-deep: #1e3a8a;
+  --shader-blue-medium: #1e40af;
+  --shader-blue-bright: #3b82f6;
 }
 
 .dark {
@@ -80,6 +95,21 @@
   --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
   /* Added Figtree font variable for dark mode consistency */
   --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
+  
+  /* SVG Filter Color Variables for Focus Theme - Dark Mode */
+  --filter-glass-r: 0.05;
+  --filter-glass-g: 0.08;
+  --filter-glass-b: 0.2;
+  --filter-glass-opacity: 0.75;
+  
+  /* Shader Gradient Colors for Focus Theme - Dark Mode */
+  --shader-navy-deep: #0f172a;
+  --shader-navy-medium: #1e293b;
+  --shader-gray-medium: #334155;
+  --shader-navy-darker: #0c1220;
+  --shader-blue-deep: #1e3a8a;
+  --shader-blue-medium: #1e40af;
+  --shader-blue-bright: #3b82f6;
 }
 
 @theme inline {
@@ -138,4 +168,9 @@
 
 .instrument {
   font-family: var(--font-instrument-serif);
+}
+
+/* SVG Filter Classes */
+.filter-gooey {
+  filter: url(#gooey-filter);
 }
