@@ -90,6 +90,13 @@ function ShaderRenderer({ children, filterValues, gradientColors }: {
   )
 }
 
+// WeakMap for performance refs to prevent memory leaks
+const performanceRefs = new WeakMap<HTMLDivElement, {
+  startTime: number
+  intersectionTime: number
+  loadTime: number
+}>()
+
 /**
  * Lazy loading wrapper with intersection observer
  */
@@ -111,11 +118,7 @@ function LazyShaderBackground({
   const [, setHasLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const performanceRef = useRef({
-    startTime: performance.now(),
-    intersectionTime: 0,
-    loadTime: 0
-  })
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const { filterValues, gradientColors } = useThemeColors()
 
@@ -123,16 +126,39 @@ function LazyShaderBackground({
   useEffect(() => {
     if (!loadOnIntersection || shouldLoad || typeof window === 'undefined') return
 
+    // Capture current container ref at the start of effect
+    const currentContainer = containerRef.current
+    if (!currentContainer) return
+
+    // Create AbortController for cleanup
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+    
     let observer: IntersectionObserver | null = null
 
     try {
+      // Initialize performance tracking for this container
+      if (enablePerformanceLogging) {
+        performanceRefs.set(currentContainer, {
+          startTime: performance.now(),
+          intersectionTime: 0,
+          loadTime: 0
+        })
+      }
+
       observer = new IntersectionObserver(
         (entries) => {
+          // Check if component is still mounted
+          if (abortController.signal.aborted) return
+
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && !abortController.signal.aborted) {
               if (enablePerformanceLogging) {
-                performanceRef.current.intersectionTime = performance.now()
-                console.log('Shader intersection detected, starting load')
+                const perfRef = performanceRefs.get(currentContainer)
+                if (perfRef) {
+                  perfRef.intersectionTime = performance.now()
+                  console.log('Shader intersection detected, starting load')
+                }
               }
               
               setShouldLoad(true)
@@ -141,6 +167,7 @@ function LazyShaderBackground({
               // Disconnect observer after triggering load
               if (observer) {
                 observer.disconnect()
+                observer = null
               }
             }
           })
@@ -151,22 +178,33 @@ function LazyShaderBackground({
         }
       )
 
-      if (containerRef.current) {
-        observer.observe(containerRef.current)
+      if (!abortController.signal.aborted) {
+        observer.observe(currentContainer)
       }
     } catch (error) {
-      ErrorHandlers.handleShaderError(
-        error as Error, 
-        'LazyShaderBackground-IntersectionObserver'
-      )
-      setShouldLoad(true)
-      setIsLoading(true)
+      if (!abortController.signal.aborted) {
+        ErrorHandlers.handleShaderError(
+          error as Error, 
+          'LazyShaderBackground-IntersectionObserver'
+        )
+        setShouldLoad(true)
+        setIsLoading(true)
+      }
     }
 
     return () => {
+      // Abort any ongoing operations
+      abortController.abort()
+      abortControllerRef.current = null
+      
+      // Clean up observer
       if (observer) {
         observer.disconnect()
+        observer = null
       }
+      
+      // Clean up performance refs using captured container reference
+      performanceRefs.delete(currentContainer)
     }
   }, [loadOnIntersection, shouldLoad, intersectionThreshold, enablePerformanceLogging])
 
@@ -176,18 +214,21 @@ function LazyShaderBackground({
     setHasLoaded(true)
     setHasError(false)
 
-    if (enablePerformanceLogging) {
-      const loadTime = performance.now()
-      performanceRef.current.loadTime = loadTime
-      
-      const totalTime = loadTime - performanceRef.current.startTime
-      const loadDuration = loadTime - (performanceRef.current.intersectionTime || performanceRef.current.startTime)
-      
-      console.log('Shader background loaded successfully', {
-        totalTime: `${totalTime.toFixed(2)}ms`,
-        loadDuration: `${loadDuration.toFixed(2)}ms`,
-        intersectionTriggered: performanceRef.current.intersectionTime > 0
-      })
+    if (enablePerformanceLogging && containerRef.current) {
+      const perfRef = performanceRefs.get(containerRef.current)
+      if (perfRef) {
+        const loadTime = performance.now()
+        perfRef.loadTime = loadTime
+        
+        const totalTime = loadTime - perfRef.startTime
+        const loadDuration = loadTime - (perfRef.intersectionTime || perfRef.startTime)
+        
+        console.log('Shader background loaded successfully', {
+          totalTime: `${totalTime.toFixed(2)}ms`,
+          loadDuration: `${loadDuration.toFixed(2)}ms`,
+          intersectionTriggered: perfRef.intersectionTime > 0
+        })
+      }
     }
   }
 
@@ -199,12 +240,15 @@ function LazyShaderBackground({
     // Use centralized error handling
     ErrorHandlers.handleShaderError(error, 'LazyShaderBackground')
     
-    if (enablePerformanceLogging) {
-      const errorTime = performance.now() - performanceRef.current.startTime
-      console.log('Shader load failed', {
-        errorTime: `${errorTime.toFixed(2)}ms`,
-        error: error.message
-      })
+    if (enablePerformanceLogging && containerRef.current) {
+      const perfRef = performanceRefs.get(containerRef.current)
+      if (perfRef) {
+        const errorTime = performance.now() - perfRef.startTime
+        console.log('Shader load failed', {
+          errorTime: `${errorTime.toFixed(2)}ms`,
+          error: error.message
+        })
+      }
     }
   }
 
@@ -216,16 +260,20 @@ function LazyShaderBackground({
     }
   }, [forceLoad, shouldLoad])
 
-  // Cleanup performance refs and timers on unmount
+  // Cleanup on unmount
   useEffect(() => {
-    const performanceRefCurrent = performanceRef.current
+    // Capture current container ref at the start of effect
+    const currentContainer = containerRef.current
     
     return () => {
-      // Clear performance refs to prevent memory leaks
-      if (performanceRefCurrent) {
-        performanceRefCurrent.startTime = 0
-        performanceRefCurrent.intersectionTime = 0
-        performanceRefCurrent.loadTime = 0
+      // Abort any ongoing operations
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      
+      // Clean up performance refs to prevent memory leaks - use captured reference
+      if (currentContainer) {
+        performanceRefs.delete(currentContainer)
       }
     }
   }, [])

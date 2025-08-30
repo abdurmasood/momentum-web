@@ -54,6 +54,8 @@ export class AppError extends Error {
   public readonly timestamp: number
   public readonly component?: string
   public readonly additionalContext?: Record<string, unknown>
+  public readonly code: string
+  public readonly fingerprint: string
 
   constructor(
     type: ErrorType,
@@ -69,11 +71,51 @@ export class AppError extends Error {
     this.timestamp = Date.now()
     this.component = component
     this.additionalContext = additionalContext
+    this.code = this.generateErrorCode(type, component)
+    this.fingerprint = this.generateFingerprint(message, type, component)
 
     // Maintain proper stack trace in V8
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, AppError)
     }
+  }
+
+  /**
+   * Generate a unique error code for classification
+   */
+  private generateErrorCode(type: ErrorType, component?: string): string {
+    const typeCode = type.split('_')[0].substring(0, 3).toUpperCase()
+    const componentCode = component ? 
+      component.replace(/[^A-Z]/g, '').substring(0, 3) || 'UNK' : 
+      'GEN'
+    const timestamp = Date.now().toString().slice(-4)
+    return `${typeCode}-${componentCode}-${timestamp}`
+  }
+
+  /**
+   * Generate error fingerprint for grouping similar errors
+   */
+  private generateFingerprint(message: string, type: ErrorType, component?: string): string {
+    // Create a stable hash-like identifier for error grouping
+    const normalizedMessage = message.toLowerCase()
+      .replace(/\d+/g, 'N')  // Replace numbers with N
+      .replace(/['"]/g, '')   // Remove quotes
+      .replace(/\s+/g, '_')   // Replace spaces with underscores
+    
+    const parts = [
+      type,
+      component || 'unknown',
+      normalizedMessage.substring(0, 20)
+    ].join('|')
+    
+    // Simple hash for fingerprinting
+    let hash = 0
+    for (let i = 0; i < parts.length; i++) {
+      const char = parts.charCodeAt(i)
+      hash = ((hash << 5) - hash) + char
+      hash = hash & hash // Convert to 32-bit integer
+    }
+    return Math.abs(hash).toString(16).substring(0, 8)
   }
 
   /**
@@ -95,53 +137,163 @@ export class AppError extends Error {
 }
 
 /**
- * Error classification utility
+ * Error classification patterns with regex for better matching
+ */
+const ERROR_PATTERNS = {
+  [ErrorType.SHADER_ERROR]: {
+    patterns: [
+      /webgl/i,
+      /shader/i,
+      /meshgradient/i,
+      /gl_/i,
+      /vertex/i,
+      /fragment/i,
+      /texture/i,
+      /framebuffer/i,
+      /context lost/i
+    ],
+    severity: ErrorSeverity.MEDIUM
+  },
+  [ErrorType.THEME_ERROR]: {
+    patterns: [
+      /theme/i,
+      /css variable/i,
+      /color/i,
+      /style/i,
+      /--[\w-]+/i, // CSS custom properties
+      /rgb|hsl|hex/i
+    ],
+    severity: ErrorSeverity.LOW
+  },
+  [ErrorType.CONFIG_ERROR]: {
+    patterns: [
+      /config/i,
+      /listener/i,
+      /subscription/i,
+      /settings/i,
+      /configuration/i
+    ],
+    severity: ErrorSeverity.MEDIUM
+  },
+  [ErrorType.PERFORMANCE_ERROR]: {
+    patterns: [
+      /performance/i,
+      /observer/i,
+      /metric/i,
+      /timing/i,
+      /vitals/i,
+      /fps/i,
+      /budget/i
+    ],
+    severity: ErrorSeverity.LOW
+  },
+  [ErrorType.INTERSECTION_OBSERVER_ERROR]: {
+    patterns: [
+      /intersection.*observer/i,
+      /intersectionobserver/i,
+      /intersection/i
+    ],
+    severity: ErrorSeverity.LOW
+  },
+  [ErrorType.COMPONENT_ERROR]: {
+    patterns: [
+      /render/i,
+      /component/i,
+      /react/i,
+      /hook/i,
+      /useeffect/i,
+      /usestate/i,
+      /jsx/i
+    ],
+    severity: ErrorSeverity.HIGH
+  },
+  [ErrorType.NETWORK_ERROR]: {
+    patterns: [
+      /network/i,
+      /fetch/i,
+      /xhr/i,
+      /ajax/i,
+      /request/i,
+      /response/i,
+      /timeout/i,
+      /cors/i
+    ],
+    severity: ErrorSeverity.MEDIUM
+  },
+  [ErrorType.VALIDATION_ERROR]: {
+    patterns: [
+      /validation/i,
+      /invalid/i,
+      /expected/i,
+      /required/i,
+      /missing/i,
+      /format/i,
+      /parse/i
+    ],
+    severity: ErrorSeverity.MEDIUM
+  }
+}
+
+/**
+ * Enhanced error classification utility with pattern matching
  */
 export function classifyError(error: Error): { type: ErrorType; severity: ErrorSeverity } {
-  const message = error.message.toLowerCase()
-  const stack = error.stack?.toLowerCase() || ''
+  const message = error.message
+  const stack = error.stack || ''
+  const combinedText = `${message} ${stack}`
 
-  // Shader-related errors
-  if (message.includes('webgl') || message.includes('shader') || message.includes('meshgradient')) {
-    return { type: ErrorType.SHADER_ERROR, severity: ErrorSeverity.MEDIUM }
+  // Try to match against specific error patterns
+  for (const [errorType, config] of Object.entries(ERROR_PATTERNS)) {
+    const { patterns, severity } = config as { patterns: RegExp[]; severity: ErrorSeverity }
+    
+    for (const pattern of patterns) {
+      if (pattern.test(message) || pattern.test(stack)) {
+        return { 
+          type: errorType as ErrorType, 
+          severity: adjustSeverityByContext(severity, combinedText)
+        }
+      }
+    }
   }
 
-  // Theme-related errors
-  if (message.includes('theme') || message.includes('css variable') || message.includes('color')) {
-    return { type: ErrorType.THEME_ERROR, severity: ErrorSeverity.LOW }
-  }
-
-  // Configuration errors
-  if (message.includes('config') || message.includes('listener') || message.includes('subscription')) {
-    return { type: ErrorType.CONFIG_ERROR, severity: ErrorSeverity.MEDIUM }
-  }
-
-  // Performance monitoring errors
-  if (message.includes('performance') || message.includes('observer') || message.includes('metric')) {
-    return { type: ErrorType.PERFORMANCE_ERROR, severity: ErrorSeverity.LOW }
-  }
-
-  // Intersection observer errors
-  if (message.includes('intersection') || message.includes('observer')) {
-    return { type: ErrorType.INTERSECTION_OBSERVER_ERROR, severity: ErrorSeverity.LOW }
-  }
-
-  // Component rendering errors
-  if (message.includes('render') || message.includes('component') || stack.includes('react')) {
+  // Fallback classification based on error constructor
+  if (error.name === 'TypeError' || error.name === 'ReferenceError') {
     return { type: ErrorType.COMPONENT_ERROR, severity: ErrorSeverity.HIGH }
   }
 
-  // Network errors
-  if (message.includes('network') || message.includes('fetch') || message.includes('load')) {
-    return { type: ErrorType.NETWORK_ERROR, severity: ErrorSeverity.MEDIUM }
-  }
-
-  // Validation errors
-  if (message.includes('validation') || message.includes('invalid') || message.includes('expected')) {
+  if (error.name === 'SyntaxError') {
     return { type: ErrorType.VALIDATION_ERROR, severity: ErrorSeverity.MEDIUM }
   }
 
+  // Check for common DOM/Browser API errors
+  if (combinedText.includes('DOM') || combinedText.includes('Element')) {
+    return { type: ErrorType.COMPONENT_ERROR, severity: ErrorSeverity.MEDIUM }
+  }
+
   return { type: ErrorType.UNKNOWN_ERROR, severity: ErrorSeverity.MEDIUM }
+}
+
+/**
+ * Adjust error severity based on additional context
+ */
+function adjustSeverityByContext(baseSeverity: ErrorSeverity, errorText: string): ErrorSeverity {
+  const lowerText = errorText.toLowerCase()
+  
+  // Escalate severity for critical contexts
+  if (lowerText.includes('critical') || lowerText.includes('fatal') || lowerText.includes('crash')) {
+    return ErrorSeverity.CRITICAL
+  }
+  
+  if (lowerText.includes('important') || lowerText.includes('major')) {
+    return baseSeverity === ErrorSeverity.LOW ? ErrorSeverity.MEDIUM : ErrorSeverity.HIGH
+  }
+  
+  // De-escalate for minor contexts  
+  if (lowerText.includes('minor') || lowerText.includes('warning') || lowerText.includes('deprecated')) {
+    return baseSeverity === ErrorSeverity.HIGH ? ErrorSeverity.MEDIUM : ErrorSeverity.LOW
+  }
+  
+  return baseSeverity
 }
 
 /**

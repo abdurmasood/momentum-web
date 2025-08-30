@@ -60,6 +60,9 @@ class PerformanceConfigManager {
   private config: PerformanceConfig
   private listeners: Array<(config: PerformanceConfig) => void> = []
   private isNotifyingListeners = false // Prevent recursive error reporting
+  private failedListeners = new WeakMap<(config: PerformanceConfig) => void, { failCount: number; lastFailTime: number }>()
+  private readonly MAX_RETRY_ATTEMPTS = 3
+  private readonly RETRY_BACKOFF_MS = 1000 // Base backoff time
 
   constructor() {
     this.config = createDefaultConfig()
@@ -96,7 +99,7 @@ class PerformanceConfigManager {
   }
 
   /**
-   * Safely notify all listeners with proper error handling
+   * Safely notify all listeners with proper error handling and retry logic
    */
   private notifyListeners(): void {
     // Prevent recursive error reporting if listener error handling triggers config updates
@@ -105,12 +108,38 @@ class PerformanceConfigManager {
     }
 
     this.isNotifyingListeners = true
+    const currentTime = Date.now()
+    const listenersToRemove: number[] = []
     
     try {
       this.listeners.forEach((listener, index) => {
         try {
+          // Check if listener has failed too many times
+          const failureInfo = this.failedListeners.get(listener)
+          if (failureInfo && failureInfo.failCount >= this.MAX_RETRY_ATTEMPTS) {
+            // Check if enough time has passed for retry (exponential backoff)
+            const backoffTime = this.RETRY_BACKOFF_MS * Math.pow(2, failureInfo.failCount - this.MAX_RETRY_ATTEMPTS)
+            if (currentTime - failureInfo.lastFailTime < backoffTime) {
+              // Skip this listener for now
+              return
+            }
+            // Reset fail count after successful backoff period
+            this.failedListeners.set(listener, { failCount: 0, lastFailTime: 0 })
+          }
+
           listener(this.config)
+          
+          // Clear failure info on successful execution
+          if (failureInfo) {
+            this.failedListeners.delete(listener)
+          }
         } catch (error) {
+          // Track failure for this listener
+          const failureInfo = this.failedListeners.get(listener) || { failCount: 0, lastFailTime: 0 }
+          failureInfo.failCount++
+          failureInfo.lastFailTime = currentTime
+          this.failedListeners.set(listener, failureInfo)
+
           // Use centralized error handling for listener errors
           ErrorHandlers.handleConfigError(
             error as Error,
@@ -118,14 +147,30 @@ class PerformanceConfigManager {
             { 
               listenerIndex: index,
               configKeys: Object.keys(this.config),
-              listenerCount: this.listeners.length
+              listenerCount: this.listeners.length,
+              failCount: failureInfo.failCount,
+              maxAttempts: this.MAX_RETRY_ATTEMPTS
             }
           )
           
-          // Remove faulty listener to prevent repeated failures
-          this.listeners.splice(index, 1)
-          console.warn(`Removed faulty config listener at index ${index}`)
+          // Remove listener permanently if it has exceeded max attempts and backoff period
+          if (failureInfo.failCount > this.MAX_RETRY_ATTEMPTS * 2) {
+            listenersToRemove.push(index)
+            console.warn(
+              `Permanently removing faulty config listener at index ${index} after ${failureInfo.failCount} failures`
+            )
+          } else {
+            console.warn(
+              `Config listener at index ${index} failed (attempt ${failureInfo.failCount}/${this.MAX_RETRY_ATTEMPTS})`
+            )
+          }
         }
+      })
+
+      // Remove permanently failed listeners (in reverse order to maintain indices)
+      listenersToRemove.reverse().forEach(index => {
+        const removedListener = this.listeners.splice(index, 1)[0]
+        this.failedListeners.delete(removedListener)
       })
     } finally {
       this.isNotifyingListeners = false
