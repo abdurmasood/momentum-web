@@ -25,12 +25,9 @@ export default function ElegantCircle({
   gradientColors 
 }: ElegantCircleProps) {
   // Extract colors with more transparency for better blending
-  const navyDeep = gradientColors?.primary[0] || '#0f172a'
-  const navyMedium = gradientColors?.primary[1] || '#1e293b'
-  const grayMedium = gradientColors?.primary[2] || '#334155'
-  const blueDeep = gradientColors?.primary[4] || '#1e3a8a'
-  const blueMedium = gradientColors?.secondary[1] || '#1e40af'
-  const blueBright = gradientColors?.secondary[2] || '#3b82f6'
+  const blueDeep = gradientColors?.primary?.[4] || '#1e3a8a'
+  const blueMedium = gradientColors?.secondary?.[1] || '#1e40af'
+  const blueBright = gradientColors?.secondary?.[2] || '#3b82f6'
   
   return (
     <>
@@ -128,6 +125,13 @@ export default function ElegantCircle({
           }
           .core-glow {
             filter: blur(2px);
+          }
+        }
+
+        /* Accessibility: Respect reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+          .circle-layer {
+            filter: none !important;
           }
         }
 
