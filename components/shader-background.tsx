@@ -22,10 +22,10 @@ export default function ShaderBackground({ children }: ShaderBackgroundProps) {
             <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.3" />
             <feColorMatrix
               type="matrix"
-              values="1 0 0 0 0.05
-                      0 1 0 0 0.08
-                      0 0 1 0 0.2
-                      0 0 0 0.75 0"
+              values={`1 0 0 0 var(--filter-glass-r)
+                      0 1 0 0 var(--filter-glass-g)
+                      0 0 1 0 var(--filter-glass-b)
+                      0 0 0 var(--filter-glass-opacity) 0`}
               result="tint"
             />
           </filter>

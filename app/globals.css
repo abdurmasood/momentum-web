@@ -41,6 +41,12 @@
   --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
   /* Added Figtree as the primary font variable */
   --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
+  
+  /* SVG Filter Color Variables for Focus Theme */
+  --filter-glass-r: 0.05;
+  --filter-glass-g: 0.08;
+  --filter-glass-b: 0.2;
+  --filter-glass-opacity: 0.75;
 }
 
 .dark {
@@ -80,6 +86,12 @@
   --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
   /* Added Figtree font variable for dark mode consistency */
   --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
+  
+  /* SVG Filter Color Variables for Focus Theme - Dark Mode */
+  --filter-glass-r: 0.05;
+  --filter-glass-g: 0.08;
+  --filter-glass-b: 0.2;
+  --filter-glass-opacity: 0.75;
 }
 
 @theme inline {
