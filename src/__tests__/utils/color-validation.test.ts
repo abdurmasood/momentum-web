@@ -12,6 +12,7 @@ import {
   validateColorPalette,
   ColorValidation
 } from '@/utils/color-validation'
+import { DEFAULT_SELECTION_COLORS } from '@/constants/theme'
 
 describe('Color Validation Utilities', () => {
   describe('isValidHexColor', () => {
@@ -260,6 +261,64 @@ describe('Color Validation Utilities', () => {
       expect(ColorValidation.isColorPalette(invalidPalette)).toBe(false)
       expect(ColorValidation.isColorPalette(null)).toBe(false)
       expect(ColorValidation.isColorPalette('not an object')).toBe(false)
+    })
+  })
+
+  describe('Selection color validation', () => {
+    const originalWarn = console.warn
+    beforeEach(() => {
+      console.warn = jest.fn()
+    })
+    afterEach(() => {
+      console.warn = originalWarn
+    })
+
+    it('should validate selection color palette structure', () => {
+      expect(ColorValidation.isColorPalette(DEFAULT_SELECTION_COLORS)).toBe(true)
+    })
+
+    it('should have valid hex colors for all selection states', () => {
+      expect(isValidHexColor(DEFAULT_SELECTION_COLORS.lightBg)).toBe(true)
+      expect(isValidHexColor(DEFAULT_SELECTION_COLORS.lightText)).toBe(true)
+      expect(isValidHexColor(DEFAULT_SELECTION_COLORS.darkBg)).toBe(true)
+      expect(isValidHexColor(DEFAULT_SELECTION_COLORS.darkText)).toBe(true)
+    })
+
+    it('should preserve valid selection colors as-is', () => {
+      const testPalette = {
+        lightBg: '#ffa726',  // lowercase but valid
+        lightText: '#0c1220', // lowercase but valid
+        darkBg: '#ffb74d',   // lowercase but valid
+        darkText: '#000'     // short form but valid
+      }
+
+      const result = validateColorPalette(testPalette, DEFAULT_SELECTION_COLORS)
+      expect(result.lightBg).toBe('#ffa726')  // Preserved as-is
+      expect(result.lightText).toBe('#0c1220') // Preserved as-is
+      expect(result.darkBg).toBe('#ffb74d')   // Preserved as-is
+      expect(result.darkText).toBe('#000')    // Preserved as-is
+    })
+
+    it('should normalize individual selection colors when needed', () => {
+      // Test individual color normalization
+      expect(validateAndNormalizeColor('#ffa726', DEFAULT_SELECTION_COLORS.lightBg)).toBe('#FFA726')
+      expect(validateAndNormalizeColor('#000', DEFAULT_SELECTION_COLORS.darkText)).toBe('#000000')
+      expect(validateAndNormalizeColor('#abc', DEFAULT_SELECTION_COLORS.lightBg)).toBe('#AABBCC')
+    })
+
+    it('should use fallback for invalid selection colors', () => {
+      const invalidPalette = {
+        lightBg: 'invalid',
+        lightText: '#0C1220',
+        darkBg: '#FFB74D',
+        darkText: 'also-invalid'
+      }
+
+      const result = validateColorPalette(invalidPalette, DEFAULT_SELECTION_COLORS)
+      expect(result.lightBg).toBe(DEFAULT_SELECTION_COLORS.lightBg)
+      expect(result.lightText).toBe('#0C1220') // Valid one preserved
+      expect(result.darkBg).toBe('#FFB74D') // Valid one preserved
+      expect(result.darkText).toBe(DEFAULT_SELECTION_COLORS.darkText)
     })
   })
 })
