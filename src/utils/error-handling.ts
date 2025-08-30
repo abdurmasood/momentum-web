@@ -15,6 +15,7 @@ export enum ErrorType {
   COMPONENT_ERROR = 'COMPONENT_ERROR',
   INTERSECTION_OBSERVER_ERROR = 'INTERSECTION_OBSERVER_ERROR',
   VALIDATION_ERROR = 'VALIDATION_ERROR',
+  CONFIG_ERROR = 'CONFIG_ERROR',
   NETWORK_ERROR = 'NETWORK_ERROR',
   UNKNOWN_ERROR = 'UNKNOWN_ERROR'
 }
@@ -108,6 +109,11 @@ export function classifyError(error: Error): { type: ErrorType; severity: ErrorS
   // Theme-related errors
   if (message.includes('theme') || message.includes('css variable') || message.includes('color')) {
     return { type: ErrorType.THEME_ERROR, severity: ErrorSeverity.LOW }
+  }
+
+  // Configuration errors
+  if (message.includes('config') || message.includes('listener') || message.includes('subscription')) {
+    return { type: ErrorType.CONFIG_ERROR, severity: ErrorSeverity.MEDIUM }
   }
 
   // Performance monitoring errors
@@ -312,6 +318,21 @@ export const ErrorHandlers = {
       `Performance monitoring error: ${error.message}`,
       'PerformanceMonitor',
       { metric, affectsFunctionality: false }
+    )
+    errorReporter.reportError(appError)
+    return appError
+  },
+
+  /**
+   * Handle configuration errors
+   */
+  handleConfigError: (error: Error, component?: string, context?: Record<string, unknown>) => {
+    const appError = new AppError(
+      ErrorType.CONFIG_ERROR,
+      ErrorSeverity.MEDIUM,
+      `Configuration error: ${error.message}`,
+      component || 'ConfigurationManager',
+      { ...context, affectsFunctionality: true }
     )
     errorReporter.reportError(appError)
     return appError

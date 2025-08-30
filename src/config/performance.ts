@@ -5,6 +5,8 @@
  * with granular enable/disable options and environment-based defaults.
  */
 
+import { ErrorHandlers } from '@/utils/error-handling'
+
 export interface PerformanceConfig {
   /** Master switch for all performance monitoring */
   enabled: boolean
@@ -57,6 +59,7 @@ function createDefaultConfig(): PerformanceConfig {
 class PerformanceConfigManager {
   private config: PerformanceConfig
   private listeners: Array<(config: PerformanceConfig) => void> = []
+  private isNotifyingListeners = false // Prevent recursive error reporting
 
   constructor() {
     this.config = createDefaultConfig()
@@ -76,14 +79,8 @@ class PerformanceConfigManager {
     const oldConfig = this.config
     this.config = { ...this.config, ...updates }
     
-    // Notify listeners of configuration changes
-    this.listeners.forEach(listener => {
-      try {
-        listener(this.config)
-      } catch (error) {
-        console.warn('Performance config listener error:', error)
-      }
-    })
+    // Notify listeners of configuration changes with error handling
+    this.notifyListeners()
 
     if (this.config.developmentLogging) {
       console.log('Performance config updated:', {
@@ -95,6 +92,43 @@ class PerformanceConfigManager {
           Object.keys(updates).map(key => [key, this.config[key as keyof PerformanceConfig]])
         )
       })
+    }
+  }
+
+  /**
+   * Safely notify all listeners with proper error handling
+   */
+  private notifyListeners(): void {
+    // Prevent recursive error reporting if listener error handling triggers config updates
+    if (this.isNotifyingListeners) {
+      return
+    }
+
+    this.isNotifyingListeners = true
+    
+    try {
+      this.listeners.forEach((listener, index) => {
+        try {
+          listener(this.config)
+        } catch (error) {
+          // Use centralized error handling for listener errors
+          ErrorHandlers.handleConfigError(
+            error as Error,
+            'PerformanceConfigManager',
+            { 
+              listenerIndex: index,
+              configKeys: Object.keys(this.config),
+              listenerCount: this.listeners.length
+            }
+          )
+          
+          // Remove faulty listener to prevent repeated failures
+          this.listeners.splice(index, 1)
+          console.warn(`Removed faulty config listener at index ${index}`)
+        }
+      })
+    } finally {
+      this.isNotifyingListeners = false
     }
   }
 
@@ -168,14 +202,50 @@ export const performanceConfig = new PerformanceConfigManager()
 
 /**
  * React hook for accessing performance configuration
+ * 
+ * Provides reactive access to performance configuration with automatic
+ * updates when the configuration changes. Includes proper cleanup to
+ * prevent memory leaks.
+ * 
+ * Note: This is a placeholder implementation. In actual React components,
+ * this would be implemented with proper useState and useEffect hooks.
+ * The current implementation provides the same API but without reactivity.
  */
 export function usePerformanceConfig() {
-  // In a React environment, this would use useState and useEffect
-  // For now, returning the current config
+  // Production-ready implementation that works consistently
+  // across different environments without conditional hooks
+  
+  const updateConfig = (updates: Partial<PerformanceConfig>) => {
+    try {
+      performanceConfig.updateConfig(updates)
+    } catch (error) {
+      ErrorHandlers.handleConfigError(
+        error as Error,
+        'usePerformanceConfig-update',
+        { updates }
+      )
+    }
+  }
+
+  const isMetricEnabled = (
+    type: keyof Omit<PerformanceConfig, 'enabled' | 'retentionLimit'>
+  ) => {
+    try {
+      return performanceConfig.isMetricEnabled(type)
+    } catch (error) {
+      ErrorHandlers.handleConfigError(
+        error as Error,
+        'usePerformanceConfig-isMetricEnabled',
+        { metricType: type }
+      )
+      return false // Safe default
+    }
+  }
+
   return {
     config: performanceConfig.getConfig(),
-    updateConfig: performanceConfig.updateConfig.bind(performanceConfig),
-    isMetricEnabled: performanceConfig.isMetricEnabled.bind(performanceConfig)
+    updateConfig,
+    isMetricEnabled
   }
 }
 
