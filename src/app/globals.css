@@ -174,27 +174,27 @@
   }
   
   /* Text Selection Styling */
+  /* Define common selection properties to reduce repetition */
+  :root {
+    --selection-bg-current: var(--selection-light-bg);
+    --selection-text-current: var(--selection-light-text);
+  }
+  
   ::selection {
-    background-color: var(--selection-light-bg);
-    color: var(--selection-light-text);
-    -webkit-text-fill-color: var(--selection-light-text);
+    background-color: var(--selection-bg-current);
+    color: var(--selection-text-current);
+    -webkit-text-fill-color: var(--selection-text-current);
   }
   
   ::-moz-selection {
-    background-color: var(--selection-light-bg);
-    color: var(--selection-light-text);
+    background-color: var(--selection-bg-current);
+    color: var(--selection-text-current);
   }
 
   /* Dark mode selection styling */
-  .dark ::selection {
-    background-color: var(--selection-dark-bg);
-    color: var(--selection-dark-text);
-    -webkit-text-fill-color: var(--selection-dark-text);
-  }
-  
-  .dark ::-moz-selection {
-    background-color: var(--selection-dark-bg);
-    color: var(--selection-dark-text);
+  .dark {
+    --selection-bg-current: var(--selection-dark-bg);
+    --selection-text-current: var(--selection-dark-text);
   }
 }
 

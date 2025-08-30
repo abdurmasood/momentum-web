@@ -60,6 +60,12 @@ export const DEFAULT_GRADIENT_COLORS = validateColorPalette(
   'gradient colors'
 )
 
+/**
+ * Default selection colors with validation and fallback values
+ * 
+ * Provides warm amber selection highlighting for both light and dark themes
+ * with WCAG AA/AAA compliant contrast ratios for optimal readability.
+ */
 export const DEFAULT_SELECTION_COLORS = validateColorPalette(
   RAW_SELECTION_COLORS,
   {
@@ -97,8 +103,31 @@ export const CSS_VARIABLES = {
 
 export type FilterValues = typeof DEFAULT_FILTER_VALUES
 export type GradientColors = typeof DEFAULT_GRADIENT_COLORS
+
+/**
+ * Type definition for text selection color configuration
+ * 
+ * @interface SelectionColors
+ * @property {string} lightBg - Background color for text selection in light mode
+ * @property {string} lightText - Text color for selection in light mode
+ * @property {string} darkBg - Background color for text selection in dark mode
+ * @property {string} darkText - Text color for selection in dark mode
+ */
 export type SelectionColors = typeof DEFAULT_SELECTION_COLORS
 
+/**
+ * Complete theme colors interface containing all color categories
+ * 
+ * This interface defines the structure for theme colors used throughout
+ * the application, including filter values, gradient colors, and selection colors.
+ * 
+ * @interface ThemeColors
+ * @property {FilterValues} filterValues - Glass filter RGBA values for visual effects
+ * @property {Object} gradientColors - Shader gradient color configurations
+ * @property {string[]} gradientColors.primary - Primary gradient color array
+ * @property {string[]} gradientColors.secondary - Secondary gradient color array
+ * @property {SelectionColors} selectionColors - Text selection color configuration
+ */
 export interface ThemeColors {
   filterValues: FilterValues
   gradientColors: {
