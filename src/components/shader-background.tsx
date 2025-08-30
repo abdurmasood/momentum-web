@@ -5,6 +5,7 @@ import { MeshGradient } from "@paper-design/shaders-react"
 import { useThemeColors } from "@/hooks/use-theme-colors"
 import ShaderSkeleton from './shader-skeleton'
 import ShaderErrorFallback, { MinimalErrorFallback } from './shader-error-fallback'
+import ElegantCircle from './elegant-circle'
 import { ErrorHandlers } from '@/utils/error-handling'
 import { performanceConfig } from '@/config/performance'
 
@@ -84,6 +85,9 @@ function ShaderRenderer({ children, filterValues, gradientColors }: {
         colors={gradientColors.secondary}
         speed={0.2}
       />
+
+      {/* Elegant Circle - positioned between shaders and content */}
+      <ElegantCircle gradientColors={gradientColors} />
 
       {children}
     </div>
