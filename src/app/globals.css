@@ -56,6 +56,10 @@
   --shader-blue-deep: #1e3a8a;
   --shader-blue-medium: #1e40af;
   --shader-blue-bright: #3b82f6;
+  
+  /* Text Selection Colors */
+  --selection-bg: #FFA726; /* Warm amber for light mode */
+  --selection-text: #0c1220; /* Navy darker for contrast */
 }
 
 .dark {
@@ -110,6 +114,10 @@
   --shader-blue-deep: #1e3a8a;
   --shader-blue-medium: #1e40af;
   --shader-blue-bright: #3b82f6;
+  
+  /* Text Selection Colors - Dark Mode */
+  --selection-bg: #FFB74D; /* Lighter amber for dark mode */
+  --selection-text: #000000; /* Pure black for optimal readability */
 }
 
 @theme inline {
@@ -163,6 +171,17 @@
     @apply bg-background text-foreground;
     /* Set Figtree as the default font family for the entire website */
     font-family: var(--font-figtree);
+  }
+  
+  /* Text Selection Styling */
+  ::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
+  }
+  
+  ::-moz-selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
   }
 }
 

@@ -30,6 +30,14 @@ const RAW_GRADIENT_COLORS = {
   blueBright: '#3b82f6',
 } as const
 
+// Raw selection colors (validated at runtime)
+const RAW_SELECTION_COLORS = {
+  lightBg: '#FFA726', // Warm amber for light mode
+  lightText: '#0c1220', // Navy darker for contrast
+  darkBg: '#FFB74D', // Lighter amber for dark mode  
+  darkText: '#000000', // Pure black for optimal readability
+} as const
+
 // Validated and exported constants
 export const DEFAULT_FILTER_VALUES = {
   r: validateAndClampFilterValue(RAW_FILTER_VALUES.r, 0.05, 'red filter'),
@@ -52,6 +60,17 @@ export const DEFAULT_GRADIENT_COLORS = validateColorPalette(
   'gradient colors'
 )
 
+export const DEFAULT_SELECTION_COLORS = validateColorPalette(
+  RAW_SELECTION_COLORS,
+  {
+    lightBg: '#FFA726',
+    lightText: '#0c1220', 
+    darkBg: '#FFB74D',
+    darkText: '#000000',
+  },
+  'selection colors'
+)
+
 export const CSS_VARIABLES = {
   FILTER: {
     GLASS_R: '--filter-glass-r',
@@ -68,10 +87,15 @@ export const CSS_VARIABLES = {
     BLUE_MEDIUM: '--shader-blue-medium',
     BLUE_BRIGHT: '--shader-blue-bright',
   },
+  SELECTION: {
+    BG: '--selection-bg',
+    TEXT: '--selection-text',
+  },
 } as const
 
 export type FilterValues = typeof DEFAULT_FILTER_VALUES
 export type GradientColors = typeof DEFAULT_GRADIENT_COLORS
+export type SelectionColors = typeof DEFAULT_SELECTION_COLORS
 
 export interface ThemeColors {
   filterValues: FilterValues
@@ -79,4 +103,5 @@ export interface ThemeColors {
     primary: string[]
     secondary: string[]
   }
+  selectionColors: SelectionColors
 }
