@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { performanceMonitor, type PerformanceMetrics } from '@/utils/performance-monitor'
+import { performanceConfig } from '@/config/performance'
+import { ErrorHandlers } from '@/utils/error-handling'
 
 /**
  * Configuration for performance metrics hook
@@ -48,10 +50,11 @@ interface ComponentStats {
 export function usePerformanceMetrics(
   options: UsePerformanceMetricsOptions = {}
 ): PerformanceHookResult {
+  const config = performanceConfig.getConfig()
   const {
-    trackRenderTime = true,
+    trackRenderTime = config.componentMetrics,
     updateInterval = 1000,
-    enableLogging = process.env.NODE_ENV === 'development',
+    enableLogging = config.developmentLogging,
     componentName = 'Component'
   } = options
 
@@ -146,21 +149,28 @@ export function usePerformanceMetrics(
    */
   useEffect(() => {
     const updateMetrics = () => {
-      const currentMetrics = performanceMonitor.getMetrics()
-      setMetrics(currentMetrics)
-      setIsLoading(false)
+      try {
+        const currentMetrics = performanceMonitor.getMetrics()
+        setMetrics(currentMetrics)
+        setIsLoading(false)
+      } catch (error) {
+        ErrorHandlers.handlePerformanceError(
+          error as Error, 
+          'metrics-update'
+        )
+        setIsLoading(false)
+      }
     }
 
     // Initial update
     updateMetrics()
 
-    // Set up interval for updates
-    const interval = setInterval(updateMetrics, updateInterval)
-
-    return () => {
-      clearInterval(interval)
+    // Set up interval for updates only if performance monitoring is enabled
+    if (config.enabled) {
+      const interval = setInterval(updateMetrics, updateInterval)
+      return () => clearInterval(interval)
     }
-  }, [updateInterval])
+  }, [updateInterval, config.enabled])
 
   /**
    * Log component statistics on unmount (development only) and cleanup

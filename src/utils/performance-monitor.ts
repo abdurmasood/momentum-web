@@ -5,6 +5,9 @@
  * component render times, and bundle size analysis.
  */
 
+import { performanceConfig } from '@/config/performance'
+import { ErrorHandlers } from '@/utils/error-handling'
+
 // Type definitions for Layout Shift API
 interface LayoutShift extends PerformanceEntry {
   value: number
@@ -64,12 +67,24 @@ class PerformanceMonitor {
   constructor() {
     if (typeof window === 'undefined') return
     
-    this.isEnabled = process.env.NODE_ENV === 'development' || 
-                    window.location.search.includes('perf=true')
+    // Use centralized performance configuration
+    this.isEnabled = performanceConfig.getConfig().enabled
     
     if (this.isEnabled) {
       this.initializeObservers()
     }
+
+    // Subscribe to configuration changes
+    performanceConfig.subscribe((config) => {
+      const wasEnabled = this.isEnabled
+      this.isEnabled = config.enabled
+      
+      if (config.enabled && !wasEnabled) {
+        this.initializeObservers()
+      } else if (!config.enabled && wasEnabled) {
+        this.disconnect()
+      }
+    })
   }
 
   /**
@@ -121,7 +136,10 @@ class PerformanceMonitor {
       this.observeNavigation()
       
     } catch (error) {
-      console.warn('Performance observer not fully supported:', error)
+      ErrorHandlers.handlePerformanceError(
+        error as Error, 
+        'performance-observer-initialization'
+      )
     }
   }
 
@@ -141,7 +159,10 @@ class PerformanceMonitor {
       
       this.observers.push(observer)
     } catch (error) {
-      console.warn(`Failed to observe ${type}:`, error)
+      ErrorHandlers.handlePerformanceError(
+        error as Error, 
+        `performance-observer-${type}`
+      )
     }
   }
 
@@ -161,7 +182,10 @@ class PerformanceMonitor {
       observer.observe({ type: 'navigation', buffered: true })
       this.observers.push(observer)
     } catch (error) {
-      console.warn('Navigation timing not supported:', error)
+      ErrorHandlers.handlePerformanceError(
+        error as Error, 
+        'navigation-timing-observer'
+      )
     }
   }
 
@@ -169,15 +193,24 @@ class PerformanceMonitor {
    * Check if metric exceeds performance budget
    */
   private checkBudget(metric: keyof typeof PERFORMANCE_BUDGETS, value: number) {
-    if (!this.isEnabled) return
+    const config = performanceConfig.getConfig()
+    if (!config.enabled || !config.budgetWarnings) return
     
     const budget = PERFORMANCE_BUDGETS[metric]
     if (value > budget) {
-      console.warn(`⚠️ Performance budget exceeded: ${metric}`, {
-        value: `${value.toFixed(2)}${metric === 'CLS' ? '' : 'ms'}`,
-        budget: `${budget}${metric === 'CLS' ? '' : 'ms'}`,
-        excess: `${(value - budget).toFixed(2)}${metric === 'CLS' ? '' : 'ms'}`
-      })
+      if (config.developmentLogging) {
+        console.warn(`⚠️ Performance budget exceeded: ${metric}`, {
+          value: `${value.toFixed(2)}${metric === 'CLS' ? '' : 'ms'}`,
+          budget: `${budget}${metric === 'CLS' ? '' : 'ms'}`,
+          excess: `${(value - budget).toFixed(2)}${metric === 'CLS' ? '' : 'ms'}`
+        })
+      }
+
+      // Report budget violation as performance error
+      ErrorHandlers.handlePerformanceError(
+        new Error(`Performance budget exceeded for ${metric}: ${value.toFixed(2)} > ${budget}`),
+        `budget-${metric}`
+      )
     }
   }
 
@@ -187,7 +220,29 @@ class PerformanceMonitor {
   recordCustomMetric(name: keyof PerformanceMetrics, value: number) {
     if (!this.isEnabled) return
     
-    this.metrics[name as keyof PerformanceMetrics] = value as never
+    // Type-safe assignment using discriminated union approach
+    switch (name) {
+      case 'fcp':
+      case 'lcp':
+      case 'cls':
+      case 'fid':
+      case 'ttfb':
+      case 'shaderLoadTime':
+      case 'themeReadTime':
+      case 'renderTime':
+      case 'bundleSize':
+        this.metrics[name] = value
+        break
+      case 'timestamp':
+      case 'url':
+        // These are always present and shouldn't be set via this method
+        console.warn(`Cannot set read-only metric: ${name}`)
+        break
+      default:
+        // Ensure exhaustiveness check
+        const _exhaustiveCheck: never = name
+        console.warn(`Unknown metric name: ${_exhaustiveCheck}`)
+    }
     
     // Check custom budgets
     if (name === 'shaderLoadTime') {

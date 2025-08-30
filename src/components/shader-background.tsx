@@ -5,6 +5,8 @@ import { MeshGradient } from "@paper-design/shaders-react"
 import { useThemeColors } from "@/hooks/use-theme-colors"
 import ShaderSkeleton from './shader-skeleton'
 import ShaderErrorFallback, { MinimalErrorFallback } from './shader-error-fallback'
+import { ErrorHandlers } from '@/utils/error-handling'
+import { performanceConfig } from '@/config/performance'
 
 interface ShaderBackgroundProps {
   children: React.ReactNode
@@ -16,7 +18,7 @@ interface ShaderBackgroundProps {
   intersectionThreshold?: number
   /** Force immediate loading when lazy=true (default: false) */
   forceLoad?: boolean
-  /** Enable performance monitoring (default: development mode) */
+  /** Enable performance monitoring (uses global config by default) */
   enablePerformanceLogging?: boolean
 }
 
@@ -96,7 +98,7 @@ function LazyShaderBackground({
   loadOnIntersection = true,
   intersectionThreshold = 0.1,
   forceLoad = false,
-  enablePerformanceLogging = process.env.NODE_ENV === 'development'
+  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging
 }: {
   children: React.ReactNode
   loadOnIntersection: boolean
@@ -153,7 +155,10 @@ function LazyShaderBackground({
         observer.observe(containerRef.current)
       }
     } catch (error) {
-      console.warn('Intersection observer not supported, falling back to immediate load:', error)
+      ErrorHandlers.handleShaderError(
+        error as Error, 
+        'LazyShaderBackground-IntersectionObserver'
+      )
       setShouldLoad(true)
       setIsLoading(true)
     }
@@ -191,7 +196,8 @@ function LazyShaderBackground({
     setIsLoading(false)
     setHasError(true)
     
-    console.error('Failed to load shader background:', error)
+    // Use centralized error handling
+    ErrorHandlers.handleShaderError(error, 'LazyShaderBackground')
     
     if (enablePerformanceLogging) {
       const errorTime = performance.now() - performanceRef.current.startTime
@@ -303,10 +309,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: bool
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.props.onError(error)
     
-    // Log error details in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Shader ErrorBoundary caught an error:', error, errorInfo)
-    }
+    // Use centralized error handling for component errors
+    ErrorHandlers.handleComponentError(error, 'ShaderBackground-ErrorBoundary', errorInfo)
   }
 
   handleRetry = () => {
@@ -328,7 +332,11 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: bool
         )
       } catch (fallbackError) {
         // If error fallback itself fails, use minimal fallback
-        console.error('Error fallback failed:', fallbackError)
+        ErrorHandlers.handleComponentError(
+          fallbackError as Error, 
+          'ShaderErrorFallback-Nested',
+          { componentStack: 'Error in fallback component rendering' } as React.ErrorInfo
+        )
         return (
           <MinimalErrorFallback>
             {this.props.fallbackChildren}
@@ -379,7 +387,7 @@ export default function ShaderBackground({
   loadOnIntersection = true,
   intersectionThreshold = 0.1,
   forceLoad = false,
-  enablePerformanceLogging = process.env.NODE_ENV === 'development'
+  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging
 }: ShaderBackgroundProps) {
   const { filterValues, gradientColors } = useThemeColors()
 

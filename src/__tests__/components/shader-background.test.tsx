@@ -36,6 +36,41 @@ jest.mock('@/components/shader-skeleton', () => {
   }
 })
 
+// Mock the performance config
+jest.mock('@/config/performance', () => ({
+  performanceConfig: {
+    getConfig: () => ({
+      enabled: true,
+      developmentLogging: true,
+      componentMetrics: true,
+      shaderMetrics: true,
+      budgetWarnings: true
+    }),
+    subscribe: jest.fn()
+  }
+}))
+
+// Mock the error handling
+jest.mock('@/utils/error-handling', () => ({
+  ErrorHandlers: {
+    handleShaderError: jest.fn((error) => {
+      console.error('Shader error:', error.message)
+    }),
+    handleComponentError: jest.fn((error) => {
+      console.error('Component error:', error.message)
+    })
+  },
+  ErrorType: {
+    SHADER_ERROR: 'SHADER_ERROR',
+    COMPONENT_ERROR: 'COMPONENT_ERROR'
+  },
+  ErrorSeverity: {
+    LOW: 'low',
+    MEDIUM: 'medium',
+    HIGH: 'high'
+  }
+}))
+
 // Mock intersection observer for lazy loading tests
 const mockIntersectionObserver = jest.fn()
 const mockObserve = jest.fn()
@@ -252,8 +287,8 @@ describe('ShaderBackground', () => {
 
     it('should handle intersection observer errors gracefully', () => {
       // Mock IntersectionObserver to throw error
-      const originalConsoleWarn = console.warn
-      console.warn = jest.fn()
+      const originalConsoleError = console.error
+      console.error = jest.fn()
 
       Object.defineProperty(window, 'IntersectionObserver', {
         writable: true,
@@ -268,12 +303,11 @@ describe('ShaderBackground', () => {
         </ShaderBackground>
       )
 
-      expect(console.warn).toHaveBeenCalledWith(
-        expect.stringContaining('Intersection observer not supported'),
-        expect.any(Error)
-      )
+      // The error should now be handled by our centralized error handler
+      // which logs to console.error instead of console.warn
+      expect(console.error).toHaveBeenCalled()
 
-      console.warn = originalConsoleWarn
+      console.error = originalConsoleError
     })
 
     it('should clean up intersection observer on unmount', () => {
