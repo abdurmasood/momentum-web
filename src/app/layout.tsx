@@ -1,4 +1,6 @@
 import type React from "react"
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import type { Metadata } from "next"
 import { Figtree } from "next/font/google"
 import { GeistMono } from "geist/font/mono"
@@ -42,7 +44,7 @@ html {
 }
         `}</style>
       </head>
-      <body className={`${figtree.variable} ${instrumentSerif.variable}`}>{children}</body>
+      <body className={`${figtree.variable} ${instrumentSerif.variable}`}><StackProvider app={stackServerApp}><StackTheme>{children}</StackTheme></StackProvider></body>
     </html>
   )
 }
