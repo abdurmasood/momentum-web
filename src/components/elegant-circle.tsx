@@ -54,9 +54,9 @@ export default function ElegantCircle({
 
         .layer-1 {
           background: radial-gradient(ellipse 120% 80% at 30% 40%, 
-            ${navyDeep}90 0%,
-            ${blueDeep}85 25%,
-            ${navyMedium}65 50%,
+            ${blueBright}95 0%,
+            ${blueDeep}90 25%,
+            ${blueMedium}70 50%,
             transparent 80%);
           animation: shaderFlow1 24s ease-in-out infinite;
           mix-blend-mode: normal;
@@ -65,44 +65,46 @@ export default function ElegantCircle({
 
         .layer-2 {
           background: radial-gradient(ellipse 100% 140% at 70% 60%, 
-            ${blueMedium}95 0%,
-            ${blueBright}90 30%,
-            ${grayMedium}70 60%,
+            ${blueBright}100 0%,
+            ${blueMedium}95 30%,
+            ${blueDeep}75 60%,
             transparent 85%);
           animation: shaderFlow2 28s ease-in-out infinite reverse;
-          mix-blend-mode: overlay;
+          mix-blend-mode: screen;
           filter: blur(6px);
         }
 
         .layer-3 {
           background: radial-gradient(ellipse 90% 110% at 50% 30%, 
-            ${blueBright}100 0%,
-            ${blueDeep}95 35%,
-            ${navyDeep}75 70%,
+            rgba(59, 130, 246, 1) 0%,
+            ${blueBright}98 35%,
+            ${blueMedium}80 70%,
             transparent 90%);
           animation: shaderFlow3 32s ease-in-out infinite;
-          mix-blend-mode: soft-light;
+          mix-blend-mode: screen;
           filter: blur(3px);
         }
 
         .core-glow {
           background: radial-gradient(circle at center, 
-            rgba(59, 130, 246, 1) 0%,
-            ${blueMedium}90 20%,
-            transparent 60%);
+            rgba(99, 179, 255, 1) 0%,
+            rgba(59, 130, 246, 0.95) 15%,
+            ${blueBright}85 35%,
+            transparent 70%);
           animation: coreBreathing 12s ease-in-out infinite;
           mix-blend-mode: screen;
-          filter: blur(2px);
+          filter: blur(1px);
         }
 
         .inner-luminosity {
           background: radial-gradient(circle at center, 
-            rgba(59, 130, 246, 0.6) 0%,
-            rgba(30, 64, 175, 0.4) 30%,
-            transparent 50%);
+            rgba(147, 197, 253, 0.9) 0%,
+            rgba(99, 179, 255, 0.7) 25%,
+            rgba(59, 130, 246, 0.5) 45%,
+            transparent 65%);
           animation: gentlePulse 16s ease-in-out infinite;
-          mix-blend-mode: soft-light;
-          filter: blur(1px);
+          mix-blend-mode: screen;
+          filter: blur(0.5px);
         }
 
         .outer-halo {
@@ -193,23 +195,23 @@ export default function ElegantCircle({
 
         @keyframes coreBreathing {
           0%, 100% {
-            transform: scale(0.85);
-            opacity: 0.4;
+            transform: scale(0.9);
+            opacity: 0.7;
           }
           50% {
-            transform: scale(1.15);
-            opacity: 0.8;
+            transform: scale(1.2);
+            opacity: 1;
           }
         }
 
         @keyframes gentlePulse {
           0%, 100% {
-            transform: scale(0.9);
-            opacity: 0.2;
+            transform: scale(0.95);
+            opacity: 0.5;
           }
           50% {
-            transform: scale(1.1);
-            opacity: 0.5;
+            transform: scale(1.15);
+            opacity: 0.9;
           }
         }
 
