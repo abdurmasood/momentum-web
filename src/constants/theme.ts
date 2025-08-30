@@ -21,13 +21,13 @@ const RAW_FILTER_VALUES = {
 
 // Raw gradient colors (validated at runtime) 
 const RAW_GRADIENT_COLORS = {
-  navyDeep: '#0f172a',
-  navyMedium: '#1e293b',
-  grayMedium: '#334155',
-  navyDarker: '#0c1220',
-  blueDeep: '#1e3a8a',
-  blueMedium: '#1e40af',
-  blueBright: '#3b82f6',
+  navyDeep: '#0f172a', // Deep navy for primary gradient base
+  navyMedium: '#1e293b', // Medium navy for gradient transitions
+  grayMedium: '#334155', // Medium gray for balanced contrast
+  navyDarker: '#0c1220', // Darker navy for depth and shadows
+  blueDeep: '#1e3a8a', // Deep blue for accent elements
+  blueMedium: '#1e40af', // Medium blue for interactive states
+  blueBright: '#3b82f6', // Bright blue for highlights and focus
 } as const
 
 // Raw selection colors (validated at runtime)
