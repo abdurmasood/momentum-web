@@ -1,4 +1,6 @@
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+import bundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
@@ -10,11 +12,27 @@ const nextConfig = {
     optimizePackageImports: ['@paper-design/shaders-react'],
   },
 
-  // Webpack configuration for bundle optimization
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  // Turbopack configuration
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
+
+  // Webpack configuration for bundle optimization (only used when not using Turbopack)
+  webpack: async (config, { dev, isServer, webpack }) => {
+    // Only apply webpack config when not using Turbopack
+    if (process.env.TURBOPACK) {
+      return config
+    }
+
     // Bundle analyzer configuration
     if (process.env.BUNDLE_ANALYZE) {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+      // Dynamic import for webpack-bundle-analyzer
+      const { BundleAnalyzerPlugin } = await import('webpack-bundle-analyzer')
       
       config.plugins.push(
         new BundleAnalyzerPlugin({
@@ -93,4 +111,4 @@ const nextConfig = {
   },
 }
 
-module.exports = withBundleAnalyzer(nextConfig)
+export default withBundleAnalyzer(nextConfig)

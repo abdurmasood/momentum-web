@@ -169,12 +169,9 @@ export function validateColorPalette<T extends Record<string, string>>(
   context?: string
 ): T {
   const validated = { ...palette } as T
-  let hasWarnings = false
-  
   for (const [key, color] of Object.entries(palette)) {
     if (!isValidHexColor(color)) {
       validated[key as keyof T] = fallbackPalette[key as keyof T]
-      hasWarnings = true
       
       if (process.env.NODE_ENV === 'development') {
         console.warn(

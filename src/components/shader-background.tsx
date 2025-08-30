@@ -5,6 +5,8 @@ import { MeshGradient } from "@paper-design/shaders-react"
 import { useThemeColors } from "@/hooks/use-theme-colors"
 import ShaderSkeleton from './shader-skeleton'
 import ShaderErrorFallback, { MinimalErrorFallback } from './shader-error-fallback'
+import { ErrorHandlers } from '@/utils/error-handling'
+import { performanceConfig } from '@/config/performance'
 
 interface ShaderBackgroundProps {
   children: React.ReactNode
@@ -16,7 +18,7 @@ interface ShaderBackgroundProps {
   intersectionThreshold?: number
   /** Force immediate loading when lazy=true (default: false) */
   forceLoad?: boolean
-  /** Enable performance monitoring (default: development mode) */
+  /** Enable performance monitoring (uses global config by default) */
   enablePerformanceLogging?: boolean
 }
 
@@ -88,6 +90,13 @@ function ShaderRenderer({ children, filterValues, gradientColors }: {
   )
 }
 
+// WeakMap for performance refs to prevent memory leaks
+const performanceRefs = new WeakMap<HTMLDivElement, {
+  startTime: number
+  intersectionTime: number
+  loadTime: number
+}>()
+
 /**
  * Lazy loading wrapper with intersection observer
  */
@@ -96,7 +105,7 @@ function LazyShaderBackground({
   loadOnIntersection = true,
   intersectionThreshold = 0.1,
   forceLoad = false,
-  enablePerformanceLogging = process.env.NODE_ENV === 'development'
+  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging
 }: {
   children: React.ReactNode
   loadOnIntersection: boolean
@@ -106,14 +115,10 @@ function LazyShaderBackground({
 }) {
   const [shouldLoad, setShouldLoad] = useState(forceLoad)
   const [isLoading, setIsLoading] = useState(false)
-  const [hasLoaded, setHasLoaded] = useState(false)
+  const [, setHasLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const performanceRef = useRef({
-    startTime: performance.now(),
-    intersectionTime: 0,
-    loadTime: 0
-  })
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const { filterValues, gradientColors } = useThemeColors()
 
@@ -121,16 +126,39 @@ function LazyShaderBackground({
   useEffect(() => {
     if (!loadOnIntersection || shouldLoad || typeof window === 'undefined') return
 
+    // Capture current container ref at the start of effect
+    const currentContainer = containerRef.current
+    if (!currentContainer) return
+
+    // Create AbortController for cleanup
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+    
     let observer: IntersectionObserver | null = null
 
     try {
+      // Initialize performance tracking for this container
+      if (enablePerformanceLogging) {
+        performanceRefs.set(currentContainer, {
+          startTime: performance.now(),
+          intersectionTime: 0,
+          loadTime: 0
+        })
+      }
+
       observer = new IntersectionObserver(
         (entries) => {
+          // Check if component is still mounted
+          if (abortController.signal.aborted) return
+
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && !abortController.signal.aborted) {
               if (enablePerformanceLogging) {
-                performanceRef.current.intersectionTime = performance.now()
-                console.log('Shader intersection detected, starting load')
+                const perfRef = performanceRefs.get(currentContainer)
+                if (perfRef) {
+                  perfRef.intersectionTime = performance.now()
+                  console.log('Shader intersection detected, starting load')
+                }
               }
               
               setShouldLoad(true)
@@ -139,6 +167,7 @@ function LazyShaderBackground({
               // Disconnect observer after triggering load
               if (observer) {
                 observer.disconnect()
+                observer = null
               }
             }
           })
@@ -149,19 +178,33 @@ function LazyShaderBackground({
         }
       )
 
-      if (containerRef.current) {
-        observer.observe(containerRef.current)
+      if (!abortController.signal.aborted) {
+        observer.observe(currentContainer)
       }
     } catch (error) {
-      console.warn('Intersection observer not supported, falling back to immediate load:', error)
-      setShouldLoad(true)
-      setIsLoading(true)
+      if (!abortController.signal.aborted) {
+        ErrorHandlers.handleShaderError(
+          error as Error, 
+          'LazyShaderBackground-IntersectionObserver'
+        )
+        setShouldLoad(true)
+        setIsLoading(true)
+      }
     }
 
     return () => {
+      // Abort any ongoing operations
+      abortController.abort()
+      abortControllerRef.current = null
+      
+      // Clean up observer
       if (observer) {
         observer.disconnect()
+        observer = null
       }
+      
+      // Clean up performance refs using captured container reference
+      performanceRefs.delete(currentContainer)
     }
   }, [loadOnIntersection, shouldLoad, intersectionThreshold, enablePerformanceLogging])
 
@@ -171,18 +214,21 @@ function LazyShaderBackground({
     setHasLoaded(true)
     setHasError(false)
 
-    if (enablePerformanceLogging) {
-      const loadTime = performance.now()
-      performanceRef.current.loadTime = loadTime
-      
-      const totalTime = loadTime - performanceRef.current.startTime
-      const loadDuration = loadTime - (performanceRef.current.intersectionTime || performanceRef.current.startTime)
-      
-      console.log('Shader background loaded successfully', {
-        totalTime: `${totalTime.toFixed(2)}ms`,
-        loadDuration: `${loadDuration.toFixed(2)}ms`,
-        intersectionTriggered: performanceRef.current.intersectionTime > 0
-      })
+    if (enablePerformanceLogging && containerRef.current) {
+      const perfRef = performanceRefs.get(containerRef.current)
+      if (perfRef) {
+        const loadTime = performance.now()
+        perfRef.loadTime = loadTime
+        
+        const totalTime = loadTime - perfRef.startTime
+        const loadDuration = loadTime - (perfRef.intersectionTime || perfRef.startTime)
+        
+        console.log('Shader background loaded successfully', {
+          totalTime: `${totalTime.toFixed(2)}ms`,
+          loadDuration: `${loadDuration.toFixed(2)}ms`,
+          intersectionTriggered: perfRef.intersectionTime > 0
+        })
+      }
     }
   }
 
@@ -191,14 +237,18 @@ function LazyShaderBackground({
     setIsLoading(false)
     setHasError(true)
     
-    console.error('Failed to load shader background:', error)
+    // Use centralized error handling
+    ErrorHandlers.handleShaderError(error, 'LazyShaderBackground')
     
-    if (enablePerformanceLogging) {
-      const errorTime = performance.now() - performanceRef.current.startTime
-      console.log('Shader load failed', {
-        errorTime: `${errorTime.toFixed(2)}ms`,
-        error: error.message
-      })
+    if (enablePerformanceLogging && containerRef.current) {
+      const perfRef = performanceRefs.get(containerRef.current)
+      if (perfRef) {
+        const errorTime = performance.now() - perfRef.startTime
+        console.log('Shader load failed', {
+          errorTime: `${errorTime.toFixed(2)}ms`,
+          error: error.message
+        })
+      }
     }
   }
 
@@ -210,14 +260,20 @@ function LazyShaderBackground({
     }
   }, [forceLoad, shouldLoad])
 
-  // Cleanup performance refs and timers on unmount
+  // Cleanup on unmount
   useEffect(() => {
+    // Capture current container ref at the start of effect
+    const currentContainer = containerRef.current
+    
     return () => {
-      // Clear performance refs to prevent memory leaks
-      if (performanceRef.current) {
-        performanceRef.current.startTime = 0
-        performanceRef.current.intersectionTime = 0
-        performanceRef.current.loadTime = 0
+      // Abort any ongoing operations
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      
+      // Clean up performance refs to prevent memory leaks - use captured reference
+      if (currentContainer) {
+        performanceRefs.delete(currentContainer)
       }
     }
   }, [])
@@ -301,10 +357,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: bool
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.props.onError(error)
     
-    // Log error details in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Shader ErrorBoundary caught an error:', error, errorInfo)
-    }
+    // Use centralized error handling for component errors
+    ErrorHandlers.handleComponentError(error, 'ShaderBackground-ErrorBoundary', errorInfo)
   }
 
   handleRetry = () => {
@@ -326,7 +380,11 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: bool
         )
       } catch (fallbackError) {
         // If error fallback itself fails, use minimal fallback
-        console.error('Error fallback failed:', fallbackError)
+        ErrorHandlers.handleComponentError(
+          fallbackError as Error, 
+          'ShaderErrorFallback-Nested',
+          { componentStack: 'Error in fallback component rendering' } as React.ErrorInfo
+        )
         return (
           <MinimalErrorFallback>
             {this.props.fallbackChildren}
@@ -377,7 +435,7 @@ export default function ShaderBackground({
   loadOnIntersection = true,
   intersectionThreshold = 0.1,
   forceLoad = false,
-  enablePerformanceLogging = process.env.NODE_ENV === 'development'
+  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging
 }: ShaderBackgroundProps) {
   const { filterValues, gradientColors } = useThemeColors()
 
