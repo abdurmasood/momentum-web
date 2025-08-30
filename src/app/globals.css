@@ -58,8 +58,6 @@
   --shader-blue-bright: #3b82f6;
   
   /* Text Selection Colors */
-  --selection-bg: #FFA726; /* Warm amber for light mode */
-  --selection-text: #0c1220; /* Navy darker for contrast */
   --selection-light-bg: #FFA726; /* Warm amber for light mode */
   --selection-light-text: #0c1220; /* Navy darker for contrast */
 }
@@ -118,8 +116,6 @@
   --shader-blue-bright: #3b82f6;
   
   /* Text Selection Colors - Dark Mode */
-  --selection-bg: #FFB74D; /* Lighter amber for dark mode */
-  --selection-text: #000000; /* Pure black for optimal readability */
   --selection-dark-bg: #FFB74D; /* Lighter amber for dark mode */
   --selection-dark-text: #000000; /* Pure black for optimal readability */
 }
@@ -179,13 +175,26 @@
   
   /* Text Selection Styling */
   ::selection {
-    background-color: var(--selection-bg);
-    color: var(--selection-text);
+    background-color: var(--selection-light-bg);
+    color: var(--selection-light-text);
+    -webkit-text-fill-color: var(--selection-light-text);
   }
   
   ::-moz-selection {
-    background-color: var(--selection-bg);
-    color: var(--selection-text);
+    background-color: var(--selection-light-bg);
+    color: var(--selection-light-text);
+  }
+
+  /* Dark mode selection styling */
+  .dark ::selection {
+    background-color: var(--selection-dark-bg);
+    color: var(--selection-dark-text);
+    -webkit-text-fill-color: var(--selection-dark-text);
+  }
+  
+  .dark ::-moz-selection {
+    background-color: var(--selection-dark-bg);
+    color: var(--selection-dark-text);
   }
 }
 
