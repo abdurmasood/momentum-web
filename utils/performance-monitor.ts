@@ -105,7 +105,7 @@ class PerformanceMonitor {
 
       // First Input Delay (FID)
       this.observeEntry('first-input', (entries) => {
-        const firstInput = entries[0]
+        const firstInput = entries[0] as PerformanceEventTiming
         this.metrics.fid = firstInput.processingStart - firstInput.startTime
         this.checkBudget('FID', this.metrics.fid)
       })
@@ -180,7 +180,7 @@ class PerformanceMonitor {
   recordCustomMetric(name: keyof PerformanceMetrics, value: number) {
     if (!this.isEnabled) return
     
-    this.metrics[name] = value
+    (this.metrics as any)[name] = value
     
     // Check custom budgets
     if (name === 'shaderLoadTime') {
@@ -238,11 +238,42 @@ class PerformanceMonitor {
   }
 
   /**
-   * Cleanup observers
+   * Cleanup observers and clear metrics
    */
   disconnect() {
     this.observers.forEach(observer => observer.disconnect())
     this.observers = []
+    
+    // Clear metrics to prevent memory leaks
+    this.clearMetrics()
+  }
+
+  /**
+   * Clear all stored metrics
+   */
+  clearMetrics() {
+    this.metrics = {
+      timestamp: Date.now(),
+      url: typeof window !== 'undefined' ? window.location.href : ''
+    }
+  }
+
+  /**
+   * Reset performance monitor state
+   */
+  reset() {
+    this.disconnect()
+    this.clearMetrics()
+    this.isEnabled = false
+    
+    if (typeof window !== 'undefined') {
+      this.isEnabled = process.env.NODE_ENV === 'development' || 
+                      window.location.search.includes('perf=true')
+      
+      if (this.isEnabled) {
+        this.initializeObservers()
+      }
+    }
   }
 
   /**

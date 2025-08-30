@@ -12,6 +12,9 @@ const config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@paper-design/shaders-react)/)',
+  ],
 }
 
 export default createJestConfig(config)

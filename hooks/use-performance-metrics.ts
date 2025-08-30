@@ -163,7 +163,7 @@ export function usePerformanceMetrics(
   }, [updateInterval])
 
   /**
-   * Log component statistics on unmount (development only)
+   * Log component statistics on unmount (development only) and cleanup
    */
   useEffect(() => {
     return () => {
@@ -179,6 +179,20 @@ export function usePerformanceMetrics(
         console.log('Render Overhead:', `${((stats.totalRenderTime / totalLifetime) * 100).toFixed(1)}%`)
         console.groupEnd()
       }
+
+      // Clean up refs and timers to prevent memory leaks
+      if (statsRef.current) {
+        statsRef.current = {
+          renderCount: 0,
+          averageRenderTime: 0,
+          lastRenderTime: 0,
+          mountTime: 0,
+          totalRenderTime: 0
+        }
+      }
+
+      // Clear any pending timings
+      timingMapRef.current.clear()
     }
   }, [componentName, enableLogging])
 

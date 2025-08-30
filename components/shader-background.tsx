@@ -1,10 +1,10 @@
 "use client"
 
 import React, { useRef, useState, useEffect } from "react"
-import dynamic from 'next/dynamic'
 import { MeshGradient } from "@paper-design/shaders-react"
 import { useThemeColors } from "@/hooks/use-theme-colors"
 import ShaderSkeleton from './shader-skeleton'
+import ShaderErrorFallback, { MinimalErrorFallback } from './shader-error-fallback'
 
 interface ShaderBackgroundProps {
   children: React.ReactNode
@@ -28,8 +28,16 @@ interface ShaderBackgroundProps {
  */
 function ShaderRenderer({ children, filterValues, gradientColors }: {
   children: React.ReactNode
-  filterValues: any
-  gradientColors: any
+  filterValues: {
+    r: number
+    g: number
+    b: number
+    opacity: number
+  }
+  gradientColors: {
+    primary: string[]
+    secondary: string[]
+  }
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -202,6 +210,18 @@ function LazyShaderBackground({
     }
   }, [forceLoad, shouldLoad])
 
+  // Cleanup performance refs and timers on unmount
+  useEffect(() => {
+    return () => {
+      // Clear performance refs to prevent memory leaks
+      if (performanceRef.current) {
+        performanceRef.current.startTime = 0
+        performanceRef.current.intersectionTime = 0
+        performanceRef.current.loadTime = 0
+      }
+    }
+  }, [])
+
   // Render logic
   if (hasError) {
     // Fallback to skeleton on error
@@ -230,7 +250,21 @@ function LazyShaderBackground({
   // but for simplicity, we'll use the regular import with intersection observer loading
   return (
     <div ref={containerRef}>
-      <ErrorBoundary onError={handleLoadError}>
+      <ErrorBoundary 
+        onError={handleLoadError}
+        fallbackChildren={children}
+        onRetry={() => {
+          setShouldLoad(false)
+          setIsLoading(false)
+          setHasError(false)
+          setHasLoaded(false)
+          // Trigger reload after a small delay
+          setTimeout(() => {
+            setShouldLoad(true)
+            setIsLoading(true)
+          }, 100)
+        }}
+      >
         <LoadingWrapper onLoad={handleLoadSuccess}>
           <ShaderRenderer 
             filterValues={filterValues}
@@ -249,26 +283,56 @@ function LazyShaderBackground({
  */
 interface ErrorBoundaryProps {
   children: React.ReactNode
+  fallbackChildren: React.ReactNode
   onError: (error: Error) => void
+  onRetry?: () => void
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: boolean }> {
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: boolean; error: Error | null }> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
-    this.state = { hasError: false }
+    this.state = { hasError: false, error: null }
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.props.onError(error)
+    
+    // Log error details in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Shader ErrorBoundary caught an error:', error, errorInfo)
+    }
+  }
+
+  handleRetry = () => {
+    this.setState({ hasError: false, error: null })
+    this.props.onRetry?.()
   }
 
   render() {
     if (this.state.hasError) {
-      return null // Let parent component handle error state
+      // Use enhanced error fallback with retry functionality
+      try {
+        return (
+          <ShaderErrorFallback 
+            error={this.state.error || undefined}
+            onRetry={this.handleRetry}
+          >
+            {this.props.fallbackChildren}
+          </ShaderErrorFallback>
+        )
+      } catch (fallbackError) {
+        // If error fallback itself fails, use minimal fallback
+        console.error('Error fallback failed:', fallbackError)
+        return (
+          <MinimalErrorFallback>
+            {this.props.fallbackChildren}
+          </MinimalErrorFallback>
+        )
+      }
     }
 
     return this.props.children
