@@ -3,7 +3,7 @@ import ShaderBackground from '@/components/shader-background'
 
 // Mock the MeshGradient component
 jest.mock('@paper-design/shaders-react', () => ({
-  MeshGradient: ({ colors, speed, className }: any) => (
+  MeshGradient: ({ colors, speed, className }: { colors?: string[]; speed?: number; className?: string }) => (
     <div
       data-testid="mesh-gradient"
       data-colors={JSON.stringify(colors)}

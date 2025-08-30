@@ -33,10 +33,10 @@ describe('Color Validation Utilities', () => {
     })
 
     it('should handle non-string inputs', () => {
-      expect(isValidHexColor(null as any)).toBe(false)
-      expect(isValidHexColor(undefined as any)).toBe(false)
-      expect(isValidHexColor(123 as any)).toBe(false)
-      expect(isValidHexColor({} as any)).toBe(false)
+      expect(isValidHexColor(null as unknown as string)).toBe(false)
+      expect(isValidHexColor(undefined as unknown as string)).toBe(false)
+      expect(isValidHexColor(123 as unknown as string)).toBe(false)
+      expect(isValidHexColor({} as unknown as string)).toBe(false)
     })
   })
 
@@ -60,8 +60,8 @@ describe('Color Validation Utilities', () => {
       expect(isValidFilterValue(NaN)).toBe(false)
       expect(isValidFilterValue(Infinity)).toBe(false)
       expect(isValidFilterValue(-Infinity)).toBe(false)
-      expect(isValidFilterValue('0.5' as any)).toBe(false)
-      expect(isValidFilterValue(null as any)).toBe(false)
+      expect(isValidFilterValue('0.5' as unknown as number)).toBe(false)
+      expect(isValidFilterValue(null as unknown as number)).toBe(false)
     })
   })
 

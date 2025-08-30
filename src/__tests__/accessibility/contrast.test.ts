@@ -42,7 +42,6 @@ function getContrastRatio(color1: string, color2: string): number {
 describe('Color Contrast Accessibility', () => {
   // WCAG AA requires 4.5:1 for normal text, 3:1 for large text
   const WCAG_AA_NORMAL = 4.5
-  const WCAG_AA_LARGE = 3.0
   const WCAG_AAA_NORMAL = 7.0
 
   const BACKGROUND_COLORS = {

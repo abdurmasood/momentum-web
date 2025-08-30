@@ -10,8 +10,23 @@ const nextConfig = {
     optimizePackageImports: ['@paper-design/shaders-react'],
   },
 
-  // Webpack configuration for bundle optimization
+  // Turbopack configuration
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
+
+  // Webpack configuration for bundle optimization (only used when not using Turbopack)
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Only apply webpack config when not using Turbopack
+    if (process.env.TURBOPACK) {
+      return config
+    }
+
     // Bundle analyzer configuration
     if (process.env.BUNDLE_ANALYZE) {
       const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')

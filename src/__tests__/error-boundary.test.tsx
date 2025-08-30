@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 
 // Mock the shader library
 jest.mock('@paper-design/shaders-react', () => ({
-  MeshGradient: ({ children, className }: any) => (
+  MeshGradient: ({ children, className }: { children?: React.ReactNode; className?: string }) => (
     <div data-testid="mesh-gradient" className={className}>
       {children}
     </div>
@@ -14,14 +14,14 @@ jest.mock('@paper-design/shaders-react', () => ({
 // Mock the components used by ErrorBoundary
 jest.mock('@/components/shader-error-fallback', () => ({
   __esModule: true,
-  default: ({ children, error, onRetry }: any) => (
+  default: ({ children, onRetry }: { children: React.ReactNode; error?: Error; onRetry?: () => void }) => (
     <div data-testid="shader-error-fallback">
       <div>Error fallback displayed</div>
       {onRetry && <button onClick={onRetry}>Retry</button>}
       {children}
     </div>
   ),
-  MinimalErrorFallback: ({ children }: any) => (
+  MinimalErrorFallback: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="minimal-error-fallback">
       <div>Minimal Error Fallback</div>
       {children}
@@ -41,19 +41,19 @@ jest.mock('@/hooks/use-theme-colors', () => ({
 
 // Simple error boundary component for testing
 class TestErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ComponentType<any> },
+  { children: React.ReactNode; fallback: React.ComponentType<{ children: React.ReactNode; onRetry: () => void }> },
   { hasError: boolean }
 > {
-  constructor(props: any) {
+  constructor(props: { children: React.ReactNode; fallback: React.ComponentType<{ children: React.ReactNode; onRetry: () => void }> }) {
     super(props)
     this.state = { hasError: false }
   }
 
-  static getDerivedStateFromError(error: Error) {
+  static getDerivedStateFromError() {
     return { hasError: true }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  componentDidCatch(error: Error) {
     console.log('Error caught:', error)
   }
 
@@ -100,7 +100,7 @@ describe('ErrorBoundary Functionality', () => {
   })
 
   it('provides retry functionality', () => {
-    const { rerender } = render(
+    render(
       <TestErrorBoundary fallback={ShaderErrorFallback}>
         <ThrowError />
       </TestErrorBoundary>
@@ -146,6 +146,7 @@ describe('Error Component Integration', () => {
   it('ShaderErrorFallback shows notification', () => {
     // Test the actual component, not the mock
     jest.unmock('@/components/shader-error-fallback')
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const ActualShaderErrorFallback = require('@/components/shader-error-fallback').default
     
     render(
@@ -163,6 +164,7 @@ describe('Error Component Integration', () => {
     
     // Test the actual component, not the mock
     jest.unmock('@/components/shader-error-fallback')
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const ActualShaderErrorFallback = require('@/components/shader-error-fallback').default
     
     render(

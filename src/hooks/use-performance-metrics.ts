@@ -166,33 +166,35 @@ export function usePerformanceMetrics(
    * Log component statistics on unmount (development only) and cleanup
    */
   useEffect(() => {
+    const statsRefCurrent = statsRef.current
+    const timingMapRefCurrent = timingMapRef.current
+    
     return () => {
-      if (enableLogging) {
-        const stats = statsRef.current
-        const totalLifetime = performance.now() - stats.mountTime
+      if (enableLogging && statsRefCurrent) {
+        const totalLifetime = performance.now() - statsRefCurrent.mountTime
         
         console.group(`📈 ${componentName} Performance Summary`)
         console.log('Lifetime:', `${totalLifetime.toFixed(2)}ms`)
-        console.log('Render Count:', stats.renderCount)
-        console.log('Average Render Time:', `${stats.averageRenderTime.toFixed(2)}ms`)
-        console.log('Total Render Time:', `${stats.totalRenderTime.toFixed(2)}ms`)
-        console.log('Render Overhead:', `${((stats.totalRenderTime / totalLifetime) * 100).toFixed(1)}%`)
+        console.log('Render Count:', statsRefCurrent.renderCount)
+        console.log('Average Render Time:', `${statsRefCurrent.averageRenderTime.toFixed(2)}ms`)
+        console.log('Total Render Time:', `${statsRefCurrent.totalRenderTime.toFixed(2)}ms`)
+        console.log('Render Overhead:', `${((statsRefCurrent.totalRenderTime / totalLifetime) * 100).toFixed(1)}%`)
         console.groupEnd()
       }
 
       // Clean up refs and timers to prevent memory leaks
-      if (statsRef.current) {
-        statsRef.current = {
-          renderCount: 0,
-          averageRenderTime: 0,
-          lastRenderTime: 0,
-          mountTime: 0,
-          totalRenderTime: 0
-        }
+      if (statsRefCurrent) {
+        statsRefCurrent.renderCount = 0
+        statsRefCurrent.averageRenderTime = 0
+        statsRefCurrent.lastRenderTime = 0
+        statsRefCurrent.mountTime = 0
+        statsRefCurrent.totalRenderTime = 0
       }
 
       // Clear any pending timings
-      timingMapRef.current.clear()
+      if (timingMapRefCurrent) {
+        timingMapRefCurrent.clear()
+      }
     }
   }, [componentName, enableLogging])
 

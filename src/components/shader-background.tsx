@@ -106,7 +106,7 @@ function LazyShaderBackground({
 }) {
   const [shouldLoad, setShouldLoad] = useState(forceLoad)
   const [isLoading, setIsLoading] = useState(false)
-  const [hasLoaded, setHasLoaded] = useState(false)
+  const [, setHasLoaded] = useState(false)
   const [hasError, setHasError] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const performanceRef = useRef({
@@ -212,12 +212,14 @@ function LazyShaderBackground({
 
   // Cleanup performance refs and timers on unmount
   useEffect(() => {
+    const performanceRefCurrent = performanceRef.current
+    
     return () => {
       // Clear performance refs to prevent memory leaks
-      if (performanceRef.current) {
-        performanceRef.current.startTime = 0
-        performanceRef.current.intersectionTime = 0
-        performanceRef.current.loadTime = 0
+      if (performanceRefCurrent) {
+        performanceRefCurrent.startTime = 0
+        performanceRefCurrent.intersectionTime = 0
+        performanceRefCurrent.loadTime = 0
       }
     }
   }, [])

@@ -5,6 +5,12 @@
  * component render times, and bundle size analysis.
  */
 
+// Type definitions for Layout Shift API
+interface LayoutShift extends PerformanceEntry {
+  value: number
+  hadRecentInput: boolean
+}
+
 /**
  * Performance metrics interface
  */
@@ -94,8 +100,9 @@ class PerformanceMonitor {
         let clsValue = this.metrics.cls || 0
         
         entries.forEach(entry => {
-          if (!(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value
+          const layoutShift = entry as LayoutShift
+          if (!layoutShift.hadRecentInput) {
+            clsValue += layoutShift.value
           }
         })
         
@@ -180,7 +187,7 @@ class PerformanceMonitor {
   recordCustomMetric(name: keyof PerformanceMetrics, value: number) {
     if (!this.isEnabled) return
     
-    (this.metrics as any)[name] = value
+    this.metrics[name as keyof PerformanceMetrics] = value as never
     
     // Check custom budgets
     if (name === 'shaderLoadTime') {
@@ -315,7 +322,7 @@ export const performanceMonitor = new PerformanceMonitor()
 /**
  * High-level utility functions
  */
-export function measureFunction<T extends any[], R>(
+export function measureFunction<T extends unknown[], R>(
   fn: (...args: T) => R,
   name: string
 ) {
@@ -324,7 +331,7 @@ export function measureFunction<T extends any[], R>(
     const result = fn(...args)
     const end = performance.now()
     
-    performanceMonitor.recordCustomMetric('renderTime' as any, end - start)
+    performanceMonitor.recordCustomMetric('renderTime', end - start)
     
     if (process.env.NODE_ENV === 'development') {
       console.log(`⏱️ ${name}: ${(end - start).toFixed(2)}ms`)
@@ -337,7 +344,7 @@ export function measureFunction<T extends any[], R>(
 /**
  * Async function measurement
  */
-export async function measureAsyncFunction<T extends any[], R>(
+export async function measureAsyncFunction<T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
   name: string
 ): Promise<(...args: T) => Promise<R>> {
@@ -346,7 +353,7 @@ export async function measureAsyncFunction<T extends any[], R>(
     const result = await fn(...args)
     const end = performance.now()
     
-    performanceMonitor.recordCustomMetric('shaderLoadTime' as any, end - start)
+    performanceMonitor.recordCustomMetric('shaderLoadTime', end - start)
     
     if (process.env.NODE_ENV === 'development') {
       console.log(`⏱️ ${name}: ${(end - start).toFixed(2)}ms`)

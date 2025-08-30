@@ -5,7 +5,7 @@
  * the specified delay has elapsed since the last time it was invoked.
  */
 
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: never[]) => unknown>(
   func: T,
   delay: number
 ): (...args: Parameters<T>) => void {
@@ -28,7 +28,7 @@ export function debounce<T extends (...args: any[]) => any>(
 /**
  * Creates a debounced function that can be cancelled
  */
-export function debounceCancellable<T extends (...args: any[]) => any>(
+export function debounceCancellable<T extends (...args: never[]) => unknown>(
   func: T,
   delay: number
 ) {
@@ -68,7 +68,7 @@ export function debounceCancellable<T extends (...args: any[]) => any>(
 /**
  * Throttle utility - ensures function is called at most once per interval
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: never[]) => unknown>(
   func: T,
   interval: number
 ): (...args: Parameters<T>) => void {

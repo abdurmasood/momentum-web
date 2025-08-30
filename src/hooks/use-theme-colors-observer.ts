@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { debounce } from '@/utils/debounce'
 import { 
   validateAndNormalizeColor, 
@@ -54,6 +54,28 @@ export function useThemeColorsWithObserver(
     totalReads: 0,
     averageReadTime: 0
   })
+
+  /**
+   * Returns default theme colors for fallback scenarios
+   */
+  const getDefaultThemeColors = useCallback((): ThemeColors => ({
+    filterValues: DEFAULT_FILTER_VALUES,
+    gradientColors: {
+      primary: [
+        DEFAULT_GRADIENT_COLORS.navyDeep,
+        DEFAULT_GRADIENT_COLORS.navyMedium,
+        DEFAULT_GRADIENT_COLORS.grayMedium,
+        DEFAULT_GRADIENT_COLORS.navyDarker,
+        DEFAULT_GRADIENT_COLORS.blueDeep,
+      ],
+      secondary: [
+        DEFAULT_GRADIENT_COLORS.navyDeep,
+        DEFAULT_GRADIENT_COLORS.blueMedium,
+        DEFAULT_GRADIENT_COLORS.blueBright,
+        DEFAULT_GRADIENT_COLORS.navyMedium,
+      ],
+    },
+  }), [])
 
   /**
    * Reads theme colors from CSS variables with validation and performance tracking
@@ -155,47 +177,27 @@ export function useThemeColorsWithObserver(
       console.error('Failed to read theme colors:', error)
       return getDefaultThemeColors()
     }
-  }, [enablePerformanceLogging])
-
-  /**
-   * Returns default theme colors for fallback scenarios
-   */
-  const getDefaultThemeColors = useCallback((): ThemeColors => ({
-    filterValues: DEFAULT_FILTER_VALUES,
-    gradientColors: {
-      primary: [
-        DEFAULT_GRADIENT_COLORS.navyDeep,
-        DEFAULT_GRADIENT_COLORS.navyMedium,
-        DEFAULT_GRADIENT_COLORS.grayMedium,
-        DEFAULT_GRADIENT_COLORS.navyDarker,
-        DEFAULT_GRADIENT_COLORS.blueDeep,
-      ],
-      secondary: [
-        DEFAULT_GRADIENT_COLORS.navyDeep,
-        DEFAULT_GRADIENT_COLORS.blueMedium,
-        DEFAULT_GRADIENT_COLORS.blueBright,
-        DEFAULT_GRADIENT_COLORS.navyMedium,
-      ],
-    },
-  }), [])
+  }, [enablePerformanceLogging, getDefaultThemeColors])
 
   /**
    * Debounced function to update theme colors
    */
-  const debouncedUpdateColors = useCallback(
-    debounce(() => {
-      const newColors = readThemeColors()
-      setColors(newColors)
-      updateCountRef.current++
-      
-      if (enablePerformanceLogging) {
-        console.log('Theme colors updated', {
-          updateCount: updateCountRef.current,
-          performance: performanceRef.current
-        })
-      }
-    }, debounceMs),
-    [readThemeColors, debounceMs, enablePerformanceLogging]
+  const updateColors = useCallback(() => {
+    const newColors = readThemeColors()
+    setColors(newColors)
+    updateCountRef.current++
+    
+    if (enablePerformanceLogging) {
+      console.log('Theme colors updated', {
+        updateCount: updateCountRef.current,
+        performance: performanceRef.current
+      })
+    }
+  }, [readThemeColors, enablePerformanceLogging])
+
+  const debouncedUpdateColors = useMemo(
+    () => debounce(updateColors, debounceMs),
+    [updateColors, debounceMs]
   )
 
   /**
@@ -263,6 +265,7 @@ export function useThemeColorsWithObserver(
         }
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [observeChanges, debouncedUpdateColors, enablePerformanceLogging])
 
   /**
