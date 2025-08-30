@@ -169,3 +169,8 @@
 .instrument {
   font-family: var(--font-instrument-serif);
 }
+
+/* SVG Filter Classes */
+.filter-gooey {
+  filter: url(#gooey-filter);
+}
