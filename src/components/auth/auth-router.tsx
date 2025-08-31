@@ -1,8 +1,7 @@
 "use client"
 
 import { useSearchParams, usePathname } from "next/navigation"
-import CustomAuth from "./custom-auth"
-import CustomMagicLinkCallback from "./custom-magic-link-callback"
+import { LazyAuth, LazyMagicLinkCallback } from "./lazy-auth-wrapper"
 
 export default function AuthRouter() {
   const searchParams = useSearchParams()
@@ -10,10 +9,10 @@ export default function AuthRouter() {
   
   // Check if this is a magic link callback
   if (pathname?.includes('magic-link-callback') || searchParams.get('code')) {
-    return <CustomMagicLinkCallback />
+    return <LazyMagicLinkCallback />
   }
   
   // For all other auth routes (/auth/sign-in, /auth/sign-up, etc)
-  // use the unified auth component
-  return <CustomAuth />
+  // use the unified auth component with lazy loading
+  return <LazyAuth />
 }

@@ -1,12 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useUser, useStackApp } from "@stackframe/stack"
 import { useRouter } from "next/navigation"
 import ShaderBackground from "@/components/shader-background"
+import { useAuthRateLimit, useMagicLinkRateLimit } from "@/hooks/use-rate-limit"
+import { 
+  validateFormSubmission, 
+  validateSecurityHeaders
+} from "@/utils/auth-security"
+import { AuthErrorHandlers } from "@/utils/error-utils"
 
 export default function CustomAuth() {
   const [email, setEmail] = useState("")
+  const [honeypot, setHoneypot] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [error, setError] = useState("")
@@ -15,6 +22,15 @@ export default function CustomAuth() {
   const user = useUser()
   const stackApp = useStackApp()
   const router = useRouter()
+  
+  // Rate limiting hooks
+  const authRateLimit = useAuthRateLimit()
+  const magicLinkRateLimit = useMagicLinkRateLimit(email)
+
+  // Initialize security validation
+  useEffect(() => {
+    validateSecurityHeaders()
+  }, [])
 
   // Redirect if already signed in
   if (user) {
@@ -29,10 +45,32 @@ export default function CustomAuth() {
     setMagicLinkSent(false)
 
     try {
+      // Validate form with security checks
+      const validation = validateFormSubmission(email, honeypot)
+      if (!validation.isValid) {
+        setError(validation.errors[0])
+        return
+      }
+
+      // Check rate limits
+      if (!magicLinkRateLimit.canAttempt()) {
+        setError(`Too many magic link requests. Please wait ${magicLinkRateLimit.timeRemainingFormatted}`)
+        return
+      }
+
+      // Record the attempt
+      magicLinkRateLimit.recordAttempt()
+
+      // Send magic link with Stack Auth
       await stackApp.sendMagicLinkEmail(email)
       setMagicLinkSent(true)
+      
+      // Show warnings if any
+      if (validation.warnings.length > 0) {
+        console.warn('Security warnings:', validation.warnings)
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to send magic link")
+      setError(AuthErrorHandlers.handleMagicLinkSendError(err))
     } finally {
       setIsLoading(false)
     }
@@ -43,10 +81,21 @@ export default function CustomAuth() {
     setError("")
 
     try {
+      // Check rate limits for OAuth attempts
+      if (!authRateLimit.canAttempt()) {
+        setError(`Too many login attempts. Please wait ${authRateLimit.timeRemainingFormatted}`)
+        setIsGoogleLoading(false)
+        return
+      }
+
+      // Record the attempt
+      authRateLimit.recordAttempt()
+
+      // Proceed with OAuth
       await stackApp.signInWithOAuth('google')
       // OAuth will redirect, so no need for manual redirect
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Google authentication failed")
+      setError(AuthErrorHandlers.handleOAuthError(err))
       setIsGoogleLoading(false)
     }
   }
@@ -74,6 +123,18 @@ export default function CustomAuth() {
               </div>
             )}
 
+            {/* Rate Limit Warning */}
+            {(authRateLimit.isRateLimited || magicLinkRateLimit.isRateLimited) && (
+              <div className="mb-6 p-3 rounded-lg bg-amber-600 border border-amber-700 text-white text-sm shadow-lg">
+                {authRateLimit.isRateLimited && (
+                  <p>Too many authentication attempts. Please wait {authRateLimit.timeRemainingFormatted}</p>
+                )}
+                {magicLinkRateLimit.isRateLimited && (
+                  <p>Magic link limit reached. Please wait {magicLinkRateLimit.timeRemainingFormatted}</p>
+                )}
+              </div>
+            )}
+
             {/* Success Message */}
             {magicLinkSent && (
               <div className="mb-6 p-3 rounded-lg bg-green-600 border border-green-700 text-white text-sm shadow-lg">
@@ -84,7 +145,7 @@ export default function CustomAuth() {
             {/* Google Auth Button */}
             <button
               onClick={handleGoogleAuth}
-              disabled={isGoogleLoading || isLoading}
+              disabled={isGoogleLoading || isLoading || authRateLimit.isRateLimited}
               className="w-full mb-6 px-6 py-3 rounded-lg bg-white text-gray-700 border border-gray-200 font-medium text-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
             >
               {isGoogleLoading ? (
@@ -127,6 +188,18 @@ export default function CustomAuth() {
 
             {/* Email Magic Link Form */}
             <form onSubmit={handleSendMagicLink} className="space-y-6">
+              {/* Honeypot field for bot protection - hidden from users */}
+              <input
+                type="text"
+                name="url"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
+              
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className="block text-sm font-light text-slate-200 mb-2">
@@ -140,17 +213,20 @@ export default function CustomAuth() {
                   className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/25 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-200 shadow-lg"
                   placeholder="your@email.com"
                   required
-                  disabled={isLoading || magicLinkSent}
+                  disabled={isLoading || magicLinkSent || authRateLimit.isRateLimited || magicLinkRateLimit.isRateLimited}
                 />
               </div>
 
               {/* Send Magic Link Button */}
               <button
                 type="submit"
-                disabled={isLoading || magicLinkSent}
+                disabled={isLoading || magicLinkSent || authRateLimit.isRateLimited || magicLinkRateLimit.isRateLimited}
                 className="w-full px-6 py-3 rounded-lg bg-blue-500/80 backdrop-blur-sm border border-blue-400/30 text-white font-medium text-sm transition-all duration-200 hover:bg-blue-600/90 hover:border-blue-300/40 focus:outline-none focus:ring-2 focus:ring-blue-400/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
-                {isLoading ? "Sending magic link..." : magicLinkSent ? "Magic link sent!" : "Continue with Email"}
+                {isLoading ? "Sending magic link..." : 
+                 magicLinkSent ? "Magic link sent!" : 
+                 magicLinkRateLimit.isRateLimited ? `Wait ${magicLinkRateLimit.timeRemainingFormatted}` :
+                 "Continue with Email"}
               </button>
 
               {magicLinkSent && (
