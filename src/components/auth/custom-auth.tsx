@@ -52,16 +52,11 @@ export default function CustomAuth() {
   }
 
   return (
-    <ShaderBackground>
+    <ShaderBackground hideCircle>
       <div className="min-h-screen flex items-center justify-center relative z-10">
         <div className="w-full max-w-md">
-          {/* Glass morphism card */}
-          <div 
-            className="backdrop-blur-xl bg-white/15 border border-white/30 rounded-2xl p-8 shadow-2xl"
-            style={{
-              filter: "url(#glass-effect)",
-            }}
-          >
+          {/* Clean auth form - no background card */}
+          <div className="p-8">
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl font-light text-slate-100 mb-2">
@@ -74,14 +69,14 @@ export default function CustomAuth() {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-200 text-sm backdrop-blur-sm">
+              <div className="mb-6 p-3 rounded-lg bg-red-600 border border-red-700 text-white text-sm shadow-lg">
                 {error}
               </div>
             )}
 
             {/* Success Message */}
             {magicLinkSent && (
-              <div className="mb-6 p-3 rounded-lg bg-green-500/20 border border-green-500/30 text-green-200 text-sm backdrop-blur-sm">
+              <div className="mb-6 p-3 rounded-lg bg-green-600 border border-green-700 text-white text-sm shadow-lg">
                 Magic link sent! Check your email and click the link to continue.
               </div>
             )}
@@ -142,7 +137,7 @@ export default function CustomAuth() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/25 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/25 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-200 shadow-lg"
                   placeholder="your@email.com"
                   required
                   disabled={isLoading || magicLinkSent}
@@ -153,7 +148,7 @@ export default function CustomAuth() {
               <button
                 type="submit"
                 disabled={isLoading || magicLinkSent}
-                className="w-full px-6 py-3 rounded-lg bg-blue-500 text-white font-medium text-sm transition-all duration-200 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 rounded-lg bg-blue-500/80 backdrop-blur-sm border border-blue-400/30 text-white font-medium text-sm transition-all duration-200 hover:bg-blue-600/90 hover:border-blue-300/40 focus:outline-none focus:ring-2 focus:ring-blue-400/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
                 {isLoading ? "Sending magic link..." : magicLinkSent ? "Magic link sent!" : "Continue with Email"}
               </button>
