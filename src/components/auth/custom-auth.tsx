@@ -57,7 +57,7 @@ export default function CustomAuth() {
         <div className="w-full max-w-md">
           {/* Glass morphism card */}
           <div 
-            className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl"
+            className="backdrop-blur-xl bg-white/15 border border-white/30 rounded-2xl p-8 shadow-2xl"
             style={{
               filter: "url(#glass-effect)",
             }}
@@ -67,21 +67,21 @@ export default function CustomAuth() {
               <h1 className="text-3xl font-light text-slate-100 mb-2">
                 Welcome to <span className="font-medium italic instrument">Momentum</span>
               </h1>
-              <p className="text-sm text-slate-300 font-light">
+              <p className="text-sm text-slate-200 font-light">
                 {magicLinkSent ? "Check your email for the magic link" : "Sign in or create your account"}
               </p>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-300 text-sm">
+              <div className="mb-6 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-200 text-sm backdrop-blur-sm">
                 {error}
               </div>
             )}
 
             {/* Success Message */}
             {magicLinkSent && (
-              <div className="mb-6 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-300 text-sm">
+              <div className="mb-6 p-3 rounded-lg bg-green-500/20 border border-green-500/30 text-green-200 text-sm backdrop-blur-sm">
                 Magic link sent! Check your email and click the link to continue.
               </div>
             )}
@@ -90,11 +90,11 @@ export default function CustomAuth() {
             <button
               onClick={handleGoogleAuth}
               disabled={isGoogleLoading || isLoading}
-              className="w-full mb-6 px-6 py-3 rounded-lg bg-white/10 border border-white/20 text-slate-100 font-medium text-sm transition-all duration-200 hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              className="w-full mb-6 px-6 py-3 rounded-lg bg-white text-gray-700 border border-gray-200 font-medium text-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
             >
               {isGoogleLoading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-slate-300 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
                   Continuing with Google...
                 </>
               ) : (
@@ -125,16 +125,16 @@ export default function CustomAuth() {
 
             {/* Divider */}
             <div className="mb-6 flex items-center">
-              <div className="flex-1 border-t border-white/10"></div>
-              <span className="px-4 text-xs text-slate-400 font-light">or continue with email</span>
-              <div className="flex-1 border-t border-white/10"></div>
+              <div className="flex-1 border-t border-white/25"></div>
+              <span className="px-4 text-xs text-slate-300 font-light">or continue with email</span>
+              <div className="flex-1 border-t border-white/25"></div>
             </div>
 
             {/* Email Magic Link Form */}
             <form onSubmit={handleSendMagicLink} className="space-y-6">
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-light text-slate-300 mb-2">
+                <label htmlFor="email" className="block text-sm font-light text-slate-200 mb-2">
                   Email
                 </label>
                 <input
@@ -142,7 +142,7 @@ export default function CustomAuth() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/25 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all duration-200"
                   placeholder="your@email.com"
                   required
                   disabled={isLoading || magicLinkSent}

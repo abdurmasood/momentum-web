@@ -48,7 +48,7 @@ export default function CustomMagicLinkCallback() {
         <div className="w-full max-w-md">
           {/* Glass morphism card */}
           <div 
-            className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 shadow-2xl text-center"
+            className="backdrop-blur-xl bg-white/15 border border-white/30 rounded-2xl p-8 shadow-2xl text-center"
             style={{
               filter: "url(#glass-effect)",
             }}
@@ -61,7 +61,7 @@ export default function CustomMagicLinkCallback() {
                 <h1 className="text-2xl font-light text-slate-100 mb-4">
                   Verifying your <span className="font-medium italic instrument">magic link</span>
                 </h1>
-                <p className="text-sm text-slate-300 font-light">
+                <p className="text-sm text-slate-200 font-light">
                   Please wait while we verify your authentication...
                 </p>
               </>
@@ -79,7 +79,7 @@ export default function CustomMagicLinkCallback() {
                 <h1 className="text-2xl font-light text-slate-100 mb-4">
                   Welcome to <span className="font-medium italic instrument">Momentum</span>
                 </h1>
-                <p className="text-sm text-slate-300 font-light mb-4">
+                <p className="text-sm text-slate-200 font-light mb-4">
                   You've been successfully signed in!
                 </p>
                 <p className="text-xs text-slate-400">
@@ -105,7 +105,7 @@ export default function CustomMagicLinkCallback() {
                 </p>
                 <button
                   onClick={() => router.push("/auth/sign-in")}
-                  className="px-6 py-2 rounded-lg bg-blue-500 text-white font-medium text-sm transition-all duration-200 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  className="px-6 py-3 rounded-lg bg-blue-500 text-white font-medium text-sm transition-all duration-200 hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 >
                   Try Again
                 </button>
