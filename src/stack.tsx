@@ -5,15 +5,15 @@ import { StackServerApp } from "@stackframe/stack";
 export const stackServerApp = new StackServerApp({
   tokenStore: "nextjs-cookie",
   urls: {
-    handler: "/auth",
-    signIn: "/auth/sign-in",
-    signUp: "/auth/sign-up",
+    handler: "/handler",
+    signIn: "/handler/sign-in",
+    signUp: "/handler/sign-up",
     afterSignIn: "/",
     afterSignUp: "/",
     home: "/",
-    oauthCallback: "/auth/oauth-callback",
-    magicLinkCallback: "/auth/magic-link-callback",
-    accountSettings: "/auth/account-settings",
-    teamInvitation: "/auth/team-invitation"
+    oauthCallback: "/handler/oauth-callback",
+    magicLinkCallback: "/handler/magic-link-callback",
+    accountSettings: "/handler/account-settings",
+    teamInvitation: "/handler/team-invitation"
   }
 });

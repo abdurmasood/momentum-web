@@ -75,12 +75,12 @@ const nextConfig: NextConfig = {
         ]
       },
       {
-        // Preload auth resources for better performance
-        source: '/auth/(.*)',
+        // Preload handler resources for better performance
+        source: '/handler/(.*)'
         headers: [
           {
             key: 'Link',
-            value: '</auth/auth-vendor.js>; rel=preload; as=script'
+            value: '</handler/auth-vendor.js>; rel=preload; as=script'
           }
         ]
       }
