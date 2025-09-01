@@ -84,7 +84,7 @@ describe('Rate Limit Hooks', () => {
         clear: jest.fn()
       } as unknown as RateLimiter
 
-      let result: any
+      let result: { current: { isRateLimited: boolean; attempts: number; timeRemaining: number; timeRemainingFormatted: string } }
       act(() => {
         const hookResult = renderHook(() => useRateLimit({ limiter: mockLimiter }))
         result = hookResult.result
@@ -105,7 +105,7 @@ describe('Rate Limit Hooks', () => {
         clear: jest.fn()
       } as unknown as RateLimiter
 
-      let result: any
+      let result: { current: { isRateLimited: boolean; attempts: number; timeRemaining: number; timeRemainingFormatted: string } }
       act(() => {
         const hookResult = renderHook(() => useRateLimit({ limiter: mockLimiter }))
         result = hookResult.result
@@ -123,7 +123,7 @@ describe('Rate Limit Hooks', () => {
         clear: jest.fn()
       } as unknown as RateLimiter
 
-      let result: any
+      let result: { current: { isRateLimited: boolean; attempts: number; timeRemaining: number; timeRemainingFormatted: string } }
       act(() => {
         const hookResult = renderHook(() => useRateLimit({ limiter: mockLimiter }))
         result = hookResult.result

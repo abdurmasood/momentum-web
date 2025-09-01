@@ -16,9 +16,6 @@ import {
 
 // Create spies for window and document mocking
 let mockGetRandomValues: jest.SpyInstance
-let mockLocation: jest.SpyInstance
-let mockNavigator: jest.SpyInstance
-let mockReferrer: jest.SpyInstance
 let originalNodeEnv: string
 
 describe('Auth Security Utilities', () => {
@@ -80,7 +77,7 @@ describe('Auth Security Utilities', () => {
     it('should fallback when crypto is not available', () => {
       // Temporarily remove crypto
       const originalCrypto = window.crypto
-      delete (window as any).crypto
+      delete (window as Window & { crypto?: Crypto }).crypto
       
       const nonce = generateNonce()
       expect(typeof nonce).toBe('string')
