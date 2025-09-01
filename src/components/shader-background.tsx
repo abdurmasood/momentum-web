@@ -21,6 +21,8 @@ interface ShaderBackgroundProps {
   forceLoad?: boolean
   /** Enable performance monitoring (uses global config by default) */
   enablePerformanceLogging?: boolean
+  /** Hide the elegant circle component */
+  hideCircle?: boolean
 }
 
 // For lazy loading, we'll dynamically import the ShaderRenderer component
@@ -29,7 +31,7 @@ interface ShaderBackgroundProps {
 /**
  * Core shader renderer component
  */
-function ShaderRenderer({ children, filterValues, gradientColors }: {
+function ShaderRenderer({ children, filterValues, gradientColors, hideCircle = false }: {
   children: React.ReactNode
   filterValues: {
     r: number
@@ -41,6 +43,7 @@ function ShaderRenderer({ children, filterValues, gradientColors }: {
     primary: string[]
     secondary: string[]
   }
+  hideCircle?: boolean
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -87,7 +90,7 @@ function ShaderRenderer({ children, filterValues, gradientColors }: {
       />
 
       {/* Elegant Circle - positioned between shaders and content */}
-      <ElegantCircle gradientColors={gradientColors} />
+      {!hideCircle && <ElegantCircle gradientColors={gradientColors} />}
 
       {children}
     </div>
@@ -109,13 +112,15 @@ function LazyShaderBackground({
   loadOnIntersection = true,
   intersectionThreshold = 0.1,
   forceLoad = false,
-  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging
+  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging,
+  hideCircle = false
 }: {
   children: React.ReactNode
   loadOnIntersection: boolean
   intersectionThreshold: number
   forceLoad: boolean
   enablePerformanceLogging: boolean
+  hideCircle: boolean
 }) {
   const [shouldLoad, setShouldLoad] = useState(forceLoad)
   const [isLoading, setIsLoading] = useState(false)
@@ -329,6 +334,7 @@ function LazyShaderBackground({
           <ShaderRenderer 
             filterValues={filterValues}
             gradientColors={gradientColors}
+            hideCircle={hideCircle}
           >
             {children}
           </ShaderRenderer>
@@ -439,7 +445,8 @@ export default function ShaderBackground({
   loadOnIntersection = true,
   intersectionThreshold = 0.1,
   forceLoad = false,
-  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging
+  enablePerformanceLogging = performanceConfig.getConfig().developmentLogging,
+  hideCircle = false
 }: ShaderBackgroundProps) {
   const { filterValues, gradientColors } = useThemeColors()
 
@@ -451,6 +458,7 @@ export default function ShaderBackground({
         intersectionThreshold={intersectionThreshold}
         forceLoad={forceLoad}
         enablePerformanceLogging={enablePerformanceLogging}
+        hideCircle={hideCircle}
       >
         {children}
       </LazyShaderBackground>
@@ -462,6 +470,7 @@ export default function ShaderBackground({
     <ShaderRenderer 
       filterValues={filterValues}
       gradientColors={gradientColors}
+      hideCircle={hideCircle}
     >
       {children}
     </ShaderRenderer>

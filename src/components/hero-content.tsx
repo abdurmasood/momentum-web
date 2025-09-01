@@ -32,9 +32,9 @@ export default function HeroContent() {
           <button className="px-8 py-3 rounded-full bg-transparent border border-slate-500 text-slate-200 font-normal text-xs transition-all duration-200 hover:bg-blue-950/30 hover:border-blue-400 cursor-pointer">
             Pricing
           </button>
-          <button className="px-8 py-3 rounded-full bg-blue-500 text-white font-normal text-xs transition-all duration-200 hover:bg-blue-600 cursor-pointer">
+          <a href="/handler/sign-in" className="px-8 py-3 rounded-full bg-blue-500 text-white font-normal text-xs transition-all duration-200 hover:bg-blue-600 cursor-pointer inline-block">
             Get Started
-          </button>
+          </a>
         </div>
       </div>
     </main>
