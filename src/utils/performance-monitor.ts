@@ -40,7 +40,7 @@ export interface PerformanceMetrics {
  * Performance budget thresholds (in ms, except CLS which is unitless)
  */
 export const PERFORMANCE_BUDGETS = {
-  FCP: 1800,  // First Contentful Paint should be < 1.8s
+  FCP: 2500,  // First Contentful Paint should be < 2.5s (increased for 3D content)
   LCP: 2500,  // Largest Contentful Paint should be < 2.5s
   CLS: 0.1,   // Cumulative Layout Shift should be < 0.1
   FID: 100,   // First Input Delay should be < 100ms

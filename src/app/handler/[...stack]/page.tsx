@@ -12,7 +12,7 @@ interface HandlerProps {
 export default async function Handler({ params }: HandlerProps) {
   const resolvedParams = await params;
   return (
-    <ShaderBackground hideCircle>
+    <ShaderBackground>
       <div className="min-h-screen flex items-center justify-center relative z-10">
         <div className="w-full max-w-md">
           <Suspense fallback={
