@@ -297,7 +297,7 @@ export class RateLimiter {
    */
   private getEntry(key: string): RateLimitEntry | null {
     // Check cache first for performance
-    let entry = this.cache.get(key)
+    let entry = this.cache.get(key) ?? null
     if (!entry) {
       // Load from persistent storage
       entry = this.persistentStorage.get(key)
