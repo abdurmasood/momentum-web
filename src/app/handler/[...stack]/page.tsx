@@ -28,7 +28,7 @@ export default async function Handler({ params }: HandlerProps) {
           }>
             <div className="p-8">
               {/* Stack Auth Handler with default styling */}
-              <StackHandler app={stackServerApp} routeProps={{ params: resolvedParams }} />
+              <StackHandler fullPage app={stackServerApp} routeProps={{ params: resolvedParams }} />
             </div>
           </Suspense>
         </div>

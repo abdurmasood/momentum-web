@@ -76,7 +76,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Preload handler resources for better performance
-        source: '/handler/(.*)'
+        source: '/handler/(.*)',
         headers: [
           {
             key: 'Link',
