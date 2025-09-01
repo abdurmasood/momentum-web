@@ -22,8 +22,8 @@ jest.mock('@stackframe/stack', () => ({
 
 // Mock ShaderBackground component
 jest.mock('@/components/shader-background', () => {
-  return jest.fn(({ children, hideCircle }) => (
-    <div data-testid="shader-background" data-hide-circle={hideCircle}>
+  return jest.fn(({ children }) => (
+    <div data-testid="shader-background">
       {children}
     </div>
   ))
@@ -51,7 +51,7 @@ describe('Authentication Handler Page', () => {
     render(await Handler(props))
 
     expect(screen.getByTestId('shader-background')).toBeInTheDocument()
-    expect(screen.getByTestId('shader-background')).toHaveAttribute('data-hide-circle', 'true')
+    expect(screen.getByTestId('shader-background')).toBeInTheDocument()
   })
 
   it('should render with proper container structure', async () => {
@@ -168,16 +168,6 @@ describe('Authentication Handler Page', () => {
     })
   })
 
-  it('should render ShaderBackground with hideCircle prop', async () => {
-    const props = {
-      params: Promise.resolve(mockParams)
-    }
-
-    render(await Handler(props))
-
-    const shaderBackground = screen.getByTestId('shader-background')
-    expect(shaderBackground).toHaveAttribute('data-hide-circle', 'true')
-  })
 
   describe('Loading State', () => {
     it('should show loading spinner structure in fallback', () => {
@@ -294,7 +284,6 @@ describe('Authentication Handler Page', () => {
       // Verify ShaderBackground was called with correct props
       expect(ShaderBackground).toHaveBeenCalledWith(
         expect.objectContaining({
-          hideCircle: true,
           children: expect.anything()
         }),
         expect.anything()

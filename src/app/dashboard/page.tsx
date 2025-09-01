@@ -18,7 +18,7 @@ const Sphere3D = dynamic(() => import("@/components/sphere-3d"), {
 
 export default function Dashboard() {
   return (
-    <ShaderBackground hideCircle={true}>
+    <ShaderBackground>
       {/* 3D Sphere Container */}
       <div className="relative z-10 w-full h-full flex items-center justify-center">
         <Suspense 
