@@ -147,8 +147,8 @@ export function getErrorMessage(error: unknown, fallback: string): string {
 /**
  * Classify error and return appropriate AuthError
  */
-export function classifyAuthError(error: unknown, context?: string): AuthError {
-  const message = getErrorMessage(error, 'Unknown error occurred')
+export function classifyAuthError(error: unknown, context?: string, fallbackMessage?: string): AuthError {
+  const message = getErrorMessage(error, fallbackMessage || 'Unknown error occurred')
   const lowerMessage = message.toLowerCase()
 
   // Network errors
@@ -278,10 +278,8 @@ export function createAuthError(
   fallback?: string
 ): AuthError {
   // Extract message for context, then classify the error
-  if (fallback) {
-    getErrorMessage(error, fallback)
-  }
-  return classifyAuthError(error, context)
+  const message = fallback ? getErrorMessage(error, fallback) : undefined
+  return classifyAuthError(error, context, message)
 }
 
 /**
