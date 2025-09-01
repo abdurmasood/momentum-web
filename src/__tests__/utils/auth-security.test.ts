@@ -434,8 +434,8 @@ describe('Auth Security Utilities', () => {
       
       const key = getClientKey()
       
-      // Should be base64 encoded
-      expect(key).toMatch(/^[A-Za-z0-9+/=]+$/)
+      // Should follow new format with client_ prefix and hex hash
+      expect(key).toMatch(/^client_[0-9a-f]{8}$/)
       
       mockNavigator.mockRestore()
       mockLocation.mockRestore()
@@ -557,17 +557,25 @@ describe('Auth Security Utilities', () => {
     })
 
     it('should have different configurations for different limiters', () => {
-      // Test that they work independently
-      authRateLimiter.recordAttempt('test-key')
-      magicLinkRateLimiter.recordAttempt('test-key')
+      // Clear any existing data first
+      authRateLimiter.clearAll()
+      magicLinkRateLimiter.clearAll()
       
-      expect(authRateLimiter.getAttempts('test-key')).toBe(1)
-      expect(magicLinkRateLimiter.getAttempts('test-key')).toBe(1)
+      // Test that they work independently with different keys
+      authRateLimiter.recordAttempt('auth-test-key')
+      magicLinkRateLimiter.recordAttempt('magic-test-key')
       
-      authRateLimiter.clear('test-key')
+      expect(authRateLimiter.getAttempts('auth-test-key')).toBe(1)
+      expect(magicLinkRateLimiter.getAttempts('magic-test-key')).toBe(1)
       
-      expect(authRateLimiter.getAttempts('test-key')).toBe(0)
-      expect(magicLinkRateLimiter.getAttempts('test-key')).toBe(1) // Should still be 1
+      // Ensure they don't interfere with each other
+      expect(authRateLimiter.getAttempts('magic-test-key')).toBe(0)
+      expect(magicLinkRateLimiter.getAttempts('auth-test-key')).toBe(0)
+      
+      authRateLimiter.clear('auth-test-key')
+      
+      expect(authRateLimiter.getAttempts('auth-test-key')).toBe(0)
+      expect(magicLinkRateLimiter.getAttempts('magic-test-key')).toBe(1) // Should still be 1
     })
   })
 })

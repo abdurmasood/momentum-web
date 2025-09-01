@@ -122,18 +122,207 @@ interface RateLimitEntry {
 }
 
 /**
- * Simple rate limiting implementation
+ * Persistent storage adapter for rate limiting
+ */
+interface StorageAdapter {
+  get(key: string): RateLimitEntry | null
+  set(key: string, value: RateLimitEntry): void
+  delete(key: string): void
+  clear(): void
+  getAllKeys(): string[]
+}
+
+/**
+ * LocalStorage adapter with fallback to sessionStorage
+ */
+class PersistentStorageAdapter implements StorageAdapter {
+  private storage: Storage
+  private prefix: string
+  
+  constructor(prefix = 'rl_') {
+    this.prefix = prefix
+    // Try localStorage first, fall back to sessionStorage
+    try {
+      localStorage.setItem('__test__', 'test')
+      localStorage.removeItem('__test__')
+      this.storage = localStorage
+    } catch {
+      try {
+        sessionStorage.setItem('__test__', 'test')
+        sessionStorage.removeItem('__test__')
+        this.storage = sessionStorage
+      } catch {
+        // If both fail, create a mock storage that doesn't persist
+        this.storage = {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+          clear: () => {},
+          length: 0,
+          key: () => null
+        }
+      }
+    }
+    
+    // Clean up expired entries on initialization
+    this.cleanup()
+  }
+  
+  get(key: string): RateLimitEntry | null {
+    try {
+      const item = this.storage.getItem(this.prefix + key)
+      if (!item) return null
+      
+      const parsed = JSON.parse(item)
+      // Validate the structure
+      if (typeof parsed.attempts === 'number' && 
+          typeof parsed.firstAttempt === 'number' && 
+          typeof parsed.lastAttempt === 'number') {
+        return parsed
+      }
+      return null
+    } catch {
+      // If parsing fails, remove the corrupted entry
+      this.delete(key)
+      return null
+    }
+  }
+  
+  set(key: string, value: RateLimitEntry): void {
+    try {
+      this.storage.setItem(this.prefix + key, JSON.stringify(value))
+    } catch {
+      // Storage quota exceeded - clean up old entries and retry
+      this.cleanup()
+      try {
+        this.storage.setItem(this.prefix + key, JSON.stringify(value))
+      } catch (retryError) {
+        console.warn('Rate limiting storage failed:', retryError)
+      }
+    }
+  }
+  
+  delete(key: string): void {
+    try {
+      this.storage.removeItem(this.prefix + key)
+    } catch {
+      // Ignore errors when deleting
+    }
+  }
+  
+  clear(): void {
+    try {
+      const keys = this.getAllKeys()
+      keys.forEach(key => this.delete(key.replace(this.prefix, '')))
+    } catch {
+      // Fallback - clear entire storage if selective clear fails
+      try {
+        this.storage.clear()
+      } catch {
+        // Ignore errors
+      }
+    }
+  }
+  
+  getAllKeys(): string[] {
+    const keys: string[] = []
+    try {
+      for (let i = 0; i < this.storage.length; i++) {
+        const key = this.storage.key(i)
+        if (key && key.startsWith(this.prefix)) {
+          keys.push(key)
+        }
+      }
+    } catch {
+      // Return empty array if enumeration fails
+    }
+    return keys
+  }
+  
+  /**
+   * Clean up expired entries to free storage space
+   */
+  private cleanup(): void {
+    const now = Date.now()
+    const maxAge = 24 * 60 * 60 * 1000 // 24 hours
+    
+    try {
+      const keys = this.getAllKeys()
+      keys.forEach(fullKey => {
+        const key = fullKey.replace(this.prefix, '')
+        const entry = this.get(key)
+        if (entry && (now - entry.lastAttempt > maxAge)) {
+          this.delete(key)
+        }
+      })
+    } catch {
+      // Ignore cleanup errors
+    }
+  }
+}
+
+/**
+ * Enhanced rate limiting implementation with persistent storage
  */
 export class RateLimiter {
-  private storage: Map<string, RateLimitEntry> = new Map()
+  private cache: Map<string, RateLimitEntry> = new Map()
+  private persistentStorage: StorageAdapter
   private maxAttempts: number
   private windowMs: number
   private blockDurationMs: number
   
-  constructor(maxAttempts = 3, windowMs = 60000, blockDurationMs = 300000) {
+  constructor(maxAttempts = 3, windowMs = 60000, blockDurationMs = 300000, storagePrefix?: string) {
     this.maxAttempts = maxAttempts
     this.windowMs = windowMs
     this.blockDurationMs = blockDurationMs
+    
+    // Initialize persistent storage with unique prefix
+    if (typeof window !== 'undefined') {
+      const prefix = storagePrefix || `rl_${Math.random().toString(36).substring(2, 8)}_`
+      this.persistentStorage = new PersistentStorageAdapter(prefix)
+    } else {
+      // Server-side fallback - use in-memory only
+      this.persistentStorage = {
+        get: () => null,
+        set: () => {},
+        delete: () => {},
+        clear: () => {},
+        getAllKeys: () => []
+      }
+    }
+  }
+  
+  /**
+   * Get entry from cache or persistent storage
+   */
+  private getEntry(key: string): RateLimitEntry | null {
+    // Check cache first for performance
+    let entry = this.cache.get(key)
+    if (!entry) {
+      // Load from persistent storage
+      entry = this.persistentStorage.get(key)
+      if (entry) {
+        // Cache it for future access
+        this.cache.set(key, entry)
+      }
+    }
+    return entry
+  }
+  
+  /**
+   * Save entry to both cache and persistent storage
+   */
+  private setEntry(key: string, entry: RateLimitEntry): void {
+    this.cache.set(key, entry)
+    this.persistentStorage.set(key, entry)
+  }
+  
+  /**
+   * Delete entry from both cache and persistent storage
+   */
+  private deleteEntry(key: string): void {
+    this.cache.delete(key)
+    this.persistentStorage.delete(key)
   }
   
   /**
@@ -141,7 +330,7 @@ export class RateLimiter {
    */
   isRateLimited(key: string): boolean {
     const now = Date.now()
-    const entry = this.storage.get(key)
+    const entry = this.getEntry(key)
     
     if (!entry) {
       return false
@@ -149,14 +338,14 @@ export class RateLimiter {
     
     // Clean up old entries
     if (now - entry.lastAttempt > this.blockDurationMs) {
-      this.storage.delete(key)
+      this.deleteEntry(key)
       return false
     }
     
     // Check if within rate limit window
     if (now - entry.firstAttempt > this.windowMs) {
       // Reset window
-      this.storage.set(key, {
+      this.setEntry(key, {
         attempts: 1,
         firstAttempt: now,
         lastAttempt: now
@@ -172,18 +361,18 @@ export class RateLimiter {
    */
   recordAttempt(key: string): void {
     const now = Date.now()
-    const entry = this.storage.get(key)
+    const entry = this.getEntry(key)
     
     if (!entry || now - entry.firstAttempt > this.windowMs) {
       // New window
-      this.storage.set(key, {
+      this.setEntry(key, {
         attempts: 1,
         firstAttempt: now,
         lastAttempt: now
       })
     } else {
       // Within window
-      this.storage.set(key, {
+      this.setEntry(key, {
         attempts: entry.attempts + 1,
         firstAttempt: entry.firstAttempt,
         lastAttempt: now
@@ -195,7 +384,7 @@ export class RateLimiter {
    * Get remaining time until unblocked (in ms)
    */
   getTimeUntilUnblocked(key: string): number {
-    const entry = this.storage.get(key)
+    const entry = this.getEntry(key)
     if (!entry || entry.attempts < this.maxAttempts) {
       return 0
     }
@@ -208,7 +397,7 @@ export class RateLimiter {
    * Get attempts count for key
    */
   getAttempts(key: string): number {
-    const entry = this.storage.get(key)
+    const entry = this.getEntry(key)
     return entry?.attempts || 0
   }
   
@@ -216,22 +405,23 @@ export class RateLimiter {
    * Clear rate limit for key
    */
   clear(key: string): void {
-    this.storage.delete(key)
+    this.deleteEntry(key)
   }
   
   /**
    * Clear all rate limits
    */
   clearAll(): void {
-    this.storage.clear()
+    this.cache.clear()
+    this.persistentStorage.clear()
   }
 }
 
 /**
  * Global rate limiter instances
  */
-export const authRateLimiter = new RateLimiter(3, 60000, 300000) // 3 attempts per minute, 5 min block
-export const magicLinkRateLimiter = new RateLimiter(2, 300000, 600000) // 2 magic links per 5 min, 10 min block
+export const authRateLimiter = new RateLimiter(3, 60000, 300000, 'rl_auth_') // 3 attempts per minute, 5 min block
+export const magicLinkRateLimiter = new RateLimiter(2, 300000, 600000, 'rl_magic_') // 2 magic links per 5 min, 10 min block
 
 /**
  * Validation for form submissions
@@ -280,6 +470,7 @@ export function validateFormSubmission(email: string, honeypot?: string): FormVa
 
 /**
  * Get a client identifier for rate limiting
+ * Balances security with privacy by using non-invasive browser properties
  */
 export function getClientKey(): string {
   if (typeof window === 'undefined') {
@@ -290,10 +481,24 @@ export function getClientKey(): string {
   const factors = [
     window.navigator.userAgent.substring(0, 50),
     window.location.origin,
-    // Add more factors as needed, but avoid fingerprinting
+    `${window.screen.width}x${window.screen.height}`,
+    new Date().getTimezoneOffset().toString(),
+    navigator.language || 'en',
+    window.screen.colorDepth?.toString() || '24'
   ]
   
-  return btoa(factors.join('|')).substring(0, 32)
+  // Create a hash for consistent length and better distribution
+  const combined = factors.join('|')
+  let hash = 0
+  for (let i = 0; i < combined.length; i++) {
+    const char = combined.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash // Convert to 32-bit integer
+  }
+  
+  // Convert to positive hex string and ensure consistent length
+  const hashStr = Math.abs(hash).toString(16).padStart(8, '0')
+  return `client_${hashStr}`
 }
 
 /**
