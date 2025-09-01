@@ -4,6 +4,8 @@ uniform float u_time;
 
 varying vec2 vUv;
 varying float vDisplacement;
+varying vec3 vNormal;
+varying vec3 vViewPosition;
 
 
 // Classic Perlin 3D Noise 
@@ -98,9 +100,16 @@ void main() {
 
   vec3 newPosition = position + normal * (u_intensity * vDisplacement);
 
+  // Calculate world normal (accounting for displacement)
+  vec3 displacedNormal = normalize(normal + normalize(newPosition - position) * 0.1);
+  vNormal = normalize((modelMatrix * vec4(displacedNormal, 0.0)).xyz);
+
   vec4 modelPosition = modelMatrix * vec4(newPosition, 1.0);
   vec4 viewPosition = viewMatrix * modelPosition;
   vec4 projectedPosition = projectionMatrix * viewPosition;
+
+  // Pass view position for fresnel calculation
+  vViewPosition = -viewPosition.xyz;
 
   gl_Position = projectedPosition;
 }
