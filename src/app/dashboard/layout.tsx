@@ -3,7 +3,6 @@ import { Suspense } from "react"
 import { StackProvider, StackTheme } from "@stackframe/stack"
 import { stackServerApp } from "../../stack"
 import DashboardSidebar from "@/components/dashboard-sidebar"
-import ShaderBackground from "@/components/shader-background"
 
 /**
  * Dashboard layout with sidebar navigation and authentication
