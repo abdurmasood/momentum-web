@@ -4,6 +4,13 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useUser } from "@stackframe/stack"
 import { useState } from "react"
+import { UserRoundIcon } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ClockIcon } from "@/components/icons/clock-icon"
+import { MessageSquareIcon } from "@/components/icons/message-square-icon"
+import { SparklesIcon } from "@/components/icons/sparkles-icon"
+import { TelescopeIcon } from "@/components/icons/telescope-icon"
+import { LogoutIcon } from "@/components/icons/logout-icon"
 
 interface NavigationItem {
   name: string
@@ -17,54 +24,28 @@ const navigation: NavigationItem[] = [
     name: 'Dashboard',
     href: '/dashboard',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-      </svg>
+      <TelescopeIcon size={20} />
     ),
   },
   {
     name: 'Deep Work',
     href: '/dashboard/deep-work',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M12 1v6"/>
-        <path d="M12 17v6"/>
-        <path d="m4.2 4.2 4.2 4.2"/>
-        <path d="m15.6 15.6 4.2 4.2"/>
-        <path d="M1 12h6"/>
-        <path d="M17 12h6"/>
-        <path d="m4.2 19.8 4.2-4.2"/>
-        <path d="m15.6 8.4 4.2-4.2"/>
-      </svg>
+      <ClockIcon size={20} />
     ),
   },
   {
     name: 'Tasks',
     href: '/dashboard/todo',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-        <path d="M9 12l2 2 4-4"/>
-        <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
-        <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
-        <path d="M12 3v6l4-4-4-4z"/>
-        <path d="M12 17v6"/>
-        <path d="M9 21h6"/>
-      </svg>
+      <SparklesIcon size={20} />
     ),
   },
   {
     name: 'Messages',
     href: '/dashboard/chat',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-        <path d="M8 10h8"/>
-        <path d="M8 14h4"/>
-      </svg>
+      <MessageSquareIcon size={20} />
     ),
   },
 ]
@@ -105,7 +86,7 @@ export default function DashboardSidebar() {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 glass-sidebar rounded-r-2xl transform transition-all duration-500 ease-in-out ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 glass-sidebar rounded-r-2xl transform transition-all duration-500 ease-in-out flex flex-col ${
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       }`}>
 
@@ -141,31 +122,35 @@ export default function DashboardSidebar() {
         </div>
       </nav>
 
-      {/* User section */}
-      <div className="border-t border-white/5 p-4">
+      {/* User section - Now at absolute bottom */}
+      <div className="mt-auto border-t border-white/5 p-4">
         {user ? (
           <div className="flex items-center hover:bg-white/5 rounded-lg p-2 transition-colors duration-200">
             {/* Avatar */}
             <div className="flex-shrink-0 relative">
               {user.profileImageUrl ? (
-                <img
-                  className="h-8 w-8 rounded-full"
-                  src={user.profileImageUrl}
-                  alt={user.displayName || 'User avatar'}
-                />
+                <Avatar>
+                  <AvatarImage 
+                    src={user.profileImageUrl}
+                    alt={user.displayName || 'User avatar'}
+                  />
+                  <AvatarFallback>
+                    <UserRoundIcon size={16} className="opacity-60" aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
               ) : (
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-xs font-semibold text-white">
-                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-                  </span>
-                </div>
+                <Avatar>
+                  <AvatarFallback>
+                    <UserRoundIcon size={16} className="opacity-60" aria-hidden="true" />
+                  </AvatarFallback>
+                </Avatar>
               )}
             </div>
             
             {/* User info */}
             <div className="ml-3 flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-200 truncate">
-                {user.displayName || 'User'}
+                {user.displayName}
               </p>
               <p className="text-xs text-slate-400 truncate">
                 {user.primaryEmail}
@@ -178,9 +163,7 @@ export default function DashboardSidebar() {
               className="ml-2 p-1.5 rounded-md text-slate-400 hover:text-red-300 hover:bg-red-500/10 transition-colors duration-200"
               title="Sign out"
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m0 14l4-4m0 0l4-4m-4 4H9m8 0V9" />
-              </svg>
+              <LogoutIcon size={16} />
             </button>
           </div>
         ) : (
