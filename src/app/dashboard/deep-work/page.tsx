@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useUser } from "@stackframe/stack"
+import { DashboardPageWrapper } from "@/components/dashboard-page-wrapper"
 
 // Dynamic import to avoid SSR issues with Three.js
 // No loading state since component is preloaded during authentication
@@ -10,10 +10,8 @@ const Sphere3D = dynamic(() => import("@/components/sphere-3d"), {
 })
 
 export default function DeepWork() {
-  const user = useUser({ or: "redirect" })
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900">
+    <DashboardPageWrapper fullScreen>
       {/* 3D Sphere Container */}
       <div className="relative z-10 w-full h-screen flex items-center justify-center">
         <Sphere3D 
@@ -22,6 +20,6 @@ export default function DeepWork() {
           height="100vh" 
         />
       </div>
-    </div>
+    </DashboardPageWrapper>
   )
 }

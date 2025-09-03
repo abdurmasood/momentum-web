@@ -166,9 +166,6 @@ export default function DashboardSidebar() {
             {/* User info */}
             <div className="ml-3 flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-200 truncate">
-                {user?.displayName || 'Anonymous User'}
-              </p>
-              <p className="text-xs text-slate-400 truncate">
                 {user?.primaryEmail || 'No email'}
               </p>
             </div>
@@ -176,16 +173,11 @@ export default function DashboardSidebar() {
             {/* Sign out button */}
             <button
               onClick={() => {
-                // Safely handle signOut with null checking
-                if (user && typeof user.signOut === 'function') {
-                  user.signOut()
-                } else {
-                  console.warn('Unable to sign out: user or signOut method not available')
-                }
+                // Safe to call signOut as user is authenticated (guaranteed by middleware)
+                user.signOut()
               }}
               className="ml-2 p-1.5 rounded-md text-slate-400 hover:text-red-300 hover:bg-red-500/10 transition-colors duration-200"
               title="Sign out"
-              disabled={!user || typeof user.signOut !== 'function'}
             >
               <LogoutIcon size={16} />
             </button>

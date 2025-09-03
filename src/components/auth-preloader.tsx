@@ -6,9 +6,8 @@ import { usePreloadDashboard } from '@/hooks/use-preload-dashboard'
 /**
  * Props interface for AuthPreloader component
  */
-interface AuthPreloaderProps {
-  // Currently no props needed, but interface maintained for consistency
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface AuthPreloaderProps {}
 
 /**
  * Invisible component that starts preloading dashboard assets

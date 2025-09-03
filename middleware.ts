@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { stackServerApp } from './src/stack'
+import { isAuthRedirectError, isServiceUnavailableError, type StackAuthErrorCode } from './src/constants/auth-errors'
 
 export async function middleware(request: NextRequest) {
   // Only apply to dashboard routes
@@ -63,16 +64,16 @@ export async function middleware(request: NextRequest) {
     
     // Handle structured errors from Stack Auth
     if (error && typeof error === 'object' && 'code' in error) {
-      const errorWithCode = error as { code: string; message?: string }
+      const errorWithCode = error as { code: StackAuthErrorCode; message?: string }
       console.error('Authentication service error:', {
         ...errorContext,
         code: errorWithCode.code,
         message: errorWithCode.message
       })
       
-      if (errorWithCode.code === 'UNAUTHENTICATED' || errorWithCode.code === 'UNAUTHORIZED') {
+      if (isAuthRedirectError(errorWithCode.code)) {
         return NextResponse.redirect(new URL('/handler/sign-in', request.url))
-      } else if (errorWithCode.code === 'SERVICE_UNAVAILABLE' || errorWithCode.code === 'TIMEOUT') {
+      } else if (isServiceUnavailableError(errorWithCode.code)) {
         return new Response('Authentication service temporarily unavailable', { status: 503 })
       }
       

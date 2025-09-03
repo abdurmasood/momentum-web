@@ -98,10 +98,23 @@ export function usePreloadDashboard() {
       }
     }
 
-    // Start preloading after a small delay to not block auth UI
-    const timeoutId = setTimeout(startPreloading, 100)
+    // Start preloading when browser is idle to avoid blocking auth UI
+    let cleanupId: number
+    
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      cleanupId = requestIdleCallback(startPreloading, { timeout: 1000 })
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      cleanupId = setTimeout(startPreloading, 100) as unknown as number
+    }
 
-    return () => clearTimeout(timeoutId)
+    return () => {
+      if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+        cancelIdleCallback(cleanupId)
+      } else {
+        clearTimeout(cleanupId)
+      }
+    }
   }, [router])
 
   return { hasStartedPreloading: hasPreloaded.current }

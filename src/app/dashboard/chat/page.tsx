@@ -1,14 +1,15 @@
 "use client"
 
-import { useUser } from "@stackframe/stack"
-import { CONTAINER_WIDTHS, SPACING } from "@/constants/layout"
+import { DashboardPageWrapper } from "@/components/dashboard-page-wrapper"
+import { CONTAINER_WIDTHS } from "@/constants/layout"
 
 export default function Chat() {
-  const user = useUser({ or: "redirect" })
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 p-6 md:p-8">
-      <div className={`${CONTAINER_WIDTHS.chat} mx-auto`}>
+    <DashboardPageWrapper containerWidth={CONTAINER_WIDTHS.chat}>
+      {/* Chat content goes here */}
+      <div>
+        {/* Add chat content here */}
       </div>
-    </div>
+    </DashboardPageWrapper>
   )
 }
