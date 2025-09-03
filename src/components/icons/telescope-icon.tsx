@@ -32,7 +32,7 @@ const scopeVariants: Variants = {
 };
 
 const TelescopeIcon = forwardRef<TelescopeIconHandle, TelescopeIconProps>(
-  ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
+  ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref): React.ReactElement => {
     const controls = useAnimation();
     const isControlledRef = useRef(false);
 

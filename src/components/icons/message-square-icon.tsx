@@ -39,7 +39,7 @@ const iconVariants: Variants = {
 const MessageSquareIcon = forwardRef<
   MessageSquareIconHandle,
   MessageSquareIconProps
->(({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
+>(({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref): React.ReactElement => {
   const controls = useAnimation();
   const isControlledRef = useRef(false);
 

@@ -47,7 +47,7 @@ const minuteHandVariants: Variants = {
 };
 
 const ClockIcon = forwardRef<ClockIconHandle, ClockIconProps>(
-  ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
+  ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref): React.ReactElement => {
     const controls = useAnimation();
     const isControlledRef = useRef(false);
 
