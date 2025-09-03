@@ -59,6 +59,10 @@ export default function DashboardSidebar() {
   const user = useUser()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
+  // Safely handle user authentication state
+  const isUserLoading = user === undefined
+  const isUserAuthenticated = user !== null && user !== undefined
+
   return (
     <>
       {/* Mobile menu button */}
@@ -124,11 +128,23 @@ export default function DashboardSidebar() {
 
       {/* User section - Now at absolute bottom */}
       <div className="mt-auto border-t border-white/5 p-4">
-        {user ? (
+        {isUserLoading ? (
+          /* Loading state */
+          <div className="flex items-center p-2">
+            <div className="animate-pulse flex space-x-3">
+              <div className="rounded-full bg-slate-700/50 h-8 w-8"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-3 bg-slate-700/50 rounded w-20"></div>
+                <div className="h-2 bg-slate-700/50 rounded w-16"></div>
+              </div>
+            </div>
+          </div>
+        ) : isUserAuthenticated ? (
+          /* Authenticated user */
           <div className="flex items-center hover:bg-white/5 rounded-lg p-2 transition-colors duration-200">
             {/* Avatar */}
             <div className="flex-shrink-0 relative">
-              {user.profileImageUrl ? (
+              {user?.profileImageUrl ? (
                 <Avatar>
                   <AvatarImage 
                     src={user.profileImageUrl}
@@ -150,30 +166,35 @@ export default function DashboardSidebar() {
             {/* User info */}
             <div className="ml-3 flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-200 truncate">
-                {user.displayName}
+                {user?.displayName || 'Anonymous User'}
               </p>
               <p className="text-xs text-slate-400 truncate">
-                {user.primaryEmail}
+                {user?.primaryEmail || 'No email'}
               </p>
             </div>
             
             {/* Sign out button */}
             <button
-              onClick={() => user.signOut()}
+              onClick={() => {
+                // Safely handle signOut with null checking
+                if (user && typeof user.signOut === 'function') {
+                  user.signOut()
+                } else {
+                  console.warn('Unable to sign out: user or signOut method not available')
+                }
+              }}
               className="ml-2 p-1.5 rounded-md text-slate-400 hover:text-red-300 hover:bg-red-500/10 transition-colors duration-200"
               title="Sign out"
+              disabled={!user || typeof user.signOut !== 'function'}
             >
               <LogoutIcon size={16} />
             </button>
           </div>
         ) : (
+          /* Unauthenticated state - should rarely be seen due to middleware */
           <div className="flex items-center p-2">
-            <div className="animate-pulse flex space-x-3">
-              <div className="rounded-full bg-slate-700/50 h-8 w-8"></div>
-              <div className="flex-1 space-y-2">
-                <div className="h-3 bg-slate-700/50 rounded w-20"></div>
-                <div className="h-2 bg-slate-700/50 rounded w-16"></div>
-              </div>
+            <div className="text-xs text-slate-400">
+              Authentication required
             </div>
           </div>
         )}
