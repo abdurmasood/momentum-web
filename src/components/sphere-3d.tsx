@@ -2,7 +2,7 @@
 
 import React, { useRef, useMemo, useEffect, useState, useCallback } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { Mesh, ShaderMaterial, WebGLRenderer } from "three"
+import { Mesh, ShaderMaterial } from "three"
 import { vertexShader } from "@/shaders/sphere/vertex"
 import { fragmentShader } from "@/shaders/sphere/fragment"
 import { usePerformanceMetrics } from "@/hooks/use-performance-metrics"
@@ -129,9 +129,6 @@ const Blob: React.FC<BlobProps> = ({ config }) => {
         vertexShader={vertexShader}
         uniforms={uniforms}
         wireframe={false}
-        onError={(error) => {
-          console.error('Shader compilation error:', error)
-        }}
       />
     </mesh>
   )
@@ -179,8 +176,8 @@ const Sphere3D: React.FC<Sphere3DProps> = ({
   }, [])
 
   // Handle Canvas errors
-  const handleCanvasError = useCallback((error: Error) => {
-    console.error('Canvas error:', error)
+  const handleCanvasError = useCallback((event: React.SyntheticEvent<HTMLDivElement>) => {
+    console.error('Canvas error:', event)
     setWebGLSupported(false)
   }, [])
 

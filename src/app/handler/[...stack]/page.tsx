@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { StackHandler } from "@stackframe/stack";
 import { stackServerApp } from "../../../stack";
 import ShaderBackground from "@/components/shader-background";
+import AuthPreloader from "@/components/auth-preloader";
 
 interface HandlerProps {
   params: Promise<{
@@ -13,6 +14,9 @@ export default async function Handler({ params }: HandlerProps) {
   const resolvedParams = await params;
   return (
     <ShaderBackground>
+      {/* Invisible preloader that starts loading dashboard assets */}
+      <AuthPreloader />
+      
       <div className="min-h-screen flex items-center justify-center relative z-10">
         <div className="w-full max-w-md">
           <Suspense fallback={

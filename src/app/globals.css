@@ -4,40 +4,48 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens to match dramatic lighting design brief */
-  --background: #000000; /* Pure black background */
-  --foreground: oklch(1 0 0); /* Pure white for text and highlights */
-  --card: oklch(0.95 0 0); /* Light gray for subtle backgrounds */
-  --card-foreground: oklch(0 0 0); /* Black text on light cards */
-  --popover: oklch(1 0 0); /* White for popover backgrounds */
-  --popover-foreground: oklch(0 0 0); /* Black text in popovers */
-  --primary: oklch(0.65 0.2 270); /* Violet accent for highlights */
-  --primary-foreground: oklch(1 0 0); /* White text on violet */
-  --secondary: oklch(0.95 0 0); /* Light gray for secondary elements */
-  --secondary-foreground: oklch(0 0 0); /* Black text on secondary */
-  --muted: oklch(0.25 0 0); /* Dark gray for muted elements */
-  --muted-foreground: oklch(0.95 0 0); /* Light gray text for muted */
-  --accent: oklch(0.65 0.2 270); /* Violet for interactive elements */
-  --accent-foreground: oklch(1 0 0); /* White text on accent */
-  --destructive: oklch(0.6 0.2 40); /* Amber for destructive actions */
-  --destructive-foreground: oklch(1 0 0); /* White text for destructive */
-  --border: oklch(1 0 0); /* White borders for contrast */
-  --input: oklch(0.95 0 0); /* Light gray for inputs */
-  --ring: oklch(0.65 0.2 270); /* Violet for focus rings */
+  /* Modern Blue-Themed Design System */
+  --background: #0A0F1C; /* Deep midnight blue */
+  --foreground: #F8FAFC; /* Almost white text */
+  --card: rgba(30, 41, 59, 0.6); /* Glass card background */
+  --card-foreground: #F8FAFC; /* White text on cards */
+  --popover: #1A2332; /* Elevated surface */
+  --popover-foreground: #F8FAFC; /* White text in popovers */
+  --primary: #60A5FA; /* Modern light blue */
+  --primary-foreground: #0A0F1C; /* Dark text on blue */
+  --secondary: #1E293B; /* Slate-blue background */
+  --secondary-foreground: #CBD5E1; /* Muted text */
+  --muted: #374151; /* Muted background */
+  --muted-foreground: #94A3B8; /* Subtle text */
+  --accent: #93C5FD; /* Lighter blue for accents */
+  --accent-foreground: #0A0F1C; /* Dark text on accent */
+  --destructive: #EF4444; /* Modern red */
+  --destructive-foreground: #F8FAFC; /* White text on red */
+  --border: rgba(148, 163, 184, 0.1); /* Subtle glass border */
+  --input: rgba(30, 41, 59, 0.8); /* Input background */
+  --ring: #60A5FA; /* Blue focus ring */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.5rem; /* Softer rounded corners */
-  --sidebar: oklch(0 0 0); /* Black sidebar */
-  --sidebar-foreground: oklch(1 0 0); /* White sidebar text */
-  --sidebar-primary: oklch(0.65 0 0); /* Violet for primary sidebar */
-  --sidebar-primary-foreground: oklch(1 0 0); /* White text on sidebar primary */
-  --sidebar-accent: oklch(0.95 0 0); /* Light gray for sidebar accent */
-  --sidebar-accent-foreground: oklch(0 0 0); /* Black text on sidebar accent */
-  --sidebar-border: oklch(1 0 0); /* White sidebar borders */
-  --sidebar-ring: oklch(0.65 0.2 270); /* Violet for sidebar focus */
+  --sidebar: rgba(96, 165, 250, 0.15); /* Light blue glass sidebar background */
+  --sidebar-foreground: #F8FAFC; /* White sidebar text */
+  --sidebar-primary: #60A5FA; /* Light blue for active items */
+  --sidebar-primary-foreground: #0A0F1C; /* Dark text on blue */
+  --sidebar-accent: rgba(96, 165, 250, 0.1); /* Light blue accent */
+  --sidebar-accent-foreground: #F8FAFC; /* White text on accent */
+  --sidebar-border: rgba(148, 163, 184, 0.1); /* Subtle borders */
+  --sidebar-ring: #60A5FA; /* Blue focus ring */
+  
+  /* Dashboard-specific variables */
+  --glass-bg: rgba(30, 41, 59, 0.5);
+  --glass-border: rgba(148, 163, 184, 0.1);
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --gradient-blue: linear-gradient(135deg, #60A5FA 0%, #93C5FD 100%);
+  --gradient-text: linear-gradient(135deg, #60A5FA 0%, #DBEAFE 100%);
   --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
   /* Added Figtree as the primary font variable */
   --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
@@ -63,32 +71,32 @@
 }
 
 .dark {
-  /* Dark mode maintains the same dramatic black background theme */
-  --background: #000000;
-  --foreground: oklch(1 0 0);
-  --card: oklch(0.1 0 0);
-  --card-foreground: oklch(1 0 0);
-  --popover: oklch(0.1 0 0);
-  --popover-foreground: oklch(1 0 0);
-  --primary: oklch(0.7 0.25 270);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.15 0 0);
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.15 0 0);
-  --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.7 0.25 270);
-  --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0.5 0.2 40);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.3 0 0);
-  --input: oklch(0.15 0 0);
-  --ring: oklch(0.7 0.25 270);
+  /* Dark mode - Enhanced blue theme */
+  --background: #0A0F1C;
+  --foreground: #F8FAFC;
+  --card: rgba(30, 41, 59, 0.7);
+  --card-foreground: #F8FAFC;
+  --popover: #1A2332;
+  --popover-foreground: #F8FAFC;
+  --primary: #60A5FA;
+  --primary-foreground: #0A0F1C;
+  --secondary: #1E293B;
+  --secondary-foreground: #CBD5E1;
+  --muted: #374151;
+  --muted-foreground: #94A3B8;
+  --accent: #93C5FD;
+  --accent-foreground: #0A0F1C;
+  --destructive: #EF4444;
+  --destructive-foreground: #F8FAFC;
+  --border: rgba(148, 163, 184, 0.15);
+  --input: rgba(30, 41, 59, 0.9);
+  --ring: #60A5FA;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.05 0 0);
+  --sidebar: rgba(96, 165, 250, 0.15); /* Light blue glass sidebar background */
   --sidebar-foreground: oklch(1 0 0);
   --sidebar-primary: oklch(0.7 0.25 270);
   --sidebar-primary-foreground: oklch(0 0 0);
@@ -205,5 +213,75 @@
 /* SVG Filter Classes */
 .filter-gooey {
   filter: url(#gooey-filter);
+}
+
+/* Glass Morphism Utilities */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+.glass-sidebar {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(24px) saturate(200%);
+  border-right: 1px solid rgba(96, 165, 250, 0.15);
+}
+
+/* Modern Button Styles */
+.btn-primary {
+  background: var(--gradient-blue);
+  color: var(--primary-foreground);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(96, 165, 250, 0.3);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Floating Animation */
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Smooth Transitions - only apply to elements without explicit transition classes */
+*:not([class*="transition"]) {
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
