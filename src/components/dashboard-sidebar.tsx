@@ -109,7 +109,7 @@ export default function DashboardSidebar() {
                 className={classNames(
                   isActive
                     ? 'text-blue-300 bg-white/5 border-l-2 border-blue-400'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5',
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border-l-2 border-transparent',
                   'group relative flex items-center px-3 py-2.5 text-sm font-medium rounded-r-lg transition-all duration-200'
                 )}
               >
