@@ -28,10 +28,10 @@ export const CONTAINER_WIDTHS = {
   // Semantic aliases for specific use cases
   /** Default dashboard container width */
   dashboard: 'max-w-7xl',
-  /** Chat interface optimized for readability */
-  chat: 'max-w-4xl',
-  /** Todo list interface with good balance */
-  todo: 'max-w-6xl',
+  /** Tasks interface optimized for readability */
+  tasks: 'max-w-4xl',
+  /** Plan interface with good balance */
+  plan: 'max-w-6xl',
   /** Default fallback width */
   default: 'max-w-7xl',
 } as const

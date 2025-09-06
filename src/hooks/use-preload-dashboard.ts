@@ -35,8 +35,8 @@ export function usePreloadDashboard() {
           Promise.all([
             router.prefetch('/dashboard'),
             router.prefetch('/dashboard/deep-work'),
-            router.prefetch('/dashboard/todo'),
-            router.prefetch('/dashboard/chat')
+            router.prefetch('/dashboard/plan'),
+            router.prefetch('/dashboard/tasks')
           ]).then(() => {
             console.log('✅ Dashboard routes prefetched')
           }).catch(error => {

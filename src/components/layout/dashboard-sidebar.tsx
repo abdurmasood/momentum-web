@@ -36,14 +36,14 @@ const navigation: NavigationItem[] = [
   },
   {
     name: 'Plan',
-    href: '/dashboard/todo',
+    href: '/dashboard/plan',
     icon: (
       <SparklesIcon size={20} />
     ),
   },
   {
     name: 'Tasks',
-    href: '/dashboard/chat',
+    href: '/dashboard/tasks',
     icon: (
       <MessageSquareIcon size={20} />
     ),
