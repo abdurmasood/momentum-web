@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { StackHandler } from "@stackframe/stack";
 import { stackServerApp } from "../../../stack";
-import ShaderBackground from "@/components/shader-background";
-import AuthPreloader from "@/components/auth-preloader";
+import ShaderBackground from "@/components/visualization/shaders/shader-background";
+import AuthPreloader from "@/components/features/auth/auth-preloader";
 
 interface HandlerProps {
   params: Promise<{

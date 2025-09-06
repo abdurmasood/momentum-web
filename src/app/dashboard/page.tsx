@@ -1,6 +1,6 @@
 "use client"
 
-import { DashboardPageWrapper } from "@/components/dashboard-page-wrapper"
+import { DashboardPageWrapper } from "@/components/features/dashboard/dashboard-page-wrapper"
 
 export default function Dashboard() {
   return (

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import ShaderErrorFallback, { MinimalErrorFallback } from '@/components/shader-error-fallback'
+import ShaderErrorFallback, { MinimalErrorFallback } from '@/components/visualization/shaders/shader-error-fallback'
 import '@testing-library/jest-dom'
 
 // Mock the theme colors hook

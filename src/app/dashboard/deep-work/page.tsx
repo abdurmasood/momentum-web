@@ -1,11 +1,11 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { DashboardPageWrapper } from "@/components/dashboard-page-wrapper"
+import { DashboardPageWrapper } from "@/components/features/dashboard/dashboard-page-wrapper"
 
 // Dynamic import to avoid SSR issues with Three.js
 // No loading state since component is preloaded during authentication
-const Sphere3D = dynamic(() => import("@/components/sphere-3d"), {
+const Sphere3D = dynamic(() => import("@/components/visualization/3d/sphere-3d"), {
   ssr: false,
 })
 

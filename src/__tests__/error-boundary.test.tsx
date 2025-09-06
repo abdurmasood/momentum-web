@@ -12,7 +12,7 @@ jest.mock('@paper-design/shaders-react', () => ({
 }))
 
 // Mock the components used by ErrorBoundary
-jest.mock('@/components/shader-error-fallback', () => ({
+jest.mock('@/components/visualization/shaders/shader-error-fallback', () => ({
   __esModule: true,
   default: ({ children, onRetry }: { children: React.ReactNode; error?: Error; onRetry?: () => void }) => (
     <div data-testid="shader-error-fallback">
@@ -68,7 +68,7 @@ class TestErrorBoundary extends React.Component<
 }
 
 // Import the fallback components directly
-import ShaderErrorFallback, { MinimalErrorFallback } from '@/components/shader-error-fallback'
+import ShaderErrorFallback, { MinimalErrorFallback } from '@/components/visualization/shaders/shader-error-fallback'
 
 // Component that throws error
 const ThrowError = () => {
@@ -145,9 +145,9 @@ describe('Error Component Integration', () => {
 
   it('ShaderErrorFallback shows notification', () => {
     // Test the actual component, not the mock
-    jest.unmock('@/components/shader-error-fallback')
+    jest.unmock('@/components/visualization/shaders/shader-error-fallback')
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const ActualShaderErrorFallback = require('@/components/shader-error-fallback').default
+    const ActualShaderErrorFallback = require('@/components/visualization/shaders/shader-error-fallback').default
     
     render(
       <ActualShaderErrorFallback>
@@ -163,9 +163,9 @@ describe('Error Component Integration', () => {
     const mockRetry = jest.fn()
     
     // Test the actual component, not the mock
-    jest.unmock('@/components/shader-error-fallback')
+    jest.unmock('@/components/visualization/shaders/shader-error-fallback')
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const ActualShaderErrorFallback = require('@/components/shader-error-fallback').default
+    const ActualShaderErrorFallback = require('@/components/visualization/shaders/shader-error-fallback').default
     
     render(
       <ActualShaderErrorFallback onRetry={mockRetry}>

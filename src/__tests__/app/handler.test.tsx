@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import Handler from '@/app/handler/[...stack]/page'
-import ShaderBackground from '@/components/shader-background'
+import ShaderBackground from '@/components/visualization/shaders/shader-background'
 
 // Mock the stack server app
 jest.mock('../../stack', () => ({
@@ -21,7 +21,7 @@ jest.mock('@stackframe/stack', () => ({
 }))
 
 // Mock ShaderBackground component
-jest.mock('@/components/shader-background', () => {
+jest.mock('@/components/visualization/shaders/shader-background', () => {
   return jest.fn(({ children }) => (
     <div data-testid="shader-background">
       {children}

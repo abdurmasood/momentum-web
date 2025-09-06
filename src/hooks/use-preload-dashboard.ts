@@ -48,15 +48,15 @@ export function usePreloadDashboard() {
         schedulePreload(() => {
           Promise.all([
             // Preload Three.js Sphere3D component
-            import('@/components/sphere-3d').then(() => {
+            import('@/components/visualization/3d/sphere-3d').then(() => {
               console.log('✅ Sphere3D component preloaded')
             }),
             // Preload dashboard sidebar
-            import('@/components/dashboard-sidebar').then(() => {
+            import('@/components/layout/dashboard-sidebar').then(() => {
               console.log('✅ Dashboard sidebar preloaded')
             }),
             // Preload loading skeleton
-            import('@/components/sphere-3d-loading-skeleton').then(() => {
+            import('@/components/visualization/3d/sphere-3d-loading-skeleton').then(() => {
               console.log('✅ Loading skeleton preloaded')
             })
           ]).catch(error => {

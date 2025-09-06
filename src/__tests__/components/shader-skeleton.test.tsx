@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import ShaderSkeleton from '@/components/shader-skeleton'
+import ShaderSkeleton from '@/components/visualization/shaders/shader-skeleton'
 
 describe('ShaderSkeleton', () => {
   it('should render children correctly', () => {

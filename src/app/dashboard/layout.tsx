@@ -2,7 +2,7 @@ import type React from "react"
 import { Suspense } from "react"
 import { StackProvider, StackTheme } from "@stackframe/stack"
 import { stackServerApp } from "../../stack"
-import DashboardSidebar from "@/components/dashboard-sidebar"
+import DashboardSidebar from "@/components/layout/dashboard-sidebar"
 
 /**
  * Dashboard layout with sidebar navigation and authentication

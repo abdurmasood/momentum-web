@@ -1,8 +1,8 @@
 "use client"
 
-import { DashboardPageWrapper } from "@/components/dashboard-page-wrapper"
+import { DashboardPageWrapper } from "@/components/features/dashboard/dashboard-page-wrapper"
 import { CONTAINER_WIDTHS } from "@/constants/layout"
-import { VercelV0Chat } from "@/components/ui/v0-ai-chat"
+import { VercelV0Chat } from "@/components/features/chat/v0-ai-chat"
 
 export default function Todo() {
   return (
