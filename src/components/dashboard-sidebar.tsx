@@ -21,7 +21,7 @@ interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   {
-    name: 'Dashboard',
+    name: 'Spotlight',
     href: '/dashboard',
     icon: (
       <TelescopeIcon size={20} />
@@ -35,14 +35,14 @@ const navigation: NavigationItem[] = [
     ),
   },
   {
-    name: 'Tasks',
+    name: 'Plan',
     href: '/dashboard/todo',
     icon: (
       <SparklesIcon size={20} />
     ),
   },
   {
-    name: 'Messages',
+    name: 'Tasks',
     href: '/dashboard/chat',
     icon: (
       <MessageSquareIcon size={20} />

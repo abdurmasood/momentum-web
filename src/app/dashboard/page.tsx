@@ -6,7 +6,7 @@ export default function Dashboard() {
   return (
     <DashboardPageWrapper>
       <div>
-        {/* Dashboard content goes here */}
+        {/* Spotlight content goes here */}
       </div>
     </DashboardPageWrapper>
   )
