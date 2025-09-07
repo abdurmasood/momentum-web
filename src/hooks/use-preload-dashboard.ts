@@ -52,7 +52,7 @@ export function usePreloadDashboard() {
               console.log('✅ Sphere3D component preloaded')
             }),
             // Preload new dashboard sidebar
-            import('@/components/app-sidebar').then(() => {
+            import('@/components/layout/dashboard/app-sidebar').then(() => {
               console.log('✅ Dashboard sidebar preloaded')
             }),
             // Preload loading skeleton

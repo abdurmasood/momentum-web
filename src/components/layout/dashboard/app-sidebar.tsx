@@ -17,11 +17,11 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/brand/logo";
 import type { Route } from "./nav-main";
-import DashboardNavigation from "@/components/nav-main";
-import { NotificationsPopover } from "@/components/nav-notifications";
-import { TeamSwitcher } from "@/components/team-switcher";
+import DashboardNavigation from "./nav-main";
+import { NotificationsPopover } from "./nav-notifications";
+import { TeamSwitcher } from "./team-switcher";
 
 const sampleNotifications = [
   {
