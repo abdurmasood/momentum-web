@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ChevronsUpDown, LogOut, Crown } from "lucide-react";
 import { useUser } from "@stackframe/stack";
+import { Logo } from "@/components/brand/logo";
 import * as React from "react";
 
 function UserProfileComponent() {
@@ -35,8 +36,8 @@ function UserProfileComponent() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Crown className="size-4" />
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-background text-foreground">
+                <Logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">

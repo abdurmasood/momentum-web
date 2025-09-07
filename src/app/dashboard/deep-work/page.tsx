@@ -2,8 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { useSidebar } from "@/components/ui/sidebar";
-import { getContentWidth } from "@/constants/layout";
 import { ErrorBoundary } from "@/components/error-boundary";
 
 // Enhanced loading component for better UX
@@ -25,16 +23,13 @@ const Sphere3D = dynamic(() => import("@/components/visualization/3d/sphere-3d")
 });
 
 export default function DeepWorkPage() {
-  const { state } = useSidebar();
-  const contentWidth = getContentWidth(state);
-
   return (
     <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
-      {/* Responsive width based on sidebar state */}
+      {/* Fixed full viewport width to prevent jittering when sidebar changes */}
       <div 
         className="absolute"
         style={{
-          width: contentWidth,
+          width: '100vw',
           height: '100vh',
           left: '50%',
           transform: 'translateX(-50%)',
