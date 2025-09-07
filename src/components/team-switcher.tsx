@@ -20,7 +20,7 @@ import * as React from "react";
 
 type Team = {
   name: string;
-  logo: React.ElementType;
+  logo: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   plan: string;
 };
 

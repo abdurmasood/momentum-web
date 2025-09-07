@@ -12,19 +12,10 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
   Activity,
-  DollarSign,
   Home,
-  Infinity,
-  LinkIcon,
   Package2,
-  Percent,
-  PieChart,
   Settings,
-  ShoppingBag,
   Sparkles,
-  Store,
-  TrendingUp,
-  Users,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import type { Route } from "./nav-main";
@@ -61,31 +52,31 @@ const dashboardRoutes: Route[] = [
     id: "spotlight",
     title: "Spotlight",
     icon: <Home className="size-4" />,
-    link: "/dashboard-new",
+    link: "/dashboard",
   },
   {
     id: "deep-work",
     title: "Deep Work",
     icon: <Activity className="size-4" />,
-    link: "/dashboard-new/deep-work",
+    link: "/dashboard/deep-work",
   },
   {
     id: "plan",
     title: "Plan",
     icon: <Sparkles className="size-4" />,
-    link: "/dashboard-new/plan",
+    link: "/dashboard/plan",
   },
   {
     id: "tasks",
     title: "Tasks",
     icon: <Package2 className="size-4" />,
-    link: "/dashboard-new/tasks",
+    link: "/dashboard/tasks",
   },
   {
     id: "settings",
     title: "Settings",
     icon: <Settings className="size-4" />,
-    link: "/dashboard-new/settings",
+    link: "/dashboard/settings",
   },
 ];
 
@@ -113,7 +104,7 @@ export function DashboardSidebar() {
           <Logo className="h-8 w-8" />
           {!isCollapsed && (
             <span className="font-semibold text-black dark:text-white">
-              Acme
+              Momentum
             </span>
           )}
         </a>
