@@ -68,8 +68,13 @@ function UserProfileComponent() {
             <DropdownMenuSeparator />
             <DropdownMenuItem 
               className="gap-2 p-2 cursor-pointer"
-              onClick={() => {
-                user?.signOut();
+              onClick={async () => {
+                try {
+                  await user?.signOut();
+                } catch (error) {
+                  console.error('Failed to sign out:', error);
+                  // Could show a toast notification here in a real app
+                }
               }}
             >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
