@@ -2,6 +2,7 @@
 
 import type React from "react"
 import Link from "next/link"
+import { AUTH_ROUTES } from "@/constants/routes"
 
 interface HeaderProps {
   className?: string
@@ -48,12 +49,12 @@ export default function Header({ className }: HeaderProps) {
 
       {/* Login Button Group with Arrow */}
       <div id="gooey-btn" className="relative flex items-center group filter-gooey">
-        <Link href="/handler/sign-in" className="absolute right-0 px-2.5 py-2 rounded-full bg-blue-50 text-slate-900 font-normal text-xs transition-all duration-300 hover:bg-blue-100 cursor-pointer h-8 flex items-center justify-center -translate-x-10 group-hover:-translate-x-20 z-0">
+        <Link href={AUTH_ROUTES.SIGN_IN} className="absolute right-0 px-2.5 py-2 rounded-full bg-blue-50 text-slate-900 font-normal text-xs transition-all duration-300 hover:bg-blue-100 cursor-pointer h-8 flex items-center justify-center -translate-x-10 group-hover:-translate-x-20 z-0">
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7V17" />
           </svg>
         </Link>
-        <Link href="/handler/sign-in" className="px-6 py-2 rounded-full bg-blue-50 text-slate-900 font-normal text-xs transition-all duration-300 hover:bg-blue-100 cursor-pointer h-8 flex items-center z-10">
+        <Link href={AUTH_ROUTES.SIGN_IN} className="px-6 py-2 rounded-full bg-blue-50 text-slate-900 font-normal text-xs transition-all duration-300 hover:bg-blue-100 cursor-pointer h-8 flex items-center z-10">
           Login
         </Link>
       </div>

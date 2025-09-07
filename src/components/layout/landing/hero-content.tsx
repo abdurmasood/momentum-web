@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { AUTH_ROUTES } from "@/constants/routes"
 
 export default function HeroContent() {
   return (
@@ -34,7 +35,7 @@ export default function HeroContent() {
           <button className="px-8 py-3 rounded-full bg-transparent border border-slate-500 text-slate-200 font-normal text-xs transition-all duration-200 hover:bg-blue-950/30 hover:border-blue-400 cursor-pointer">
             Pricing
           </button>
-          <Link href="/handler/sign-in" className="px-8 py-3 rounded-full bg-blue-500 text-white font-normal text-xs transition-all duration-200 hover:bg-blue-600 cursor-pointer inline-block">
+          <Link href={AUTH_ROUTES.SIGN_IN} className="px-8 py-3 rounded-full bg-blue-500 text-white font-normal text-xs transition-all duration-200 hover:bg-blue-600 cursor-pointer inline-block">
             Get Started
           </Link>
         </div>

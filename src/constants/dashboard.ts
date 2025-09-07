@@ -5,8 +5,8 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-import { Logo } from "@/components/brand/logo";
 import type { Route } from "@/components/layout/dashboard/nav-main";
+import { DASHBOARD_ROUTES } from "@/constants/routes";
 import React from "react";
 
 /**
@@ -18,36 +18,36 @@ export const createDashboardRoutes = (): Route[] => [
     id: "spotlight",
     title: "Spotlight",
     icon: React.createElement(Home, { className: "size-4" }),
-    link: "/dashboard",
+    link: DASHBOARD_ROUTES.ROOT,
   },
   {
     id: "deep-work",
     title: "Deep Work",
     icon: React.createElement(Activity, { className: "size-4" }),
-    link: "/dashboard/deep-work",
+    link: DASHBOARD_ROUTES.DEEP_WORK,
   },
   {
     id: "plan",
     title: "Plan",
     icon: React.createElement(Sparkles, { className: "size-4" }),
-    link: "/dashboard/plan",
+    link: DASHBOARD_ROUTES.PLAN,
   },
   {
     id: "tasks",
     title: "Tasks",
     icon: React.createElement(Package2, { className: "size-4" }),
-    link: "/dashboard/tasks",
+    link: DASHBOARD_ROUTES.TASKS,
   },
   {
     id: "settings",
     title: "Settings",
     icon: React.createElement(Settings, { className: "size-4" }),
-    link: "/dashboard/settings",
+    link: DASHBOARD_ROUTES.SETTINGS,
   },
 ];
 
 // Memoized routes to prevent recreation
-export const DASHBOARD_ROUTES = createDashboardRoutes();
+export const DASHBOARD_NAV_ROUTES = createDashboardRoutes();
 
 /**
  * Sample notifications data
@@ -77,15 +77,6 @@ export const SAMPLE_NOTIFICATIONS = [
   },
 ];
 
-/**
- * Team data for team switcher
- * Moved outside component to prevent recreation on every render
- */
-export const TEAMS = [
-  { id: "1", name: "Alpha Inc.", logo: Logo, plan: "Free" },
-  { id: "2", name: "Beta Corp.", logo: Logo, plan: "Free" },
-  { id: "3", name: "Gamma Tech", logo: Logo, plan: "Free" },
-];
 
 /**
  * Performance constants for dashboard components

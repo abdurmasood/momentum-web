@@ -14,12 +14,17 @@ import { motion } from "framer-motion";
 import { Logo } from "@/components/brand/logo";
 import DashboardNavigation from "./nav-main";
 import { NotificationsPopover } from "./nav-notifications";
-import { TeamSwitcher } from "./team-switcher";
-import { DASHBOARD_ROUTES, SAMPLE_NOTIFICATIONS, TEAMS, DASHBOARD_PERFORMANCE } from "@/constants/dashboard";
+import { UserProfile } from "./user-profile";
+import { DASHBOARD_NAV_ROUTES, DASHBOARD_PERFORMANCE } from "@/constants/dashboard";
+import { getNotificationsSync } from "@/services/notifications.service";
+import { SafeComponent } from "@/components/error-boundary";
 
 function DashboardSidebarComponent() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+  
+  // Get data from services
+  const notifications = getNotificationsSync();
 
   return (
     <Sidebar variant="inset" collapsible="icon">
@@ -50,15 +55,21 @@ function DashboardSidebarComponent() {
           animate={{ opacity: 1 }}
           transition={{ duration: DASHBOARD_PERFORMANCE.ANIMATION_DURATION }}
         >
-          <NotificationsPopover notifications={SAMPLE_NOTIFICATIONS} />
+          <SafeComponent>
+            <NotificationsPopover notifications={notifications} />
+          </SafeComponent>
           <SidebarTrigger />
         </motion.div>
       </SidebarHeader>
       <SidebarContent className="gap-4 px-2 py-4">
-        <DashboardNavigation routes={DASHBOARD_ROUTES} />
+        <SafeComponent>
+          <DashboardNavigation routes={DASHBOARD_NAV_ROUTES} />
+        </SafeComponent>
       </SidebarContent>
       <SidebarFooter className="px-2">
-        <TeamSwitcher teams={TEAMS} />
+        <SafeComponent>
+          <UserProfile />
+        </SafeComponent>
       </SidebarFooter>
     </Sidebar>
   );

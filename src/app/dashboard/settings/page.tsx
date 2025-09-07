@@ -14,11 +14,9 @@ export default function SettingsPage() {
     if (isConnected) {
       // Handle disconnect
       setIsConnected(false);
-      console.log("Disconnected from Google Calendar");
     } else {
       // Handle connect - in a real app, this would initiate OAuth
       setIsConnected(true);
-      console.log("Connecting to Google Calendar...");
     }
   }, [isConnected]);
 
@@ -27,7 +25,6 @@ export default function SettingsPage() {
       setShowDeleteConfirmation(true);
     } else {
       // Handle account deletion - in a real app, this would call an API
-      console.log("Deleting account...");
       // user?.delete(); // This would be the actual deletion call
       alert("Account deletion functionality would be implemented here");
       setShowDeleteConfirmation(false);

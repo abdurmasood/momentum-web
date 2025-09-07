@@ -70,7 +70,27 @@ export const LAYOUT_PATTERNS = {
 } as const
 
 /**
+ * Sidebar layout constants
+ */
+export const SIDEBAR = {
+  WIDTH_EXPANDED: "16rem",
+  WIDTH_COLLAPSED: "3rem", 
+  WIDTH_MOBILE: "18rem",
+  ANIMATION_DURATION: "0.3s",
+} as const;
+
+/**
+ * Helper function to calculate content width based on sidebar state
+ */
+export const getContentWidth = (sidebarState: "expanded" | "collapsed") => {
+  return sidebarState === "expanded" 
+    ? `calc(100vw - ${SIDEBAR.WIDTH_EXPANDED})` 
+    : `calc(100vw - ${SIDEBAR.WIDTH_COLLAPSED})`;
+};
+
+/**
  * Type definitions for layout constants
  */
 export type ContainerWidth = keyof typeof CONTAINER_WIDTHS
 export type SpacingToken = keyof typeof SPACING.page | keyof typeof SPACING.section
+export type SidebarState = "expanded" | "collapsed"

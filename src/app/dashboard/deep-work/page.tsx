@@ -2,6 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { useSidebar } from "@/components/ui/sidebar";
+import { getContentWidth } from "@/constants/layout";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 // Enhanced loading component for better UX
 const Sphere3DLoading = () => (
@@ -22,25 +25,39 @@ const Sphere3D = dynamic(() => import("@/components/visualization/3d/sphere-3d")
 });
 
 export default function DeepWorkPage() {
+  const { state } = useSidebar();
+  const contentWidth = getContentWidth(state);
+
   return (
     <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
-      {/* Use calc to account for max sidebar width, sphere stays centered */}
+      {/* Responsive width based on sidebar state */}
       <div 
         className="absolute"
         style={{
-          width: 'calc(100vw - 16rem)', // Account for expanded sidebar
+          width: contentWidth,
           height: '100vh',
           left: '50%',
           transform: 'translateX(-50%)',
         }}
       >
-        <Suspense fallback={<Sphere3DLoading />}>
-          <Sphere3D 
-            className="cursor-pointer" 
-            width="100%" 
-            height="100%" 
-          />
-        </Suspense>
+        <ErrorBoundary 
+          fallback={
+            <div className="w-full h-full flex items-center justify-center">
+              <div className="text-center">
+                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-red-400/30 via-orange-500/30 to-yellow-500/30 mx-auto mb-4" />
+                <p className="text-sm text-muted-foreground">3D visualization failed to load</p>
+              </div>
+            </div>
+          }
+        >
+          <Suspense fallback={<Sphere3DLoading />}>
+            <Sphere3D 
+              className="cursor-pointer" 
+              width="100%" 
+              height="100%" 
+            />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   );

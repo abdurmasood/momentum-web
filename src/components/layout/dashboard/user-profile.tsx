@@ -17,20 +17,9 @@ import { ChevronsUpDown, LogOut, Crown } from "lucide-react";
 import { useUser } from "@stackframe/stack";
 import * as React from "react";
 
-type Team = {
-  name: string;
-  logo: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  plan: string;
-};
-
-function TeamSwitcherComponent({ teams }: { teams: Team[] }) {
+function UserProfileComponent() {
   const { isMobile } = useSidebar();
-  const [activeTeam] = React.useState(teams[0]);
   const user = useUser();
-
-  if (!activeTeam) return null;
-
-  const Logo = activeTeam.logo;
   // Use available Stack Auth user properties
   const displayName = user?.displayName || 
                      user?.primaryEmail || 
@@ -46,8 +35,8 @@ function TeamSwitcherComponent({ teams }: { teams: Team[] }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-background text-foreground">
-                <Logo className="size-4" />
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <Crown className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
@@ -67,8 +56,7 @@ function TeamSwitcherComponent({ teams }: { teams: Team[] }) {
             <DropdownMenuItem 
               className="gap-2 p-2 cursor-pointer"
               onClick={() => {
-                // Handle upgrade action
-                console.log('Upgrade clicked');
+                // Handle upgrade action - would redirect to billing/upgrade page
               }}
             >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
@@ -95,5 +83,5 @@ function TeamSwitcherComponent({ teams }: { teams: Team[] }) {
   );
 }
 
-// Memoized component to prevent re-renders when teams prop doesn't change
-export const TeamSwitcher = React.memo(TeamSwitcherComponent);
+// Memoized component to prevent re-renders
+export const UserProfile = React.memo(UserProfileComponent);
