@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,7 @@ type Notification = {
   time: string;
 };
 
-export function NotificationsPopover({
+function NotificationsPopoverComponent({
   notifications,
 }: {
   notifications: Notification[];
@@ -60,3 +61,6 @@ export function NotificationsPopover({
     </DropdownMenu>
   );
 }
+
+// Memoized component to prevent re-renders when notifications don't change
+export const NotificationsPopover = React.memo(NotificationsPopoverComponent);

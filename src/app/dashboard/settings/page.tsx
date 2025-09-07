@@ -2,15 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Calendar, Trash2, ExternalLink } from "lucide-react";
-import { useState } from "react";
-import { useUser } from "@stackframe/stack";
+import { useState, useCallback } from "react";
+// import { useUser } from "@stackframe/stack"; // Available for future use
 
 export default function SettingsPage() {
   const [isConnected, setIsConnected] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const user = useUser();
+  // const user = useUser(); // Available for future use
 
-  const handleGoogleCalendarConnect = () => {
+  const handleGoogleCalendarConnect = useCallback(() => {
     if (isConnected) {
       // Handle disconnect
       setIsConnected(false);
@@ -20,9 +20,9 @@ export default function SettingsPage() {
       setIsConnected(true);
       console.log("Connecting to Google Calendar...");
     }
-  };
+  }, [isConnected]);
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = useCallback(() => {
     if (!showDeleteConfirmation) {
       setShowDeleteConfirmation(true);
     } else {
@@ -32,7 +32,11 @@ export default function SettingsPage() {
       alert("Account deletion functionality would be implemented here");
       setShowDeleteConfirmation(false);
     }
-  };
+  }, [showDeleteConfirmation]);
+
+  const handleCancelDelete = useCallback(() => {
+    setShowDeleteConfirmation(false);
+  }, []);
 
   return (
     <div className="p-6">
@@ -105,7 +109,7 @@ export default function SettingsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setShowDeleteConfirmation(false)}
+                      onClick={handleCancelDelete}
                     >
                       Cancel
                     </Button>

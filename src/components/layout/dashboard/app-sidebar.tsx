@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,83 +11,13 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import {
-  Activity,
-  Home,
-  Package2,
-  Settings,
-  Sparkles,
-} from "lucide-react";
 import { Logo } from "@/components/brand/logo";
-import type { Route } from "./nav-main";
 import DashboardNavigation from "./nav-main";
 import { NotificationsPopover } from "./nav-notifications";
 import { TeamSwitcher } from "./team-switcher";
+import { DASHBOARD_ROUTES, SAMPLE_NOTIFICATIONS, TEAMS, DASHBOARD_PERFORMANCE } from "@/constants/dashboard";
 
-const sampleNotifications = [
-  {
-    id: "1",
-    avatar: "/avatars/01.png",
-    fallback: "OM",
-    text: "New order received.",
-    time: "10m ago",
-  },
-  {
-    id: "2",
-    avatar: "/avatars/02.png",
-    fallback: "JL",
-    text: "Server upgrade completed.",
-    time: "1h ago",
-  },
-  {
-    id: "3",
-    avatar: "/avatars/03.png",
-    fallback: "HH",
-    text: "New user signed up.",
-    time: "2h ago",
-  },
-];
-
-const dashboardRoutes: Route[] = [
-  {
-    id: "spotlight",
-    title: "Spotlight",
-    icon: <Home className="size-4" />,
-    link: "/dashboard",
-  },
-  {
-    id: "deep-work",
-    title: "Deep Work",
-    icon: <Activity className="size-4" />,
-    link: "/dashboard/deep-work",
-  },
-  {
-    id: "plan",
-    title: "Plan",
-    icon: <Sparkles className="size-4" />,
-    link: "/dashboard/plan",
-  },
-  {
-    id: "tasks",
-    title: "Tasks",
-    icon: <Package2 className="size-4" />,
-    link: "/dashboard/tasks",
-  },
-  {
-    id: "settings",
-    title: "Settings",
-    icon: <Settings className="size-4" />,
-    link: "/dashboard/settings",
-  },
-];
-
-const teams = [
-  { id: "1", name: "Alpha Inc.", logo: Logo, plan: "Free" },
-  { id: "2", name: "Beta Corp.", logo: Logo, plan: "Free" },
-  { id: "3", name: "Gamma Tech", logo: Logo, plan: "Free" },
-];
-
-export function DashboardSidebar() {
+function DashboardSidebarComponent() {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 
@@ -117,18 +48,21 @@ export function DashboardSidebar() {
           )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: DASHBOARD_PERFORMANCE.ANIMATION_DURATION }}
         >
-          <NotificationsPopover notifications={sampleNotifications} />
+          <NotificationsPopover notifications={SAMPLE_NOTIFICATIONS} />
           <SidebarTrigger />
         </motion.div>
       </SidebarHeader>
       <SidebarContent className="gap-4 px-2 py-4">
-        <DashboardNavigation routes={dashboardRoutes} />
+        <DashboardNavigation routes={DASHBOARD_ROUTES} />
       </SidebarContent>
       <SidebarFooter className="px-2">
-        <TeamSwitcher teams={teams} />
+        <TeamSwitcher teams={TEAMS} />
       </SidebarFooter>
     </Sidebar>
   );
 }
+
+// Export memoized component to prevent unnecessary re-renders
+export const DashboardSidebar = React.memo(DashboardSidebarComponent);

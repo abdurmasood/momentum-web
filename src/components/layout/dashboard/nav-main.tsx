@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useCallback } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,8 +18,6 @@ import {
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
-import type React from "react";
-import { useState } from "react";
 
 export type Route = {
   id: string;
@@ -32,10 +31,15 @@ export type Route = {
   }[];
 };
 
-export default function DashboardNavigation({ routes }: { routes: Route[] }) {
+function DashboardNavigationComponent({ routes }: { routes: Route[] }) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
+
+  // Memoize the toggle handler to prevent unnecessary re-renders
+  const handleToggleCollapsible = useCallback((open: boolean, routeId: string) => {
+    setOpenCollapsible(open ? routeId : null);
+  }, []);
 
   return (
     <SidebarMenu>
@@ -48,9 +52,7 @@ export default function DashboardNavigation({ routes }: { routes: Route[] }) {
             {hasSubRoutes ? (
               <Collapsible
                 open={isOpen}
-                onOpenChange={(open) =>
-                  setOpenCollapsible(open ? route.id : null)
-                }
+                onOpenChange={(open) => handleToggleCollapsible(open, route.id)}
                 className="w-full"
               >
                 <CollapsibleTrigger asChild>
@@ -62,6 +64,7 @@ export default function DashboardNavigation({ routes }: { routes: Route[] }) {
                         : "text-muted-foreground hover:bg-sidebar-muted hover:text-foreground",
                       isCollapsed && "justify-center"
                     )}
+                    onClick={() => handleToggleCollapsible(!isOpen, route.id)}
                   >
                     {route.icon}
                     {!isCollapsed && (
@@ -129,3 +132,8 @@ export default function DashboardNavigation({ routes }: { routes: Route[] }) {
     </SidebarMenu>
   );
 }
+
+// Memoized component to prevent re-renders when routes don't change
+const DashboardNavigation = React.memo(DashboardNavigationComponent);
+
+export default DashboardNavigation;

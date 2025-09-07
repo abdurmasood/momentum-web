@@ -4,9 +4,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -25,20 +23,16 @@ type Team = {
   plan: string;
 };
 
-export function TeamSwitcher({ teams }: { teams: Team[] }) {
+function TeamSwitcherComponent({ teams }: { teams: Team[] }) {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const [activeTeam] = React.useState(teams[0]);
   const user = useUser();
 
   if (!activeTeam) return null;
 
   const Logo = activeTeam.logo;
-  // Try multiple name fields from Stack Auth user object
+  // Use available Stack Auth user properties
   const displayName = user?.displayName || 
-                     user?.name || 
-                     (user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : null) ||
-                     user?.firstName || 
-                     user?.lastName || 
                      user?.primaryEmail || 
                      "User";
   const displayPlan = "Free";
@@ -100,3 +94,6 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
     </SidebarMenu>
   );
 }
+
+// Memoized component to prevent re-renders when teams prop doesn't change
+export const TeamSwitcher = React.memo(TeamSwitcherComponent);
