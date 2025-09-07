@@ -35,8 +35,8 @@ export function usePreloadDashboard() {
           Promise.all([
             router.prefetch('/dashboard'),
             router.prefetch('/dashboard/deep-work'),
-            router.prefetch('/dashboard/todo'),
-            router.prefetch('/dashboard/chat')
+            router.prefetch('/dashboard/plan'),
+            router.prefetch('/dashboard/tasks')
           ]).then(() => {
             console.log('✅ Dashboard routes prefetched')
           }).catch(error => {
@@ -48,15 +48,15 @@ export function usePreloadDashboard() {
         schedulePreload(() => {
           Promise.all([
             // Preload Three.js Sphere3D component
-            import('@/components/sphere-3d').then(() => {
+            import('@/components/visualization/3d/sphere-3d').then(() => {
               console.log('✅ Sphere3D component preloaded')
             }),
-            // Preload dashboard sidebar
-            import('@/components/dashboard-sidebar').then(() => {
+            // Preload new dashboard sidebar
+            import('@/components/layout/dashboard/app-sidebar').then(() => {
               console.log('✅ Dashboard sidebar preloaded')
             }),
             // Preload loading skeleton
-            import('@/components/sphere-3d-loading-skeleton').then(() => {
+            import('@/components/visualization/3d/sphere-3d-loading-skeleton').then(() => {
               console.log('✅ Loading skeleton preloaded')
             })
           ]).catch(error => {

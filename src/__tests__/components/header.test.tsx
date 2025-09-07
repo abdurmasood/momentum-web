@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import Header from '@/components/header'
+import Header from '@/components/features/landing/header'
 
 describe('Header', () => {
   it('should render the logo with correct accessibility attributes', () => {

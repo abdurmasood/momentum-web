@@ -1,43 +1,52 @@
-import type React from "react"
-import { Suspense } from "react"
-import { StackProvider, StackTheme } from "@stackframe/stack"
-import { stackServerApp } from "../../stack"
-import DashboardSidebar from "@/components/dashboard-sidebar"
+import type React from "react";
+import dynamic from "next/dynamic";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { DashboardSidebar } from "@/components/layout/dashboard/app-sidebar";
+import { stackServerApp } from "@/stack";
 
-/**
- * Dashboard layout with sidebar navigation and authentication
- * Provides consistent layout structure for all dashboard pages
- */
-export default function DashboardLayout({
+// Dynamic import for Stack Auth components to reduce initial bundle size
+const StackProvider = dynamic(
+  () => import("@stackframe/stack").then((mod) => ({ default: mod.StackProvider })),
+  {
+    ssr: true, // Stack Auth supports SSR
+    loading: () => (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-8 h-8 mx-auto border-2 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-sm text-muted-foreground">Initializing authentication...</p>
+        </div>
+      </div>
+    ),
+  }
+);
+
+const StackTheme = dynamic(
+  () => import("@stackframe/stack").then((mod) => ({ default: mod.StackTheme })),
+  {
+    ssr: true,
+    loading: () => <div className="min-h-screen bg-background" />,
+  }
+);
+
+export default function DashboardNewLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <StackProvider app={stackServerApp}>
       <StackTheme>
-        <Suspense fallback={
-          <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-8 h-8 mx-auto border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-slate-300 text-sm">Loading dashboard...</p>
-            </div>
-          </div>
-        }>
-          {/* Dashboard container */}
-          <div className="min-h-screen bg-slate-950">
-            {/* Sidebar */}
-            <DashboardSidebar />
-            
-            {/* Main content area */}
-            <div className="md:pl-64 min-h-screen transition-all duration-300">
-              <div className="h-full">
+        <div className="dark">
+          <SidebarProvider>
+            <div className="flex h-screen w-full bg-background text-foreground">
+              <DashboardSidebar />
+              <main className="flex-1 overflow-auto">
                 {children}
-              </div>
+              </main>
             </div>
-          </div>
-        </Suspense>
+          </SidebarProvider>
+        </div>
       </StackTheme>
     </StackProvider>
-  )
+  );
 }

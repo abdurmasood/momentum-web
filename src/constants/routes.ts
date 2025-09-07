@@ -1,0 +1,111 @@
+/**
+ * Application route constants
+ * 
+ * Centralized route definitions to eliminate magic strings and ensure
+ * consistent navigation throughout the application.
+ */
+
+/**
+ * Public routes - accessible without authentication
+ */
+export const PUBLIC_ROUTES = {
+  HOME: "/",
+  LANDING: "/",
+} as const;
+
+/**
+ * Authentication routes - Stack Auth handlers
+ */
+export const AUTH_ROUTES = {
+  HANDLER: "/handler",
+  SIGN_IN: "/handler/sign-in",
+  SIGN_UP: "/handler/sign-up",
+  OAUTH_CALLBACK: "/handler/oauth-callback",
+  MAGIC_LINK_CALLBACK: "/handler/magic-link-callback",
+  ACCOUNT_SETTINGS: "/handler/account-settings",
+  TEAM_INVITATION: "/handler/team-invitation",
+  FORGOT_PASSWORD: "/handler/forgot-password",
+  RESET_PASSWORD: "/handler/reset-password",
+} as const;
+
+/**
+ * Dashboard routes - protected routes requiring authentication
+ */
+export const DASHBOARD_ROUTES = {
+  ROOT: "/dashboard",
+  DEEP_WORK: "/dashboard/deep-work",
+  PLAN: "/dashboard/plan", 
+  TASKS: "/dashboard/tasks",
+  SETTINGS: "/dashboard/settings",
+  CHAT: "/dashboard/chat",
+  PROFILE: "/dashboard/profile",
+  ANALYTICS: "/dashboard/analytics",
+} as const;
+
+/**
+ * API routes - for internal API calls
+ */
+export const API_ROUTES = {
+  BASE: "/api",
+  AUTH: "/api/auth",
+  USER: "/api/user",
+  NOTIFICATIONS: "/api/notifications",
+  TEAMS: "/api/teams",
+  ANALYTICS: "/api/analytics",
+} as const;
+
+/**
+ * All routes combined for easy access
+ */
+export const ROUTES = {
+  ...PUBLIC_ROUTES,
+  AUTH: AUTH_ROUTES,
+  DASHBOARD: DASHBOARD_ROUTES,
+  API: API_ROUTES,
+} as const;
+
+/**
+ * Route path helpers for programmatic navigation
+ */
+export const getRoutePath = {
+  dashboard: (subRoute?: keyof typeof DASHBOARD_ROUTES) => 
+    subRoute ? DASHBOARD_ROUTES[subRoute] : DASHBOARD_ROUTES.ROOT,
+  
+  auth: (authRoute: keyof typeof AUTH_ROUTES) => AUTH_ROUTES[authRoute],
+  
+  api: (apiRoute: keyof typeof API_ROUTES) => API_ROUTES[apiRoute],
+} as const;
+
+/**
+ * Route validation helpers
+ */
+export const isProtectedRoute = (path: string): boolean => {
+  return path.startsWith(DASHBOARD_ROUTES.ROOT);
+};
+
+export const isAuthRoute = (path: string): boolean => {
+  return path.startsWith(AUTH_ROUTES.HANDLER);
+};
+
+export const isPublicRoute = (path: string): boolean => {
+  return Object.values(PUBLIC_ROUTES).includes(path as PublicRoute);
+};
+
+/**
+ * Default redirect routes for auth flows
+ */
+export const REDIRECT_ROUTES = {
+  AFTER_SIGN_IN: DASHBOARD_ROUTES.ROOT,
+  AFTER_SIGN_UP: DASHBOARD_ROUTES.ROOT,
+  AFTER_SIGN_OUT: PUBLIC_ROUTES.HOME,
+  UNAUTHORIZED: AUTH_ROUTES.SIGN_IN,
+} as const;
+
+/**
+ * Type definitions for type-safe routing
+ */
+export type PublicRoute = typeof PUBLIC_ROUTES[keyof typeof PUBLIC_ROUTES];
+export type AuthRoute = typeof AUTH_ROUTES[keyof typeof AUTH_ROUTES];
+export type DashboardRoute = typeof DASHBOARD_ROUTES[keyof typeof DASHBOARD_ROUTES];
+export type ApiRoute = typeof API_ROUTES[keyof typeof API_ROUTES];
+export type AnyRoute = PublicRoute | AuthRoute | DashboardRoute | ApiRoute;

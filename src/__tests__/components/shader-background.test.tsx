@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import ShaderBackground from '@/components/shader-background'
+import ShaderBackground from '@/components/visualization/shaders/shader-background'
 
 // Mock the MeshGradient component
 jest.mock('@paper-design/shaders-react', () => ({
@@ -30,7 +30,7 @@ jest.mock('@/hooks/use-theme-colors', () => ({
 }))
 
 // Mock the shader skeleton component
-jest.mock('@/components/shader-skeleton', () => {
+jest.mock('@/components/visualization/shaders/shader-skeleton', () => {
   return function MockShaderSkeleton({ children }: { children: React.ReactNode }) {
     return <div data-testid="shader-skeleton">{children}</div>
   }

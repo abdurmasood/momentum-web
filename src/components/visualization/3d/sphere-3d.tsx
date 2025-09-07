@@ -151,7 +151,7 @@ const WebGLFallback: React.FC = () => (
   </div>
 )
 
-const Sphere3D: React.FC<Sphere3DProps> = ({ 
+const Sphere3DComponent: React.FC<Sphere3DProps> = ({ 
   className = "", 
   width = "100vw", 
   height = "100vh",
@@ -218,4 +218,8 @@ const Sphere3D: React.FC<Sphere3DProps> = ({
   )
 }
 
-export default Sphere3D
+// Memoized component to prevent unnecessary re-renders
+// Sphere3D has heavy WebGL operations and should only re-render when props actually change
+const Sphere3D = React.memo(Sphere3DComponent);
+
+export default Sphere3D;

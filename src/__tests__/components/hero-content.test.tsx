@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import HeroContent from '@/components/hero-content'
+import HeroContent from '@/components/features/landing/hero-content'
 
 describe('HeroContent', () => {
   it('should render the main heading with correct text', () => {
