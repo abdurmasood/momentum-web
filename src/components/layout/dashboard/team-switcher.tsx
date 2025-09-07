@@ -15,7 +15,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { ChevronsUpDown, LogOut, Crown } from "lucide-react";
+import { useUser } from "@stackframe/stack";
 import * as React from "react";
 
 type Team = {
@@ -27,10 +28,20 @@ type Team = {
 export function TeamSwitcher({ teams }: { teams: Team[] }) {
   const { isMobile } = useSidebar();
   const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const user = useUser();
 
   if (!activeTeam) return null;
 
   const Logo = activeTeam.logo;
+  // Try multiple name fields from Stack Auth user object
+  const displayName = user?.displayName || 
+                     user?.name || 
+                     (user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : null) ||
+                     user?.firstName || 
+                     user?.lastName || 
+                     user?.primaryEmail || 
+                     "User";
+  const displayPlan = "Free";
 
   return (
     <SidebarMenu>
@@ -46,9 +57,9 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam.name}
+                  {displayName}
                 </span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate text-xs">{displayPlan}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -59,28 +70,29 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
-            </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem 
+              className="gap-2 p-2 cursor-pointer"
+              onClick={() => {
+                // Handle upgrade action
+                console.log('Upgrade clicked');
+              }}
+            >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
+                <Crown className="size-4 text-yellow-500" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="font-medium">Upgrade</div>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              className="gap-2 p-2 cursor-pointer"
+              onClick={() => {
+                user?.signOut();
+              }}
+            >
+              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                <LogOut className="size-4" />
+              </div>
+              <div className="font-medium">Logout</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
