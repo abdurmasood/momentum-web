@@ -17,8 +17,8 @@ export default function Header({ className }: HeaderProps) {
         <Logo className="size-10 text-slate-100" />
       </div>
 
-      {/* Navigation */}
-      <nav className="flex items-center space-x-2">
+      {/* Navigation - Centered */}
+      <nav className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-2">
         <a
           href="#"
           className="text-slate-300 hover:text-white text-xs font-light px-3 py-2 rounded-full hover:bg-white/10 transition-all duration-200"
