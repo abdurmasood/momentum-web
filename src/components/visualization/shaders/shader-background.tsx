@@ -44,7 +44,7 @@ function ShaderRenderer({ children, filterValues, gradientColors }: {
   const containerRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-slate-950 relative overflow-hidden">
+    <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden">
       {/* SVG Filters */}
       <svg className="absolute inset-0 w-0 h-0" aria-hidden="true">
         <defs>

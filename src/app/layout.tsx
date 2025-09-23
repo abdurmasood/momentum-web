@@ -31,18 +31,21 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{backgroundColor: 'black'}}>
       <head>
         <style>{`
-html {
+html, body {
+  background-color: black !important;
   font-family: ${figtree.style.fontFamily};
+}
+html {
   --font-sans: ${figtree.variable};
   --font-mono: ${GeistMono.variable};
   --font-instrument-serif: ${instrumentSerif.variable};
 }
         `}</style>
       </head>
-      <body className={`${figtree.variable} ${instrumentSerif.variable}`}>{children}</body>
+      <body className={`${figtree.variable} ${instrumentSerif.variable}`} style={{backgroundColor: 'black'}}>{children}</body>
     </html>
   )
 }

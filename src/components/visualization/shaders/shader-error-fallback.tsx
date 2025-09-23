@@ -20,7 +20,7 @@ export default function ShaderErrorFallback({
   onRetry 
 }: ShaderErrorFallbackProps) {
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-hidden">
       {/* Static gradient background as fallback */}
       <div 
         className="absolute inset-0 opacity-40"
@@ -127,7 +127,7 @@ export default function ShaderErrorFallback({
  */
 export function MinimalErrorFallback({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-950 relative">
+    <div className="min-h-screen bg-black relative">
       {/* Very basic gradient */}
       <div 
         className="absolute inset-0 opacity-30"

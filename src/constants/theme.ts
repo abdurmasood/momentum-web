@@ -11,23 +11,23 @@ import {
   validateAndClampFilterValue
 } from '@/utils/color-validation'
 
-// Raw filter values (validated at runtime)
+// Raw filter values (validated at runtime) - White Theme
 const RAW_FILTER_VALUES = {
-  r: 0.05,
-  g: 0.08,
-  b: 0.2,
+  r: 0.1,
+  g: 0.1,
+  b: 0.1,
   opacity: 0.75,
 } as const
 
-// Raw gradient colors (validated at runtime) 
+// Raw gradient colors (validated at runtime) - Black Theme
 const RAW_GRADIENT_COLORS = {
-  navyDeep: '#0f172a', // Deep navy for primary gradient base
-  navyMedium: '#1e293b', // Medium navy for gradient transitions
-  grayMedium: '#334155', // Medium gray for balanced contrast
-  navyDarker: '#0c1220', // Darker navy for depth and shadows
-  blueDeep: '#1e3a8a', // Deep blue for accent elements
-  blueMedium: '#1e40af', // Medium blue for interactive states
-  blueBright: '#3b82f6', // Bright blue for highlights and focus
+  navyDeep: '#000000', // Pure black for primary gradient base
+  navyMedium: '#111111', // Dark gray for gradient transitions
+  grayMedium: '#222222', // Medium gray for balanced contrast
+  navyDarker: '#000000', // Pure black for depth and shadows
+  blueDeep: '#333333', // Dark gray for accent elements
+  blueMedium: '#1a1a1a', // Very dark gray for interactive states
+  blueBright: '#444444', // Medium gray for highlights and focus
 } as const
 
 // Raw selection colors (validated at runtime)
@@ -40,22 +40,22 @@ const RAW_SELECTION_COLORS = {
 
 // Validated and exported constants
 export const DEFAULT_FILTER_VALUES = {
-  r: validateAndClampFilterValue(RAW_FILTER_VALUES.r, 0.05, 'red filter'),
-  g: validateAndClampFilterValue(RAW_FILTER_VALUES.g, 0.08, 'green filter'),
-  b: validateAndClampFilterValue(RAW_FILTER_VALUES.b, 0.2, 'blue filter'),
+  r: validateAndClampFilterValue(RAW_FILTER_VALUES.r, 0.1, 'red filter'),
+  g: validateAndClampFilterValue(RAW_FILTER_VALUES.g, 0.1, 'green filter'),
+  b: validateAndClampFilterValue(RAW_FILTER_VALUES.b, 0.1, 'blue filter'),
   opacity: validateAndClampFilterValue(RAW_FILTER_VALUES.opacity, 0.75, 'opacity filter'),
 } as const
 
 export const DEFAULT_GRADIENT_COLORS = validateColorPalette(
   RAW_GRADIENT_COLORS,
   {
-    navyDeep: '#0f172a',
-    navyMedium: '#1e293b', 
-    grayMedium: '#334155',
-    navyDarker: '#0c1220',
-    blueDeep: '#1e3a8a',
-    blueMedium: '#1e40af',
-    blueBright: '#3b82f6',
+    navyDeep: '#000000',
+    navyMedium: '#111111', 
+    grayMedium: '#222222',
+    navyDarker: '#000000',
+    blueDeep: '#333333',
+    blueMedium: '#1a1a1a',
+    blueBright: '#444444',
   },
   'gradient colors'
 )

@@ -21,7 +21,7 @@
   --destructive-foreground: #F8FAFC; /* White text on red */
   --border: oklch(0.922 0 0); /* Subtle glass border */
   --input: oklch(0.922 0 0); /* Input background */
-  --ring: oklch(0.708 0 0); /* Blue focus ring */
+  --ring: oklch(1 0 0); /* White focus ring */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -35,42 +35,46 @@
   --sidebar-accent: hsl(240 4.8% 95.9%); /* Light blue accent */
   --sidebar-accent-foreground: hsl(240 5.9% 10%); /* White text on accent */
   --sidebar-border: hsl(220 13% 91%); /* Subtle borders */
-  --sidebar-ring: hsl(217.2 91.2% 59.8%); /* Blue focus ring */
+  --sidebar-ring: hsl(0 0% 100%); /* White focus ring */
 
   /* Dashboard-specific variables */
   --glass-bg: rgba(30, 41, 59, 0.5);
   --glass-border: rgba(148, 163, 184, 0.1);
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --gradient-blue: linear-gradient(135deg, #60A5FA 0%, #93C5FD 100%);
-  --gradient-text: linear-gradient(135deg, #60A5FA 0%, #DBEAFE 100%);
+  --gradient-blue: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+  --gradient-text: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
   --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
   /* Added Figtree as the primary font variable */
   --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
 
-  /* SVG Filter Color Variables for Focus Theme */
-  --filter-glass-r: 0.05;
-  --filter-glass-g: 0.08;
-  --filter-glass-b: 0.2;
+  /* SVG Filter Color Variables - White Theme */
+  --filter-glass-r: 0.1;
+  --filter-glass-g: 0.1;
+  --filter-glass-b: 0.1;
   --filter-glass-opacity: 0.75;
 
-  /* Shader Gradient Colors for Focus Theme */
-  --shader-navy-deep: #0f172a;
-  --shader-navy-medium: #1e293b;
-  --shader-gray-medium: #334155;
-  --shader-navy-darker: #0c1220;
-  --shader-blue-deep: #1e3a8a;
-  --shader-blue-medium: #1e40af;
-  --shader-blue-bright: #3b82f6;
+  /* Shader Gradient Colors - Black Theme */
+  --shader-navy-deep: #000000;
+  --shader-navy-medium: #111111;
+  --shader-gray-medium: #222222;
+  --shader-navy-darker: #000000;
+  --shader-blue-deep: #333333;
+  --shader-blue-medium: #1a1a1a;
+  --shader-blue-bright: #444444;
 
   /* Text Selection Colors */
   --selection-light-bg: #FFA726; /* Warm amber for light mode */
-  --selection-light-text: #0c1220; /* Navy darker for contrast */ --background: oklch(1 0 0); --foreground: oklch(0.145 0 0);
+  --selection-light-text: #0c1220; /* Navy darker for contrast */
+  
+  /* Background Colors - Dark Mode Only */
+  --background: oklch(0 0 0); /* Pure black background */
+  --foreground: oklch(0.985 0 0); /* Almost white text */
 }
 
 .dark {
   /* Dark mode - Enhanced blue theme */
-  --background: oklch(0.145 0 0);
+  --background: oklch(0 0 0); /* Pure black background */
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -88,7 +92,7 @@
   --destructive-foreground: #F8FAFC;
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(1 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -96,30 +100,30 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: hsl(240 5.9% 10%); /* Light blue glass sidebar background */
   --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary: hsl(0 0% 100%);
   --sidebar-primary-foreground: hsl(0 0% 100%);
   --sidebar-accent: hsl(240 3.7% 15.9%);
   --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
   --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  --sidebar-ring: hsl(0 0% 100%);
   --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
   /* Added Figtree font variable for dark mode consistency */
   --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
 
-  /* SVG Filter Color Variables for Focus Theme - Dark Mode */
-  --filter-glass-r: 0.05;
-  --filter-glass-g: 0.08;
-  --filter-glass-b: 0.2;
+  /* SVG Filter Color Variables - White Theme (Dark Mode) */
+  --filter-glass-r: 0.1;
+  --filter-glass-g: 0.1;
+  --filter-glass-b: 0.1;
   --filter-glass-opacity: 0.75;
 
-  /* Shader Gradient Colors for Focus Theme - Dark Mode */
-  --shader-navy-deep: #0f172a;
-  --shader-navy-medium: #1e293b;
-  --shader-gray-medium: #334155;
-  --shader-navy-darker: #0c1220;
-  --shader-blue-deep: #1e3a8a;
-  --shader-blue-medium: #1e40af;
-  --shader-blue-bright: #3b82f6;
+  /* Shader Gradient Colors - Black Theme (Dark Mode) */
+  --shader-navy-deep: #000000;
+  --shader-navy-medium: #111111;
+  --shader-gray-medium: #222222;
+  --shader-navy-darker: #000000;
+  --shader-blue-deep: #333333;
+  --shader-blue-medium: #1a1a1a;
+  --shader-blue-bright: #444444;
 
   /* Text Selection Colors - Dark Mode */
   --selection-dark-bg: #FFB74D; /* Lighter amber for dark mode */
@@ -225,13 +229,13 @@
 .glass-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--card-shadow-hover);
-  border-color: rgba(96, 165, 250, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .glass-sidebar {
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(24px) saturate(200%);
-  border-right: 1px solid rgba(96, 165, 250, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* Modern Button Styles */
@@ -247,7 +251,7 @@
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(96, 165, 250, 0.3);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
 }
 
 /* Gradient Text */

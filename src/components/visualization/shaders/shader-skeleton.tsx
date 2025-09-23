@@ -14,7 +14,7 @@ interface ShaderSkeletonProps {
  */
 export default function ShaderSkeleton({ children }: ShaderSkeletonProps) {
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-hidden">
       {/* Static background gradient as fallback */}
       <div 
         className="absolute inset-0 opacity-50"
