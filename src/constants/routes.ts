@@ -14,18 +14,9 @@ export const PUBLIC_ROUTES = {
 } as const;
 
 /**
- * Authentication routes - Stack Auth handlers
+ * Authentication routes - removed login/signup
  */
 export const AUTH_ROUTES = {
-  HANDLER: "/handler",
-  SIGN_IN: "/handler/sign-in",
-  SIGN_UP: "/handler/sign-up",
-  OAUTH_CALLBACK: "/handler/oauth-callback",
-  MAGIC_LINK_CALLBACK: "/handler/magic-link-callback",
-  ACCOUNT_SETTINGS: "/handler/account-settings",
-  TEAM_INVITATION: "/handler/team-invitation",
-  FORGOT_PASSWORD: "/handler/forgot-password",
-  RESET_PASSWORD: "/handler/reset-password",
 } as const;
 
 /**
@@ -71,7 +62,6 @@ export const getRoutePath = {
   dashboard: (subRoute?: keyof typeof DASHBOARD_ROUTES) => 
     subRoute ? DASHBOARD_ROUTES[subRoute] : DASHBOARD_ROUTES.ROOT,
   
-  auth: (authRoute: keyof typeof AUTH_ROUTES) => AUTH_ROUTES[authRoute],
   
   api: (apiRoute: keyof typeof API_ROUTES) => API_ROUTES[apiRoute],
 } as const;
@@ -84,7 +74,7 @@ export const isProtectedRoute = (path: string): boolean => {
 };
 
 export const isAuthRoute = (path: string): boolean => {
-  return path.startsWith(AUTH_ROUTES.HANDLER);
+  return false; // No auth routes available
 };
 
 export const isPublicRoute = (path: string): boolean => {
@@ -92,13 +82,11 @@ export const isPublicRoute = (path: string): boolean => {
 };
 
 /**
- * Default redirect routes for auth flows
+ * Default redirect routes
  */
 export const REDIRECT_ROUTES = {
-  AFTER_SIGN_IN: DASHBOARD_ROUTES.ROOT,
-  AFTER_SIGN_UP: DASHBOARD_ROUTES.ROOT,
   AFTER_SIGN_OUT: PUBLIC_ROUTES.HOME,
-  UNAUTHORIZED: AUTH_ROUTES.SIGN_IN,
+  UNAUTHORIZED: PUBLIC_ROUTES.HOME,
 } as const;
 
 /**
