@@ -1,6 +1,6 @@
 "use client";
 
-import { VercelV0Chat } from "@/components/features/chat/v0-ai-chat";
+import { VercelV0Chat } from "@/components/dashboard/features/chat/v0-ai-chat";
 
 export default function PlanPage() {
   return (

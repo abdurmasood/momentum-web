@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { DashboardSidebar } from "@/components/layout/dashboard/app-sidebar";
+import { DashboardSidebar } from "@/components/dashboard/sidebar/app-sidebar";
 import { WaveLoader } from "@/components/ui/wave-loader";
 
 export default function DashboardNewLayout({
