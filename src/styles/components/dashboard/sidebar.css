@@ -2,19 +2,7 @@
 /* Component-specific CSS variables for dashboard sidebar */
 
 :root {
-  /* Sidebar Colors - Light Mode */
-  --sidebar: hsl(0 0% 98%); /* Light sidebar background */
-  --sidebar-foreground: hsl(240 5.3% 26.1%); /* Dark sidebar text */
-  --sidebar-primary: hsl(240 5.9% 10%); /* Dark for active items */
-  --sidebar-primary-foreground: hsl(0 0% 98%); /* Light text on primary */
-  --sidebar-accent: hsl(240 4.8% 95.9%); /* Light accent */
-  --sidebar-accent-foreground: hsl(240 5.9% 10%); /* Dark text on accent */
-  --sidebar-border: hsl(220 13% 91%); /* Light borders */
-  --sidebar-ring: hsl(0 0% 100%); /* White focus ring */
-}
-
-.dark {
-  /* Sidebar Colors - Dark Mode */
+  /* Sidebar Colors - Single Dark Theme */
   --sidebar: hsl(240 5.9% 10%); /* Dark sidebar background */
   --sidebar-foreground: hsl(240 4.8% 95.9%); /* Light sidebar text */
   --sidebar-primary: hsl(0 0% 100%); /* White for active items */
