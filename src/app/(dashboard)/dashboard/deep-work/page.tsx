@@ -17,7 +17,7 @@ const Sphere3DLoading = () => (
 );
 
 // Dynamic import with no SSR for Three.js compatibility
-const Sphere3D = dynamic(() => import("@/components/visualization/3d/sphere-3d"), {
+const Sphere3D = dynamic(() => import("@/components/dashboard/deep-work/sphere-3d"), {
   ssr: false,
   loading: Sphere3DLoading,
 });

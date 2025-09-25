@@ -5,7 +5,7 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-import type { Route } from "@/components/dashboard/sidebar/nav-main";
+import type { Route } from "@/components/dashboard/shared/sidebar/nav-main";
 import { DASHBOARD_ROUTES } from "@/constants/routes";
 import React from "react";
 
