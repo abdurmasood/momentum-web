@@ -3,26 +3,26 @@
 
 :root {
   /* Sidebar Colors - Light Mode */
-  --sidebar: hsl(0 0% 98%); /* Light blue glass sidebar background */
-  --sidebar-foreground: hsl(240 5.3% 26.1%); /* White sidebar text */
-  --sidebar-primary: hsl(240 5.9% 10%); /* Light blue for active items */
-  --sidebar-primary-foreground: hsl(0 0% 98%); /* Dark text on blue */
-  --sidebar-accent: hsl(240 4.8% 95.9%); /* Light blue accent */
-  --sidebar-accent-foreground: hsl(240 5.9% 10%); /* White text on accent */
-  --sidebar-border: hsl(220 13% 91%); /* Subtle borders */
-  --sidebar-ring: hsl(0 0% 100%); /* White focus ring */
+  --sidebar: oklch(0.98 0 0); /* Light blue glass sidebar background */
+  --sidebar-foreground: oklch(0.331 0.012 264.69); /* White sidebar text */
+  --sidebar-primary: oklch(0.168 0.012 264.69); /* Light blue for active items */
+  --sidebar-primary-foreground: oklch(0.98 0 0); /* Dark text on blue */
+  --sidebar-accent: oklch(0.96 0.003 264.69); /* Light blue accent */
+  --sidebar-accent-foreground: oklch(0.168 0.012 264.69); /* White text on accent */
+  --sidebar-border: oklch(0.922 0.012 250.49); /* Subtle borders */
+  --sidebar-ring: oklch(1 0 0); /* White focus ring */
 }
 
 .dark {
   /* Sidebar Colors - Dark Mode */
-  --sidebar: hsl(240 5.9% 10%); /* Light blue glass sidebar background */
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(0 0% 100%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(0 0% 100%);
+  --sidebar: oklch(0.168 0.012 264.69); /* Light blue glass sidebar background */
+  --sidebar-foreground: oklch(0.96 0.003 264.69);
+  --sidebar-primary: oklch(1 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.227 0.008 264.69);
+  --sidebar-accent-foreground: oklch(0.96 0.003 264.69);
+  --sidebar-border: oklch(0.227 0.008 264.69);
+  --sidebar-ring: oklch(1 0 0);
 }
 
 /* Sidebar Tailwind Theme Integration */

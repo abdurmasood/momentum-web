@@ -5,23 +5,23 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Modern Blue-Themed Design System */
-  --card: oklch(1 0 0); /* Glass card background */
-  --card-foreground: oklch(0.145 0 0); /* White text on cards */
-  --popover: oklch(1 0 0); /* Elevated surface */
-  --popover-foreground: oklch(0.145 0 0); /* White text in popovers */
-  --primary: oklch(0.205 0 0); /* Modern light blue */
-  --primary-foreground: oklch(0.985 0 0); /* Dark text on blue */
-  --secondary: oklch(0.97 0 0); /* Slate-blue background */
-  --secondary-foreground: oklch(0.205 0 0); /* Muted text */
+  /* Modern Grayscale Design System */
+  --card: oklch(1 0 0); /* White card background */
+  --card-foreground: oklch(0.145 0 0); /* Dark text on cards */
+  --popover: oklch(1 0 0); /* White elevated surface */
+  --popover-foreground: oklch(0.145 0 0); /* Dark text in popovers */
+  --primary: oklch(0.205 0 0); /* Dark gray primary */
+  --primary-foreground: oklch(0.985 0 0); /* Light text on primary */
+  --secondary: oklch(0.97 0 0); /* Light gray secondary */
+  --secondary-foreground: oklch(0.205 0 0); /* Dark text on secondary */
   --muted: oklch(0.97 0 0); /* Muted background */
   --muted-foreground: oklch(0.556 0 0); /* Subtle text */
-  --accent: oklch(0.97 0 0); /* Lighter blue for accents */
+  --accent: oklch(0.97 0 0); /* Light gray accent */
   --accent-foreground: oklch(0.205 0 0); /* Dark text on accent */
   --destructive: oklch(0.577 0.245 27.325); /* Modern red */
-  --destructive-foreground: #F8FAFC; /* White text on red */
-  --border: oklch(0.922 0 0); /* Subtle glass border */
-  --input: oklch(0.922 0 0); /* Input background */
+  --destructive-foreground: oklch(0.976 0.002 247.86); /* White text on red */
+  --border: oklch(0.922 0 0); /* Light gray border */
+  --input: oklch(0.922 0 0); /* Light gray input background */
   --ring: oklch(1 0 0); /* White focus ring */
   --radius: 0.625rem;
 
@@ -30,8 +30,8 @@
   --font-figtree: "Figtree", sans-serif;
 
   /* Text Selection Colors */
-  --selection-light-bg: #FFA726;
-  --selection-light-text: #0c1220;
+  --selection-light-bg: oklch(0.739 0.133 55.61); /* Warm amber for light mode */
+  --selection-light-text: oklch(0.145 0.031 260.62); /* Navy darker for contrast */
   
   --background: oklch(0 0 0);
   --foreground: oklch(0.985 0 0);
@@ -53,13 +53,13 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: #F8FAFC;
+  --destructive-foreground: oklch(0.976 0.002 247.86);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(1 0 0);
 
-  --selection-dark-bg: #FFB74D;
-  --selection-dark-text: #000000;
+  --selection-dark-bg: oklch(0.773 0.108 61.83); /* Lighter amber for dark mode */
+  --selection-dark-text: oklch(0 0 0); /* Pure black for optimal readability */
 }
 
 @theme inline {

@@ -51,13 +51,13 @@ export default function Sphere3DLoadingSkeleton() {
           {/* Outer rotating ring */}
           <div className="w-40 h-40 mx-auto relative">
             <div className="absolute inset-0 rounded-full border-2 border-blue-500/20 animate-spin" style={{
-              borderTopColor: '#3b82f6',
+              borderTopColor: 'oklch(0.638 0.198 251.37)',
               animationDuration: '3s'
             }}></div>
             
             {/* Middle ring */}
             <div className="absolute inset-4 rounded-full border border-purple-500/30 animate-spin" style={{
-              borderRightColor: '#a855f7',
+              borderRightColor: 'oklch(0.608 0.246 296.88)',
               animationDuration: '2s',
               animationDirection: 'reverse'
             }}></div>
