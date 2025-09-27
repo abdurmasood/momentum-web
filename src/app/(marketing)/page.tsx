@@ -7,8 +7,9 @@ export default function LandingPage() {
     <div className="min-h-screen bg-black text-white">
       {/* Navigation Header */}
       <nav className="flex items-center justify-between px-12 py-2">
-        <div className="flex items-center">
+        <div className="flex items-center space-x-2">
           <Logo className="w-6 h-8 text-white" />
+          <span className="text-lg font-medium text-white">Momentum</span>
         </div>
         
         <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center space-x-6">
@@ -49,7 +50,7 @@ export default function LandingPage() {
             extraordinarily simple.
           </h1>
           
-          <p className="text-base text-gray-400 mb-5 max-w-lg leading-relaxed font-sans">
+          <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-5 max-w-lg leading-relaxed font-sans">
             Momentum helps you organize your day with focus and clarity.
           </p>
           
