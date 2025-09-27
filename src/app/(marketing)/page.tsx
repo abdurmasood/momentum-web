@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/brand/logo"
+import { Footer } from "@/components/ui/footer"
 
 export default function LandingPage() {
   return (
@@ -61,6 +62,9 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }
