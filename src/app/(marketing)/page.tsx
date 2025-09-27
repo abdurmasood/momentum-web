@@ -1,15 +1,32 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/brand/logo"
 import { Footer } from "@/components/ui/footer"
 
+import { useState } from "react"
+
 export default function LandingPage() {
+  const [rotationCount, setRotationCount] = useState(0)
+  
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation Header */}
       <nav className="flex items-center justify-between px-12 py-2">
         <div className="flex items-center space-x-2">
-          <Logo className="w-6 h-8 text-white" />
-          <span className="text-lg font-medium text-white">Momentum</span>
+          <Logo 
+            className="w-6 h-8 text-white transition-transform duration-2000 cursor-pointer"
+            style={{
+              transform: `rotate(${rotationCount * -360}deg)`
+            }}
+            onMouseEnter={() => setRotationCount(prev => prev + 1)}
+          />
+          <span 
+            className="text-lg font-medium text-white cursor-pointer"
+            onMouseEnter={() => setRotationCount(prev => prev + 1)}
+          >
+            Momentum
+          </span>
         </div>
         
         <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center space-x-6">
