@@ -6,9 +6,9 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation Header */}
-      <nav className="flex items-center justify-between px-20 py-4">
+      <nav className="flex items-center justify-between px-12 py-2">
         <div className="flex items-center">
-          <Logo className="w-8 h-10 text-white" />
+          <Logo className="w-6 h-8 text-white" />
         </div>
         
         <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center space-x-6">
@@ -41,7 +41,7 @@ export default function LandingPage() {
       </nav>
       
       {/* Hero Section */}
-      <main className="flex flex-col items-start px-20 pt-[15vh] pb-16 min-h-[calc(100vh-80px)]">
+      <main className="flex flex-col items-start px-12 pt-[15vh] pb-16 min-h-[calc(100vh-80px)]">
         <div className="max-w-3xl">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-light leading-tight mb-3 font-sans">
             Plan your day,
@@ -55,7 +55,7 @@ export default function LandingPage() {
           
           <div className="flex flex-col sm:flex-row gap-3">
             <Button 
-              className="bg-gray-200 text-black hover:bg-gray-300 rounded-md px-5 py-2.5 text-sm w-fit"
+              className="bg-gray-200 text-black hover:bg-gray-300 rounded-md px-4 py-0.5 text-sm w-fit"
             >
               Download for macOS ↓
             </Button>
