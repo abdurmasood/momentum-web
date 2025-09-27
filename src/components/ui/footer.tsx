@@ -15,7 +15,7 @@ export function Footer({ className, ...props }: Omit<FooterProps, 'children'>) {
 			)}
 			{...props}
 		>
-			<div className="relative mx-auto max-w-5xl px-4">
+			<div className="relative mx-auto max-w-5xl px-3">
 				<div className="relative grid grid-cols-1 border-x md:grid-cols-2 md:divide-x">
 					{/* X (Twitter) Section */}
 					<div>
@@ -72,8 +72,8 @@ export function Footer({ className, ...props }: Omit<FooterProps, 'children'>) {
 					</div>
 				</div>
 			</div>
-			<div className="flex justify-center border-t p-3">
-				<p className="text-muted-foreground text-xs">
+			<div className="flex justify-center border-t py-2 px-4">
+				<p className="text-muted-foreground text-[10px]">
 					© {new Date().getFullYear()} Momentum. All rights reserved.
 				</p>
 			</div>
@@ -87,16 +87,16 @@ interface LinksGroupProps {
 }
 function LinksGroup({ title, links }: LinksGroupProps) {
 	return (
-		<div className="p-2">
-			<h3 className="text-foreground/75 mt-2 mb-4 text-xs font-medium tracking-wider uppercase">
+		<div className="p-1">
+			<h3 className="text-foreground/75 mt-1 mb-2 text-[11px] font-medium tracking-wider uppercase">
 				{title}
 			</h3>
-			<ul>
+			<ul className="space-y-0.5">
 				{links.map((link) => (
 					<li key={link.title}>
 						<a
 							href={link.href}
-							className="text-muted-foreground hover:text-foreground text-xs"
+							className="text-muted-foreground hover:text-foreground text-[10px] leading-tight"
 						>
 							{link.title}
 						</a>
@@ -111,10 +111,10 @@ function SocialCard({ title, href }: { title: string; href: string }) {
 	return (
 		<a
 			href={href}
-			className="hover:bg-accent hover:text-accent-foreground flex items-center justify-center border-t border-b p-2 text-sm md:border-t-0 relative group"
+			className="hover:bg-accent hover:text-accent-foreground flex items-center justify-center border-t border-b py-1.5 px-3 text-xs md:border-t-0 relative group"
 		>
 			<span className="font-medium">{title}</span>
-			<ArrowRight className="h-4 w-4 transition-colors absolute right-2 opacity-0 group-hover:opacity-100" />
+			<ArrowRight className="h-3 w-3 transition-colors absolute right-2 opacity-0 group-hover:opacity-100" />
 		</a>
 	);
 }
