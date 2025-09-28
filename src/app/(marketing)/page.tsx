@@ -1,88 +1,30 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Logo } from "@/components/brand/logo"
-import { Footer } from "@/components/ui/footer"
-
-import { useState } from "react"
+import { Navigation, HeroSection } from "@/components/marketing"
 
 export default function LandingPage() {
-  const [rotationCount, setRotationCount] = useState(0)
-  
+  const handleSignIn = () => {
+    // TODO: Implement sign in logic
+    console.log('Sign in clicked')
+  }
+
+  const handleDownload = () => {
+    // TODO: Implement download logic
+    console.log('Download clicked')
+  }
+
+  const handleCTAClick = () => {
+    // TODO: Implement CTA logic
+    console.log('CTA clicked')
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Navigation Header */}
-      <nav className="flex items-center justify-between px-12 py-2">
-        <div className="flex items-center space-x-2">
-          <Logo 
-            className="w-6 h-8 text-white transition-transform duration-2000 cursor-pointer"
-            style={{
-              transform: `rotate(${rotationCount * -360}deg)`
-            }}
-            onMouseEnter={() => setRotationCount(prev => prev + 1)}
-          />
-          <span 
-            className="text-lg font-medium text-white cursor-pointer"
-            onMouseEnter={() => setRotationCount(prev => prev + 1)}
-          >
-            Momentum
-          </span>
-        </div>
-        
-        <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center space-x-6">
-          <a href="#features" className="text-gray-300 hover:text-white transition-colors text-sm">
-            Features
-          </a>
-          <a href="#pricing" className="text-gray-300 hover:text-white transition-colors text-sm">
-            Pricing
-          </a>
-          <a href="#resources" className="text-gray-300 hover:text-white transition-colors text-sm">
-            Resources
-          </a>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button 
-            variant="ghost" 
-            size="sm"
-            className="text-gray-300 hover:text-white hover:bg-gray-800 rounded-md px-3 py-1.5 text-sm h-8"
-          >
-            Sign in
-          </Button>
-          <Button 
-            size="sm"
-            className="bg-gray-200 text-black hover:bg-gray-300 rounded-md px-3 py-1.5 text-sm h-8"
-          >
-            Download
-          </Button>
-        </div>
-      </nav>
-      
-      {/* Hero Section */}
-      <main className="flex flex-col items-start px-12 pt-[15vh] pb-16 min-h-[calc(100vh-80px)]">
-        <div className="max-w-3xl">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-light leading-tight mb-3 font-sans">
-            Plan your day,
-            <br />
-            extraordinarily simple.
-          </h1>
-          
-          <p className="text-sm sm:text-base md:text-lg text-gray-400 mb-5 max-w-lg leading-relaxed font-sans">
-            Momentum helps you organize your day with focus and clarity.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button 
-              className="bg-gray-200 text-black hover:bg-gray-300 rounded-md px-4 py-0.5 text-sm w-fit"
-            >
-              Download for macOS ↓
-            </Button>
-          </div>
-        </div>
-      </main>
-      
-      {/* Footer */}
-      <Footer />
-    </div>
+    <>
+      <Navigation 
+        onSignIn={handleSignIn}
+        onDownload={handleDownload}
+      />
+      <HeroSection onCTAClick={handleCTAClick} />
+    </>
   )
 }

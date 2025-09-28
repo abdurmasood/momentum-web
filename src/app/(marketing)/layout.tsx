@@ -1,8 +1,9 @@
 import type React from "react"
+import { Footer } from "@/components/marketing/footer"
 
 /**
- * Marketing layout for public-facing pages
- * Simple layout without dashboard components like sidebar
+ * Marketing route group layout
+ * Provides consistent styling and footer for all marketing pages
  */
 export default function MarketingLayout({
   children,
@@ -12,6 +13,7 @@ export default function MarketingLayout({
   return (
     <div className="min-h-screen bg-black text-white">
       {children}
+      <Footer />
     </div>
   )
 }
