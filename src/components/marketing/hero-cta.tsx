@@ -21,7 +21,7 @@ export const HeroCTA: React.FC<CTAProps> = ({
   return (
     <div className={cn("flex flex-col sm:flex-row gap-3", className)}>
       <Button 
-        size="golden-hero"
+        size="golden-hero-lg"
         className={cn(
           "bg-gray-200 text-black hover:bg-gray-300",
           "rounded-md" // Keep your custom rounded corners
@@ -33,7 +33,7 @@ export const HeroCTA: React.FC<CTAProps> = ({
       {showSecondary && (
         <Button 
           variant="outline"
-          size="golden-hero"
+          size="golden-hero-lg"
           className={cn(
             "border-gray-600 text-white hover:bg-gray-800",
             "rounded-md" // Keep your custom rounded corners

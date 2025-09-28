@@ -29,6 +29,7 @@ const buttonVariants = cva(
         // Golden ratio proportions for landing page consistency
         golden: "h-8 px-3 py-1.5 text-sm", // 32px height, 12px horizontal padding
         "golden-hero": "px-4 py-0.5 text-sm w-fit", // Hero CTA proportions
+        "golden-hero-lg": "h-12 px-6 py-3 text-base w-fit", // Larger hero CTA with golden ratio
       },
     },
     defaultVariants: {
