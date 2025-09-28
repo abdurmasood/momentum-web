@@ -16,15 +16,16 @@ export const LogoBrand: React.FC<LogoBrandProps> = ({ className = "", textClassN
     setRotationCount(prev => prev + 1)
   }
 
+  // Calculate rotation degrees based on count
+  const rotationDegrees = rotationCount * -360
+
   return (
     <div className={cn("flex items-center space-x-2", className)}>
       <Logo 
-        className={cn(
-          "w-6 h-8 text-white transition-transform duration-[2000ms] cursor-pointer",
-          {
-            "-rotate-[360deg]": rotationCount > 0,
-          }
-        )}
+        className="w-6 h-8 text-white transition-transform duration-[2000ms] cursor-pointer"
+        style={{
+          transform: `rotate(${rotationDegrees}deg)`
+        }}
         onMouseEnter={handleHover}
       />
       <span 
