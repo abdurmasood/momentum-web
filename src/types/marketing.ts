@@ -31,20 +31,6 @@ export interface NavLink {
 export type ButtonClickHandler = () => void | Promise<void>
 
 /**
- * Props for components that handle authentication actions
- */
-export interface AuthActionProps extends MarketingComponentProps {
-  /** Handler for sign in action */
-  onSignIn?: ButtonClickHandler
-  /** Handler for download action */
-  onDownload?: ButtonClickHandler
-  /** Custom text for sign in button */
-  signInText?: string
-  /** Custom text for download button */
-  downloadText?: string
-}
-
-/**
  * Props for CTA (Call to Action) components
  */
 export interface CTAProps extends MarketingComponentProps {
@@ -76,15 +62,6 @@ export interface HeroContentProps extends MarketingComponentProps {
   showSecondaryCTA?: boolean
 }
 
-/**
- * Props for navigation components
- */
-export interface NavigationProps extends MarketingComponentProps {
-  /** Sign in click handler */
-  onSignIn?: ButtonClickHandler
-  /** Download click handler */
-  onDownload?: ButtonClickHandler
-}
 
 /**
  * Props for link list components

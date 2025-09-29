@@ -16,11 +16,9 @@ export { HeroCTA } from "./hero-cta"
 
 // Re-export types for components that need them
 export type {
-  NavigationProps,
   HeroContentProps,
   LogoBrandProps,
   NavLinksProps,
-  AuthActionProps,
   CTAProps,
   NavLink,
   ButtonClickHandler,

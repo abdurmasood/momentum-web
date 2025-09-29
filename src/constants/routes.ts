@@ -1,8 +1,8 @@
 /**
  * Application route constants
  * 
- * Centralized route definitions to eliminate magic strings and ensure
- * consistent navigation throughout the application.
+ * Centralized route definitions for the marketing site.
+ * Dashboard routes are handled by the separate momentum-app.
  */
 
 /**
@@ -14,23 +14,11 @@ export const PUBLIC_ROUTES = {
 } as const;
 
 /**
- * Authentication routes - removed login/signup
+ * Authentication routes
  */
 export const AUTH_ROUTES = {
-} as const;
-
-/**
- * Dashboard routes - protected routes requiring authentication
- */
-export const DASHBOARD_ROUTES = {
-  ROOT: "/dashboard",
-  DEEP_WORK: "/dashboard/deep-work",
-  PLAN: "/dashboard/plan", 
-  TASKS: "/dashboard/tasks",
-  SETTINGS: "/dashboard/settings",
-  CHAT: "/dashboard/chat",
-  PROFILE: "/dashboard/profile",
-  ANALYTICS: "/dashboard/analytics",
+  LOGIN: "/login",
+  SIGNUP: "/signup",
 } as const;
 
 /**
@@ -39,10 +27,6 @@ export const DASHBOARD_ROUTES = {
 export const API_ROUTES = {
   BASE: "/api",
   AUTH: "/api/auth",
-  USER: "/api/user",
-  NOTIFICATIONS: "/api/notifications",
-  TEAMS: "/api/teams",
-  ANALYTICS: "/api/analytics",
 } as const;
 
 /**
@@ -51,30 +35,14 @@ export const API_ROUTES = {
 export const ROUTES = {
   ...PUBLIC_ROUTES,
   AUTH: AUTH_ROUTES,
-  DASHBOARD: DASHBOARD_ROUTES,
   API: API_ROUTES,
-} as const;
-
-/**
- * Route path helpers for programmatic navigation
- */
-export const getRoutePath = {
-  dashboard: (subRoute?: keyof typeof DASHBOARD_ROUTES) => 
-    subRoute ? DASHBOARD_ROUTES[subRoute] : DASHBOARD_ROUTES.ROOT,
-  
-  
-  api: (apiRoute: keyof typeof API_ROUTES) => API_ROUTES[apiRoute],
 } as const;
 
 /**
  * Route validation helpers
  */
-export const isProtectedRoute = (path: string): boolean => {
-  return path.startsWith(DASHBOARD_ROUTES.ROOT);
-};
-
 export const isAuthRoute = (path: string): boolean => {
-  return false; // No auth routes available
+  return Object.values(AUTH_ROUTES).includes(path as AuthRoute);
 };
 
 export const isPublicRoute = (path: string): boolean => {
@@ -94,6 +62,5 @@ export const REDIRECT_ROUTES = {
  */
 export type PublicRoute = typeof PUBLIC_ROUTES[keyof typeof PUBLIC_ROUTES];
 export type AuthRoute = typeof AUTH_ROUTES[keyof typeof AUTH_ROUTES];
-export type DashboardRoute = typeof DASHBOARD_ROUTES[keyof typeof DASHBOARD_ROUTES];
 export type ApiRoute = typeof API_ROUTES[keyof typeof API_ROUTES];
-export type AnyRoute = PublicRoute | AuthRoute | DashboardRoute | ApiRoute;
+export type AnyRoute = PublicRoute | AuthRoute | ApiRoute;

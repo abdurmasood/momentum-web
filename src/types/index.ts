@@ -1,5 +1,5 @@
 /**
- * Centralized type exports for the Momentum application
+ * Centralized type exports for the Momentum marketing site
  * Import types from here for consistent usage across components
  */
 
@@ -8,10 +8,8 @@ export type {
   MarketingComponentProps,
   NavLink,
   ButtonClickHandler,
-  AuthActionProps,
   CTAProps,
   HeroContentProps,
-  NavigationProps,
   NavLinksProps,
   LogoBrandProps,
 } from './marketing'

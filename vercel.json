@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/dashboard/:path*",
+      "destination": "https://momentum-b79s4kgwq-abdurmasoods-projects.vercel.app/dashboard/:path*"
+    }
+  ]
+}

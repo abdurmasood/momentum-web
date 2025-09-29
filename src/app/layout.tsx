@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Figtree } from "next/font/google"
 import { GeistMono } from "geist/font/mono"
 import { Instrument_Serif } from "next/font/google"
+import { SessionProvider } from "@/components/providers/session-provider"
 import "./globals.css"
 
 const figtree = Figtree({
@@ -45,7 +46,11 @@ html {
 }
         `}</style>
       </head>
-      <body className={`${figtree.variable} ${instrumentSerif.variable}`} style={{backgroundColor: 'black'}}>{children}</body>
+      <body className={`${figtree.variable} ${instrumentSerif.variable}`} style={{backgroundColor: 'black'}}>
+        <SessionProvider>
+          {children}
+        </SessionProvider>
+      </body>
     </html>
   )
 }

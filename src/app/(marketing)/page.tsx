@@ -3,27 +3,14 @@
 import { Navigation, HeroSection } from "@/components/marketing"
 
 export default function LandingPage() {
-  const handleSignIn = () => {
-    // TODO: Implement sign in logic
-    console.log('Sign in clicked')
-  }
-
-  const handleDownload = () => {
-    // TODO: Implement download logic
-    console.log('Download clicked')
-  }
-
   const handleCTAClick = () => {
-    // TODO: Implement CTA logic
-    console.log('CTA clicked')
+    // Navigate to signup page when CTA is clicked
+    window.location.href = '/signup'
   }
 
   return (
     <>
-      <Navigation 
-        onSignIn={handleSignIn}
-        onDownload={handleDownload}
-      />
+      <Navigation />
       <HeroSection onCTAClick={handleCTAClick} />
     </>
   )

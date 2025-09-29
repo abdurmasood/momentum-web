@@ -4,19 +4,30 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { BUTTON_TEXT } from '@/constants/marketing'
-import type { AuthActionProps } from "@/types"
+
+interface AuthButtonsProps {
+  signInText?: string
+  signUpText?: string
+  className?: string
+}
 
 /**
  * Authentication buttons component for marketing pages
- * Provides sign in and download actions with golden ratio proportions
+ * Navigates to login and signup pages with golden ratio proportions
  */
-export const AuthButtons: React.FC<AuthActionProps> = ({
-  onSignIn,
-  onDownload,
+export const AuthButtons: React.FC<AuthButtonsProps> = ({
   signInText = BUTTON_TEXT.SIGN_IN,
-  downloadText = BUTTON_TEXT.DOWNLOAD,
+  signUpText = BUTTON_TEXT.GET_STARTED,
   className = ""
-}: AuthActionProps) => {
+}) => {
+  const handleSignIn = () => {
+    window.location.href = '/login'
+  }
+
+  const handleSignUp = () => {
+    window.location.href = '/signup'
+  }
+
   return (
     <div className={cn("flex items-center space-x-2", className)}>
       <Button 
@@ -24,9 +35,9 @@ export const AuthButtons: React.FC<AuthActionProps> = ({
         size="golden"
         className={cn(
           "text-gray-300 hover:text-white hover:bg-gray-800",
-          "rounded-md" // Keep your custom rounded corners
+          "rounded-md"
         )}
-        onClick={onSignIn}
+        onClick={handleSignIn}
       >
         {signInText}
       </Button>
@@ -34,11 +45,11 @@ export const AuthButtons: React.FC<AuthActionProps> = ({
         size="golden"
         className={cn(
           "bg-gray-200 text-black hover:bg-gray-300",
-          "rounded-md" // Keep your custom rounded corners
+          "rounded-md"
         )}
-        onClick={onDownload}
+        onClick={handleSignUp}
       >
-        {downloadText}
+        {signUpText}
       </Button>
     </div>
   )
