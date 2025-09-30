@@ -1,8 +1,11 @@
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import EmailProvider from "next-auth/providers/email"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import jwt from "jsonwebtoken"
+import { Resend } from "resend"
+import { generateMagicLinkEmail, generateMagicLinkText } from "@/lib/email-templates"
 
 /**
  * NextAuth v5 configuration with Prisma adapter
@@ -16,6 +19,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    // Email Magic Link Provider
+    EmailProvider({
+      server: {
+        host: "unused",
+        port: 587,
+        auth: { user: "unused", pass: "unused" },
+      },
+      from: process.env.EMAIL_FROM!,
+      maxAge: 10 * 60, // Magic link valid for 10 minutes
+      
+      async sendVerificationRequest({ identifier: email, url, provider }) {
+        const resend = new Resend(process.env.RESEND_API_KEY!)
+        const { host } = new URL(url)
+
+        try {
+          await resend.emails.send({
+            from: provider.from,
+            to: email,
+            subject: `Sign in to Momentum`,
+            html: generateMagicLinkEmail({ url, host }),
+            text: generateMagicLinkText({ url, host }),
+          })
+        } catch (error) {
+          console.error("Error sending magic link email:", error)
+          throw new Error("Failed to send verification email")
+        }
+      },
     }),
   ],
 
@@ -33,6 +65,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // OAuth sign in (Google)
       if (account?.provider === "google") {
         token.provider = "google"
+      } else if (account?.provider === "email") {
+        token.provider = "email"
       }
 
       return token
@@ -59,6 +93,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === "google") {
         console.log("Google user signed in:", user.email)
         // User and Account records are automatically managed by Prisma adapter
+      } else if (account?.provider === "email") {
+        console.log("Email magic link used:", user.email)
+        // Email verification successful
       }
 
       return true
@@ -76,6 +113,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   pages: {
     signIn: "/login",
+    verifyRequest: "/auth/verify-request",
     error: "/login",
   },
 
