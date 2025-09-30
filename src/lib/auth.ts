@@ -1,12 +1,16 @@
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { prisma } from "@/lib/prisma"
 import jwt from "jsonwebtoken"
 
 /**
- * NextAuth configuration
- * Supports Google OAuth
+ * NextAuth v5 configuration with Prisma adapter
+ * Supports Google OAuth with Neon PostgreSQL database
  */
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  
   providers: [
     // Google OAuth Provider
     GoogleProvider({
@@ -49,19 +53,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
     // Called on successful sign in
     async signIn({ user, account, profile }) {
-      // TODO: Check if user exists in database
-      // If not, create new user record
+      // PrismaAdapter automatically creates/updates user in database
+      // No need to manually handle user creation
       
-      // For Google OAuth
       if (account?.provider === "google") {
-        // You can access Google profile data here
         console.log("Google user signed in:", user.email)
-        
-        // TODO: Create user in database if doesn't exist
-        // const existingUser = await db.user.findUnique({ where: { email: user.email }})
-        // if (!existingUser) {
-        //   await db.user.create({ data: { email: user.email, name: user.name }})
-        // }
+        // User and Account records are automatically managed by Prisma adapter
       }
 
       return true
@@ -89,60 +86,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   secret: process.env.NEXTAUTH_SECRET,
 })
-
-// Export authOptions for backward compatibility
-export const authOptions = {
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-  callbacks: {
-    async jwt({ token, user, account }: any) {
-      if (user) {
-        token.userId = user.id
-        token.email = user.email
-        token.name = user.name
-        token.picture = user.image
-      }
-      if (account?.provider === "google") {
-        token.provider = "google"
-      }
-      return token
-    },
-    async session({ session, token }: any) {
-      if (session?.user && token) {
-        (session.user as any).id = token.userId || token.sub
-        if (token.email) session.user.email = token.email as string
-        if (token.name) session.user.name = token.name as string
-        if (token.picture) session.user.image = token.picture as string
-      }
-      return session
-    },
-    async signIn({ user, account }: any) {
-      if (account?.provider === "google") {
-        console.log("Google user signed in:", user.email)
-      }
-      return true
-    },
-    async redirect({ url, baseUrl }: any) {
-      if (url.startsWith(baseUrl)) {
-        return `${baseUrl}/auth/callback`
-      }
-      return baseUrl
-    },
-  },
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-  session: {
-    strategy: "jwt" as const,
-    maxAge: 7 * 24 * 60 * 60,
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-}
 
 /**
  * Generate custom JWT for dashboard
