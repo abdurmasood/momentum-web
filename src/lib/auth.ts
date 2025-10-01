@@ -35,9 +35,10 @@ const JWT_SECRET = validateJwtSecret()
 /**
  * Type guard to validate session has all required user properties
  * Ensures type safety at runtime before generating tokens
+ * Note: name is optional to support email magic link authentication
  */
 export function isValidSession(session: any): session is {
-  user: { id: string; email: string; name: string }
+  user: { id: string; email: string; name?: string | null }
 } {
   return (
     session != null &&
@@ -46,8 +47,8 @@ export function isValidSession(session: any): session is {
     session.user.id.length > 0 &&
     typeof session.user.email === 'string' &&
     session.user.email.length > 0 &&
-    typeof session.user.name === 'string' &&
-    session.user.name.length > 0
+    // Name is optional - accept if it's a string or null/undefined
+    (session.user.name == null || typeof session.user.name === 'string')
   )
 }
 
@@ -174,14 +175,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 /**
  * Generate custom JWT for dashboard
  * Called after NextAuth authentication succeeds
+ * Uses email username as fallback for users without a name (e.g., magic link auth)
  */
-export function generateDashboardToken(user: { id: string; email: string; name: string }) {
+export function generateDashboardToken(user: {
+  id: string;
+  email: string;
+  name?: string | null
+}) {
   const token = jwt.sign(
     {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
+        // Use name if available, otherwise fallback to email username
+        name: user.name || user.email.split('@')[0],
       },
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days
       iat: Math.floor(Date.now() / 1000),
