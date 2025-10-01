@@ -17,6 +17,8 @@ export default function AuthCallbackPage() {
   const { data: session, status } = useSession()
 
   useEffect(() => {
+    const controller = new AbortController()
+
     async function redirectToDashboard() {
       if (status === "authenticated" && session?.user) {
         try {
@@ -25,6 +27,7 @@ export default function AuthCallbackPage() {
           const dashboardToken = await fetch("/api/auth/generate-token", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            signal: controller.signal,
           }).then((res) => res.json())
 
           if (dashboardToken.token) {
@@ -33,6 +36,10 @@ export default function AuthCallbackPage() {
             window.location.href = `${dashboardUrl}/dashboard/auth?token=${dashboardToken.token}`
           }
         } catch (error) {
+          // Ignore abort errors (component unmounted during fetch)
+          if (error instanceof Error && error.name === "AbortError") {
+            return
+          }
           console.error("Error generating dashboard token:", error)
           // Fallback: redirect to login
           router.push("/login?error=token_generation_failed")
@@ -44,6 +51,10 @@ export default function AuthCallbackPage() {
     }
 
     redirectToDashboard()
+
+    return () => {
+      controller.abort()
+    }
   }, [session, status, router])
 
   // Loading state with wave loader
