@@ -138,10 +138,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // No need to manually handle user creation
       
       if (account?.provider === "google") {
-        console.log("Google user signed in:", user.email)
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Google user signed in:", user.email)
+        }
         // User and Account records are automatically managed by Prisma adapter
       } else if (account?.provider === "email") {
-        console.log("Email magic link used:", user.email)
+        if (process.env.NODE_ENV === 'development') {
+          console.log("Email magic link used:", user.email)
+        }
         // Email verification successful
       }
 
