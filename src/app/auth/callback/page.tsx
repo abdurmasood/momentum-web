@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { useSession } from "next-auth/react"
+import { WaveLoader } from "@/components/ui/wave-loader"
 
 /**
  * Auth callback page
@@ -47,13 +48,10 @@ export default function AuthCallbackPage() {
     redirectToDashboard()
   }, [session, status])
 
-  // Loading state
+  // Loading state with wave loader
   return (
     <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-        <p className="text-gray-400">Completing authentication...</p>
-      </div>
+      <WaveLoader />
     </div>
   )
 }
