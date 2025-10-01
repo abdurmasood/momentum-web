@@ -78,15 +78,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       
       async sendVerificationRequest({ identifier: email, url, provider }) {
         const resend = new Resend(process.env.RESEND_API_KEY!)
-        const { host } = new URL(url)
 
         try {
           await resend.emails.send({
             from: provider.from,
             to: email,
             subject: `Sign in to Momentum`,
-            html: generateMagicLinkEmail({ url, host }),
-            text: generateMagicLinkText({ url, host }),
+            html: generateMagicLinkEmail({ url }),
+            text: generateMagicLinkText({ url }),
           })
         } catch (error) {
           console.error("Error sending magic link email:", error)

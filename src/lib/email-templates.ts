@@ -3,15 +3,79 @@
  * Branded templates for magic link emails
  */
 
+/**
+ * Validates and sanitizes URLs for use in email templates
+ *
+ * Security measures:
+ * - Validates URL format using native URL parser
+ * - Enforces protocol whitelist (http/https only)
+ * - Prevents protocol injection attacks (javascript:, data:, etc.)
+ * - Prevents malformed URLs from being used
+ *
+ * @param url - The URL to validate
+ * @returns The validated URL string
+ * @throws Error if URL is invalid or uses non-HTTP(S) protocol
+ */
+function validateEmailUrl(url: string): string {
+  let parsedUrl: URL
+
+  try {
+    parsedUrl = new URL(url)
+  } catch (error) {
+    throw new Error(`Invalid URL format: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
+
+  // Whitelist only HTTP and HTTPS protocols
+  const allowedProtocols = ['http:', 'https:']
+  if (!allowedProtocols.includes(parsedUrl.protocol)) {
+    throw new Error(
+      `Invalid URL protocol: ${parsedUrl.protocol}. Only HTTP and HTTPS are allowed in email links.`
+    )
+  }
+
+  return url
+}
+
+/**
+ * Escapes HTML special characters to prevent injection
+ *
+ * Converts potentially dangerous characters to their HTML entity equivalents:
+ * - < becomes &lt;
+ * - > becomes &gt;
+ * - & becomes &amp;
+ * - " becomes &quot;
+ * - ' becomes &#39;
+ *
+ * @param text - The text to escape
+ * @returns The escaped text safe for HTML display
+ */
+function escapeHtml(text: string): string {
+  const htmlEscapeMap: Record<string, string> = {
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }
+
+  return text.replace(/[<>&"']/g, (char) => htmlEscapeMap[char] || char)
+}
+
 interface MagicLinkEmailParams {
   url: string
-  host: string
 }
 
 /**
  * Generate HTML template for magic link email
+ *
+ * Security: Validates URL to prevent injection attacks before rendering
  */
-export function generateMagicLinkEmail({ url, host }: MagicLinkEmailParams): string {
+export function generateMagicLinkEmail({ url }: MagicLinkEmailParams): string {
+  // Validate URL to prevent protocol injection and malformed URLs
+  const validatedUrl = validateEmailUrl(url)
+  // Escape URL for safe display in HTML text context
+  const escapedUrl = escapeHtml(validatedUrl)
+
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -53,19 +117,19 @@ export function generateMagicLinkEmail({ url, host }: MagicLinkEmailParams): str
               <table role="presentation" style="border-collapse: collapse; margin: 0 0 24px 0;">
                 <tr>
                   <td style="border-radius: 6px; background-color: #ffffff;">
-                    <a href="${url}" target="_blank" style="display: inline-block; padding: 14px 32px; font-size: 16px; font-weight: 500; color: #000000; text-decoration: none; border-radius: 6px;">
+                    <a href="${validatedUrl}" target="_blank" style="display: inline-block; padding: 14px 32px; font-size: 16px; font-weight: 500; color: #000000; text-decoration: none; border-radius: 6px;">
                       Sign In
                     </a>
                   </td>
                 </tr>
               </table>
-              
+
               <!-- Alternative Link -->
               <p style="margin: 0 0 8px 0; font-size: 14px; color: #666666;">
                 Or copy and paste this URL into your browser:
               </p>
               <p style="margin: 0; font-size: 13px; color: #555555; word-break: break-all;">
-                ${url}
+                ${escapedUrl}
               </p>
               
             </td>
@@ -103,14 +167,19 @@ export function generateMagicLinkEmail({ url, host }: MagicLinkEmailParams): str
 
 /**
  * Generate plain text version for email clients that don't support HTML
+ *
+ * Security: Validates URL to prevent injection attacks before rendering
  */
-export function generateMagicLinkText({ url, host }: MagicLinkEmailParams): string {
+export function generateMagicLinkText({ url }: MagicLinkEmailParams): string {
+  // Validate URL to prevent protocol injection and malformed URLs
+  const validatedUrl = validateEmailUrl(url)
+
   return `
 Sign in to Momentum
 
 Click the link below to sign in to your account:
 
-${url}
+${validatedUrl}
 
 This link will expire in 10 minutes and can only be used once.
 
