@@ -8,6 +8,50 @@ import { Resend } from "resend"
 import { generateMagicLinkEmail, generateMagicLinkText } from "@/lib/email-templates"
 
 /**
+ * Validates JWT_SECRET environment variable
+ * Ensures the secret exists and has minimum entropy (32 characters)
+ */
+function validateJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+
+  if (!secret) {
+    throw new Error(
+      'JWT_SECRET environment variable is not set. Please add JWT_SECRET to your .env file.'
+    )
+  }
+
+  if (secret.length < 32) {
+    throw new Error(
+      `JWT_SECRET must be at least 32 characters long for security. Current length: ${secret.length}`
+    )
+  }
+
+  return secret
+}
+
+// Validate JWT_SECRET at module load time (fail fast on startup)
+const JWT_SECRET = validateJwtSecret()
+
+/**
+ * Type guard to validate session has all required user properties
+ * Ensures type safety at runtime before generating tokens
+ */
+export function isValidSession(session: any): session is {
+  user: { id: string; email: string; name: string }
+} {
+  return (
+    session != null &&
+    session.user != null &&
+    typeof session.user.id === 'string' &&
+    session.user.id.length > 0 &&
+    typeof session.user.email === 'string' &&
+    session.user.email.length > 0 &&
+    typeof session.user.name === 'string' &&
+    session.user.name.length > 0
+  )
+}
+
+/**
  * NextAuth v5 configuration with Prisma adapter
  * Supports Google OAuth with Neon PostgreSQL database
  */
@@ -75,8 +119,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // Called whenever session is checked
     async session({ session, token }) {
       if (session?.user && token) {
-        // Safely assign properties with fallbacks
-        (session.user as any).id = token.userId || token.sub
+        // Assign user ID from token (required for session validation)
+        session.user.id = token.userId || token.sub || ''
+
+        // Assign other properties from token
         if (token.email) session.user.email = token.email as string
         if (token.name) session.user.name = token.name as string
         if (token.picture) session.user.image = token.picture as string
@@ -140,7 +186,7 @@ export function generateDashboardToken(user: { id: string; email: string; name: 
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7, // 7 days
       iat: Math.floor(Date.now() / 1000),
     },
-    process.env.JWT_SECRET!
+    JWT_SECRET
   )
 
   return token

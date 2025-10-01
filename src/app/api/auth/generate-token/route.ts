@@ -1,29 +1,42 @@
 import { NextResponse } from "next/server"
-import { auth, generateDashboardToken } from "@/lib/auth"
+import { auth, generateDashboardToken, isValidSession } from "@/lib/auth"
 
 /**
  * POST /api/auth/generate-token
- * 
+ *
  * Generates a custom JWT for the dashboard after NextAuth authentication
- * Requires an active NextAuth session
+ * Requires an active NextAuth session with valid user properties
  */
 export async function POST(request: Request) {
   try {
     // Verify user is authenticated with NextAuth
     const session = await auth()
 
-    if (!session || !session.user) {
+    // Validate session has all required properties using type guard
+    if (!isValidSession(session)) {
+      console.error("Invalid session: missing required user properties", {
+        hasSession: !!session,
+        hasUser: !!session?.user,
+        userId: session?.user?.id,
+        userEmail: session?.user?.email,
+        userName: session?.user?.name,
+      })
+
       return NextResponse.json(
-        { success: false, message: "Unauthorized" },
+        {
+          success: false,
+          message: "Invalid session: missing required user information"
+        },
         { status: 401 }
       )
     }
 
     // Generate custom JWT for dashboard
+    // Type guard ensures session.user has id, email, and name
     const token = generateDashboardToken({
-      id: (session.user as any).id || 'unknown',
-      email: session.user.email!,
-      name: session.user.name!,
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.name,
     })
 
     return NextResponse.json({
