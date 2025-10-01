@@ -1,11 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable experimental optimizations for package imports
-  experimental: {
-    optimizePackageImports: ['@stackframe/stack']
-  },
-  
   // Bundle analyzer configuration
   env: {
     ANALYZE: process.env.ANALYZE || 'false',
@@ -23,14 +18,6 @@ const nextConfig: NextConfig = {
           ...config.optimization.splitChunks,
           cacheGroups: {
             ...config.optimization.splitChunks?.cacheGroups,
-            // Separate auth components into their own chunk
-            auth: {
-              test: /[\\/]node_modules[\\/]@stackframe[\\/]stack/,
-              name: 'auth-vendor',
-              chunks: 'all',
-              priority: 10,
-              enforce: true,
-            },
             // Separate date utilities if they exist
             dateFns: {
               test: /[\\/]node_modules[\\/]@?date-fns/,
@@ -54,8 +41,6 @@ const nextConfig: NextConfig = {
     // Add module aliases for better tree shaking
     config.resolve.alias = {
       ...config.resolve.alias,
-      // Provide empty modules for server-only Stack Auth components if needed
-      // This helps reduce client bundle size
     }
 
     return config
@@ -71,16 +56,6 @@ const nextConfig: NextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable'
-          }
-        ]
-      },
-      {
-        // Preload handler resources for better performance
-        source: '/handler/(.*)',
-        headers: [
-          {
-            key: 'Link',
-            value: '</handler/auth-vendor.js>; rel=preload; as=script'
           }
         ]
       }
