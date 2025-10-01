@@ -19,14 +19,10 @@ export default function AuthCallbackPage() {
       if (status === "authenticated" && session?.user) {
         try {
           // Generate custom JWT for dashboard
+          // Session cookie is automatically sent with the request
           const dashboardToken = await fetch("/api/auth/generate-token", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              userId: session.user.id,
-              email: session.user.email,
-              name: session.user.name,
-            }),
           }).then((res) => res.json())
 
           if (dashboardToken.token) {
