@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { BUTTON_TEXT } from '@/constants/marketing'
@@ -20,12 +21,14 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   signUpText = BUTTON_TEXT.GET_STARTED,
   className = ""
 }) => {
+  const router = useRouter()
+
   const handleSignIn = () => {
-    window.location.href = '/login'
+    router.push('/login')
   }
 
   const handleSignUp = () => {
-    window.location.href = '/signup'
+    router.push('/signup')
   }
 
   return (

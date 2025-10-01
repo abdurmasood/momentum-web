@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { WaveLoader } from "@/components/ui/wave-loader"
 
@@ -12,6 +13,7 @@ import { WaveLoader } from "@/components/ui/wave-loader"
  * 3. Redirects to dashboard with the JWT token
  */
 export default function AuthCallbackPage() {
+  const router = useRouter()
   const { data: session, status } = useSession()
 
   useEffect(() => {
@@ -26,23 +28,23 @@ export default function AuthCallbackPage() {
           }).then((res) => res.json())
 
           if (dashboardToken.token) {
-            // Redirect to dashboard with token
+            // Redirect to dashboard with token (external domain - must use window.location)
             const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || ""
             window.location.href = `${dashboardUrl}/dashboard/auth?token=${dashboardToken.token}`
           }
         } catch (error) {
           console.error("Error generating dashboard token:", error)
           // Fallback: redirect to login
-          window.location.href = "/login?error=token_generation_failed"
+          router.push("/login?error=token_generation_failed")
         }
       } else if (status === "unauthenticated") {
         // No session, redirect to login
-        window.location.href = "/login"
+        router.push("/login")
       }
     }
 
     redirectToDashboard()
-  }, [session, status])
+  }, [session, status, router])
 
   // Loading state with wave loader
   return (
