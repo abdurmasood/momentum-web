@@ -266,23 +266,13 @@ function validateEnvironment(): ValidationResult {
   // TIER 3: Optional Variables (Warnings Only)
   // ========================================================================
 
-  // Analytics tracking (optional)
-  if (!isDefined(process.env.NEXT_PUBLIC_GA_ID)) {
-    warnings.push('NEXT_PUBLIC_GA_ID not set - Google Analytics tracking disabled')
-  }
-
-  if (!isDefined(process.env.NEXT_PUBLIC_GTM_ID)) {
-    warnings.push('NEXT_PUBLIC_GTM_ID not set - Google Tag Manager disabled')
-  }
-
-  if (!isDefined(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)) {
-    warnings.push('NEXT_PUBLIC_MIXPANEL_TOKEN not set - Mixpanel analytics disabled')
-  }
-
   // Direct database URL for Prisma Migrate (only needed for migrations, not runtime)
   if (!isDefined(process.env.DIRECT_URL) && process.env.NODE_ENV === 'development') {
     warnings.push('DIRECT_URL not set - Prisma migrations may not work with connection pooling')
   }
+
+  // Note: NEXT_PUBLIC_GA_ID is optional and won't generate warnings
+  // Set it when you're ready to enable Google Analytics tracking
 
   return {
     success: errors.length === 0,
@@ -354,8 +344,6 @@ export const env = {
 
   // Analytics (Optional)
   NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
-  NEXT_PUBLIC_GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
-  NEXT_PUBLIC_MIXPANEL_TOKEN: process.env.NEXT_PUBLIC_MIXPANEL_TOKEN,
 
   // System
   NODE_ENV: process.env.NODE_ENV || 'development',

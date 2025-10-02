@@ -115,10 +115,8 @@ export const PAGE_METADATA = {
 
 /**
  * Analytics and tracking
- * These use environment variables since IDs differ between dev/staging/production
+ * Google Analytics ID differs between dev/staging/production environments
  */
 export const ANALYTICS = {
   GA_ID: process.env.NEXT_PUBLIC_GA_ID,
-  GTM_ID: process.env.NEXT_PUBLIC_GTM_ID,
-  MIXPANEL_TOKEN: process.env.NEXT_PUBLIC_MIXPANEL_TOKEN,
 } as const

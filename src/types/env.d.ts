@@ -32,8 +32,6 @@ declare namespace NodeJS {
 
     // Analytics (Optional)
     NEXT_PUBLIC_GA_ID?: string
-    NEXT_PUBLIC_GTM_ID?: string
-    NEXT_PUBLIC_MIXPANEL_TOKEN?: string
 
     // Build Configuration (Optional)
     ANALYZE?: string
