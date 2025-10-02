@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { Figtree } from "next/font/google"
 import { GeistMono } from "geist/font/mono"
 import { Instrument_Serif } from "next/font/google"
+import { SessionProvider } from "@/components/providers/session-provider"
+import { ErrorBoundary } from "@/components/error-boundary"
 import "./globals.css"
 
 const figtree = Figtree({
@@ -31,18 +33,27 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{backgroundColor: 'black'}}>
       <head>
         <style>{`
-html {
+html, body {
+  background-color: black !important;
   font-family: ${figtree.style.fontFamily};
+}
+html {
   --font-sans: ${figtree.variable};
   --font-mono: ${GeistMono.variable};
   --font-instrument-serif: ${instrumentSerif.variable};
 }
         `}</style>
       </head>
-      <body className={`${figtree.variable} ${instrumentSerif.variable}`}>{children}</body>
+      <body className={`${figtree.variable} ${instrumentSerif.variable}`} style={{backgroundColor: 'black'}}>
+        <SessionProvider>
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </SessionProvider>
+      </body>
     </html>
   )
 }

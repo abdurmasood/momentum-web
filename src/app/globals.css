@@ -1,130 +1,40 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Modern Blue-Themed Design System */ /* Deep midnight blue */ /* Almost white text */
-  --card: oklch(1 0 0); /* Glass card background */
-  --card-foreground: oklch(0.145 0 0); /* White text on cards */
-  --popover: oklch(1 0 0); /* Elevated surface */
-  --popover-foreground: oklch(0.145 0 0); /* White text in popovers */
-  --primary: oklch(0.205 0 0); /* Modern light blue */
-  --primary-foreground: oklch(0.985 0 0); /* Dark text on blue */
-  --secondary: oklch(0.97 0 0); /* Slate-blue background */
-  --secondary-foreground: oklch(0.205 0 0); /* Muted text */
-  --muted: oklch(0.97 0 0); /* Muted background */
-  --muted-foreground: oklch(0.556 0 0); /* Subtle text */
-  --accent: oklch(0.97 0 0); /* Lighter blue for accents */
-  --accent-foreground: oklch(0.205 0 0); /* Dark text on accent */
-  --destructive: oklch(0.577 0.245 27.325); /* Modern red */
-  --destructive-foreground: #F8FAFC; /* White text on red */
-  --border: oklch(0.922 0 0); /* Subtle glass border */
-  --input: oklch(0.922 0 0); /* Input background */
-  --ring: oklch(0.708 0 0); /* Blue focus ring */
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem; /* Softer rounded corners */
-  --sidebar: hsl(0 0% 98%); /* Light blue glass sidebar background */
-  --sidebar-foreground: hsl(240 5.3% 26.1%); /* White sidebar text */
-  --sidebar-primary: hsl(240 5.9% 10%); /* Light blue for active items */
-  --sidebar-primary-foreground: hsl(0 0% 98%); /* Dark text on blue */
-  --sidebar-accent: hsl(240 4.8% 95.9%); /* Light blue accent */
-  --sidebar-accent-foreground: hsl(240 5.9% 10%); /* White text on accent */
-  --sidebar-border: hsl(220 13% 91%); /* Subtle borders */
-  --sidebar-ring: hsl(217.2 91.2% 59.8%); /* Blue focus ring */
+  /* Modern Dark Theme Design System */
+  --card: oklch(0.205 0 0); /* Dark gray card background */
+  --card-foreground: oklch(0.985 0 0); /* Light text on cards */
+  --popover: oklch(0.205 0 0); /* Dark gray elevated surface */
+  --popover-foreground: oklch(0.985 0 0); /* Light text in popovers */
+  --primary: oklch(0.922 0 0); /* Light gray primary */
+  --primary-foreground: oklch(0.205 0 0); /* Dark text on primary */
+  --secondary: oklch(0.269 0 0); /* Medium gray secondary */
+  --secondary-foreground: oklch(0.985 0 0); /* Light text on secondary */
+  --muted: oklch(0.269 0 0); /* Muted background */
+  --muted-foreground: oklch(0.708 0 0); /* Subtle text */
+  --accent: oklch(0.269 0 0); /* Medium gray accent */
+  --accent-foreground: oklch(0.985 0 0); /* Light text on accent */
+  --destructive: oklch(0.704 0.191 22.216); /* Modern red */
+  --destructive-foreground: oklch(0.976 0.002 247.86); /* White text on red */
+  --border: oklch(1 0 0 / 10%); /* Subtle light border */
+  --input: oklch(1 0 0 / 15%); /* Subtle light input background */
+  --ring: oklch(1 0 0); /* White focus ring */
+  --radius: 0.625rem;
 
-  /* Dashboard-specific variables */
-  --glass-bg: rgba(30, 41, 59, 0.5);
-  --glass-border: rgba(148, 163, 184, 0.1);
-  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --gradient-blue: linear-gradient(135deg, #60A5FA 0%, #93C5FD 100%);
-  --gradient-text: linear-gradient(135deg, #60A5FA 0%, #DBEAFE 100%);
-  --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
-  /* Added Figtree as the primary font variable */
-  --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
-
-  /* SVG Filter Color Variables for Focus Theme */
-  --filter-glass-r: 0.05;
-  --filter-glass-g: 0.08;
-  --filter-glass-b: 0.2;
-  --filter-glass-opacity: 0.75;
-
-  /* Shader Gradient Colors for Focus Theme */
-  --shader-navy-deep: #0f172a;
-  --shader-navy-medium: #1e293b;
-  --shader-gray-medium: #334155;
-  --shader-navy-darker: #0c1220;
-  --shader-blue-deep: #1e3a8a;
-  --shader-blue-medium: #1e40af;
-  --shader-blue-bright: #3b82f6;
+  /* Font variables */
+  --font-instrument-serif: "Instrument Serif", serif;
+  --font-figtree: "Figtree", sans-serif;
 
   /* Text Selection Colors */
-  --selection-light-bg: #FFA726; /* Warm amber for light mode */
-  --selection-light-text: #0c1220; /* Navy darker for contrast */ --background: oklch(1 0 0); --foreground: oklch(0.145 0 0);
-}
-
-.dark {
-  /* Dark mode - Enhanced blue theme */
-  --background: oklch(0.145 0 0);
+  --selection-bg: oklch(0.773 0.108 61.83); /* Warm amber for selection */
+  --selection-text: oklch(0 0 0); /* Black text for optimal readability */
+  
+  --background: oklch(0 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: #F8FAFC;
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: hsl(240 5.9% 10%); /* Light blue glass sidebar background */
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-  --font-instrument-serif: "Instrument Serif", serif; /* Instrument Serif font family configuration */
-  /* Added Figtree font variable for dark mode consistency */
-  --font-figtree: "Figtree", sans-serif; /* Figtree font family configuration */
-
-  /* SVG Filter Color Variables for Focus Theme - Dark Mode */
-  --filter-glass-r: 0.05;
-  --filter-glass-g: 0.08;
-  --filter-glass-b: 0.2;
-  --filter-glass-opacity: 0.75;
-
-  /* Shader Gradient Colors for Focus Theme - Dark Mode */
-  --shader-navy-deep: #0f172a;
-  --shader-navy-medium: #1e293b;
-  --shader-gray-medium: #334155;
-  --shader-navy-darker: #0c1220;
-  --shader-blue-deep: #1e3a8a;
-  --shader-blue-medium: #1e40af;
-  --shader-blue-bright: #3b82f6;
-
-  /* Text Selection Colors - Dark Mode */
-  --selection-dark-bg: #FFB74D; /* Lighter amber for dark mode */
-  --selection-dark-text: #000000; /* Pure black for optimal readability */
 }
+
 
 @theme inline {
   --color-background: var(--background);
@@ -146,27 +56,12 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
   --font-instrument-serif: var(--font-instrument-serif);
-  /* Added Figtree font to theme configuration */
   --font-sans: var(--font-figtree);
-  --font-figtree: var(--font-figtree);
 }
 
 @layer base {
@@ -175,111 +70,22 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Set Figtree as the default font family for the entire website */
     font-family: var(--font-figtree);
   }
 
   /* Text Selection Styling */
-  /* Define common selection properties to reduce repetition */
-  :root {
-    --selection-bg-current: var(--selection-light-bg);
-    --selection-text-current: var(--selection-light-text);
-  }
-
   ::selection {
-    background-color: var(--selection-bg-current);
-    color: var(--selection-text-current);
-    -webkit-text-fill-color: var(--selection-text-current);
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
+    -webkit-text-fill-color: var(--selection-text);
   }
 
   ::-moz-selection {
-    background-color: var(--selection-bg-current);
-    color: var(--selection-text-current);
-  }
-
-  /* Dark mode selection styling */
-  .dark {
-    --selection-bg-current: var(--selection-dark-bg);
-    --selection-text-current: var(--selection-dark-text);
+    background-color: var(--selection-bg);
+    color: var(--selection-text);
   }
 }
 
 .instrument {
   font-family: var(--font-instrument-serif);
 }
-
-/* SVG Filter Classes */
-.filter-gooey {
-  filter: url(#gooey-filter);
-}
-
-/* Glass Morphism Utilities */
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px) saturate(180%);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--card-shadow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--card-shadow-hover);
-  border-color: rgba(96, 165, 250, 0.2);
-}
-
-.glass-sidebar {
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(24px) saturate(200%);
-  border-right: 1px solid rgba(96, 165, 250, 0.15);
-}
-
-/* Modern Button Styles */
-.btn-primary {
-  background: var(--gradient-blue);
-  color: var(--primary-foreground);
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
-}
-
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(96, 165, 250, 0.3);
-}
-
-/* Gradient Text */
-.gradient-text {
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease-in-out infinite;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-/* Floating Animation */
-.floating {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-/* Smooth Transitions - only apply to elements without explicit transition classes */
-*:not([class*="transition"]) {
-  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
