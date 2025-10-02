@@ -29,15 +29,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     setIsLoading(true)
     
     try {
-      const result = await signIn("email", {
+      await signIn("email", {
         email,
         redirect: true,
         callbackUrl: "/auth/callback",
       })
-
-      if (result?.error) {
-        setError("Failed to send magic link. Please try again.")
-      }
+      
     } catch (err) {
       console.error("Error sending magic link:", err)
       setError("Something went wrong. Please try again.")
