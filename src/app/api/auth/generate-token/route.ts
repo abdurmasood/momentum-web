@@ -8,6 +8,7 @@ import { auth, generateDashboardToken, isValidSession } from "@/lib/auth"
  * Requires an active NextAuth session with valid user properties
  */
 export async function POST() {
+
   try {
     // Verify user is authenticated with NextAuth
     const session = await auth()
@@ -15,6 +16,7 @@ export async function POST() {
     // Validate session has all required properties using type guard
     if (!isValidSession(session)) {
       console.error("Invalid session: missing required user properties")
+
 
       return NextResponse.json(
         {

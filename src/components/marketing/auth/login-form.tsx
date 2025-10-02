@@ -34,6 +34,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         redirect: true,
         callbackUrl: "/auth/callback",
       })
+      
     } catch (err) {
       console.error("Error sending magic link:", err)
       setError("Something went wrong. Please try again.")

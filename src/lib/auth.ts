@@ -14,6 +14,7 @@ import { env, JWT_SECRET } from "@/lib/env"
  * Note: name is optional to support email magic link authentication
  */
 export function isValidSession(session: unknown): session is {
+
   user: { id: string; email: string; name?: string | null }
 } {
   return (
@@ -122,6 +123,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
     // Called on successful sign in
     async signIn({ user, account }) {
+  
       // PrismaAdapter automatically creates/updates user in database
       // No need to manually handle user creation
       
