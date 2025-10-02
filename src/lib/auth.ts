@@ -6,31 +6,7 @@ import { prisma } from "@/lib/prisma"
 import jwt from "jsonwebtoken"
 import { Resend } from "resend"
 import { generateMagicLinkEmail, generateMagicLinkText } from "@/lib/email-templates"
-
-/**
- * Validates JWT_SECRET environment variable
- * Ensures the secret exists and has minimum entropy (32 characters)
- */
-function validateJwtSecret(): string {
-  const secret = process.env.JWT_SECRET
-
-  if (!secret) {
-    throw new Error(
-      'JWT_SECRET environment variable is not set. Please add JWT_SECRET to your .env file.'
-    )
-  }
-
-  if (secret.length < 32) {
-    throw new Error(
-      `JWT_SECRET must be at least 32 characters long for security. Current length: ${secret.length}`
-    )
-  }
-
-  return secret
-}
-
-// Validate JWT_SECRET at module load time (fail fast on startup)
-const JWT_SECRET = validateJwtSecret()
+import { env, JWT_SECRET } from "@/lib/env"
 
 /**
  * Type guard to validate session has all required user properties
@@ -60,39 +36,47 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   
   providers: [
-    // Google OAuth Provider
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    // Google OAuth Provider (conditionally included if configured)
+    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+      ? [
+          GoogleProvider({
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+          }),
+        ]
+      : []),
 
-    // Email Magic Link Provider
-    EmailProvider({
-      server: {
-        host: "unused",
-        port: 587,
-        auth: { user: "unused", pass: "unused" },
-      },
-      from: process.env.EMAIL_FROM!,
-      maxAge: 10 * 60, // Magic link valid for 10 minutes
-      
-      async sendVerificationRequest({ identifier: email, url, provider }) {
-        const resend = new Resend(process.env.RESEND_API_KEY!)
+    // Email Magic Link Provider (conditionally included if configured)
+    ...(env.RESEND_API_KEY && env.EMAIL_FROM
+      ? [
+          EmailProvider({
+            server: {
+              host: "unused",
+              port: 587,
+              auth: { user: "unused", pass: "unused" },
+            },
+            from: env.EMAIL_FROM,
+            maxAge: 10 * 60, // Magic link valid for 10 minutes
 
-        try {
-          await resend.emails.send({
-            from: provider.from,
-            to: email,
-            subject: `Sign in to Momentum`,
-            html: generateMagicLinkEmail({ url }),
-            text: generateMagicLinkText({ url }),
-          })
-        } catch (error) {
-          console.error("Error sending magic link email:", error)
-          throw new Error("Failed to send verification email")
-        }
-      },
-    }),
+            async sendVerificationRequest({ identifier: email, url }) {
+              const resend = new Resend(env.RESEND_API_KEY!)
+
+              try {
+                await resend.emails.send({
+                  from: env.EMAIL_FROM!,
+                  to: email,
+                  subject: `Sign in to Momentum`,
+                  html: generateMagicLinkEmail({ url }),
+                  text: generateMagicLinkText({ url }),
+                })
+              } catch (error) {
+                console.error("Error sending magic link email:", error)
+                throw new Error("Failed to send verification email")
+              }
+            },
+          }),
+        ]
+      : []),
   ],
 
   callbacks: {
@@ -172,7 +156,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     maxAge: 7 * 24 * 60 * 60, // 7 days
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
 })
 
 /**
