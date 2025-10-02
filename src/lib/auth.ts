@@ -13,18 +13,23 @@ import { env, JWT_SECRET } from "@/lib/env"
  * Ensures type safety at runtime before generating tokens
  * Note: name is optional to support email magic link authentication
  */
-export function isValidSession(session: any): session is {
+export function isValidSession(session: unknown): session is {
   user: { id: string; email: string; name?: string | null }
 } {
   return (
     session != null &&
+    typeof session === 'object' &&
+    'user' in session &&
     session.user != null &&
+    typeof session.user === 'object' &&
+    'id' in session.user &&
     typeof session.user.id === 'string' &&
     session.user.id.length > 0 &&
+    'email' in session.user &&
     typeof session.user.email === 'string' &&
     session.user.email.length > 0 &&
     // Name is optional - accept if it's a string or null/undefined
-    (session.user.name == null || typeof session.user.name === 'string')
+    (!('name' in session.user) || session.user.name == null || typeof session.user.name === 'string')
   )
 }
 
@@ -116,7 +121,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
 
     // Called on successful sign in
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       // PrismaAdapter automatically creates/updates user in database
       // No need to manually handle user creation
       
