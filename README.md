@@ -4,14 +4,16 @@
 
 ## Introduction
 
-**Momentum** is a modern Next.js application that showcases beautiful WebGL shader effects and smooth animations. Built with React 19 and TypeScript, it leverages cutting-edge web technologies to create immersive visual experiences through shader-based graphics and performance-optimized rendering.
+**Momentum** is a modern marketing and authentication site built with Next.js 15.5, React 19, and TypeScript. It provides a secure authentication gateway that handles user signup/login via Google OAuth and email magic links, then seamlessly redirects authenticated users to the main dashboard application.
 
 The application features:
 
-- **WebGL Shader Integration** using `@paper-design/shaders-react`
+- **NextAuth v5 Authentication** with Google OAuth and passwordless email magic links
+- **Cross-Application JWT Authentication** for secure dashboard handoff
 - **Modern React Architecture** with Next.js 15.5 and App Router
-- **Performance Monitoring** with comprehensive Web Vitals tracking
-- **Responsive Design** with Tailwind CSS 4.x
+- **Neon PostgreSQL Database** with Prisma ORM
+- **Email Integration** via Resend for magic link authentication
+- **Responsive Design** with Tailwind CSS 4.x and Radix UI components
 - **TypeScript** for type-safe development
 
-Perfect for developers interested in exploring the intersection of web development and interactive graphics programming.
+This is the authentication layer of the Momentum platform. After successful authentication, users are redirected to the separate dashboard application (`momentum-app`) with a secure JWT token.

@@ -31,10 +31,11 @@ This document outlines the naming conventions for GitHub repositories in the Mom
 
 | Repository Name | Purpose | Technology Stack |
 |----------------|---------|------------------|
-| `momentum-web` | Marketing website & landing pages | Next.js, React, TypeScript |
-| `momentum-app` | Main dashboard application | Next.js 15, React 19, WebGL |
-| `momentum-api` | Core backend API service | Node.js/Express or Go |
-| `momentum-auth` | Authentication & authorization service | Node.js, JWT |
+| `momentum` | Marketing site & authentication gateway | Next.js 15.5, React 19, NextAuth v5, TypeScript |
+| `momentum-app` | Main dashboard application | Next.js 15, React 19, WebGL, TypeScript |
+| `momentum-api` | Core backend API service (if needed) | Node.js/Express or Go |
+
+**Note**: `momentum` (this repository) handles both marketing pages and authentication. It uses NextAuth v5 for Google OAuth and email magic links, then redirects authenticated users to `momentum-app` with JWT tokens. A separate `momentum-auth` microservice is not needed as authentication is integrated into the marketing site.
 
 ### Service Repositories
 
