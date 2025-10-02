@@ -29,6 +29,7 @@ docs/
 ├── DATABASE.md           # Prisma schema, migrations & queries
 ├── COMPONENTS.md         # Marketing & UI component guides
 ├── API.md                # API routes & endpoints reference
+├──NAMING_CONVENTIONS     # Naming conventions for this and other repos in the momentum ecosystem
 └── DEPLOYMENT.md         # Vercel deployment & production setup
 ```
 
