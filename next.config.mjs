@@ -23,26 +23,10 @@ const nextConfig = {
   },
 
   // Webpack configuration for bundle optimization (only used when not using Turbopack)
-  webpack: async (config, { dev, isServer, webpack }) => {
+  webpack: (config, { dev, isServer, webpack }) => {
     // Only apply webpack config when not using Turbopack
     if (process.env.TURBOPACK) {
       return config
-    }
-
-    // Bundle analyzer configuration
-    if (process.env.BUNDLE_ANALYZE) {
-      // Dynamic import for webpack-bundle-analyzer
-      const { BundleAnalyzerPlugin } = await import('webpack-bundle-analyzer')
-      
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          reportFilename: isServer 
-            ? '../analyze/server.html' 
-            : './analyze/client.html',
-          openAnalyzer: false,
-        })
-      )
     }
 
     // Optimization for shader package
